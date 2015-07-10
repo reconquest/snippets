@@ -24,7 +24,7 @@ def should_expand_case(buffer, line):
 
     return False
 
-def if_first_line(snip):
+def is_first_line(snip):
 	return snip.line == 0
 endglobal
 
@@ -49,7 +49,7 @@ $0
 endsnippet
 
 priority 2
-snippet p "package + guess package name" "if_first_line(snip)" bweA
+snippet p "package + guess package name" "is_first_line(snip)" bweA
 package ${1:`!p snip.rv=px.go.guess_package_name_from_file_name(snip.fn)`}
 
 $0
@@ -69,9 +69,10 @@ func main() {
 endsnippet
 
 global !p
-def is_if_body(buffer, line)
+def is_if_body(buffer, line):
 	return re.match('^\s+if err ', px.util.get_prev_nonempty_line(buffer, line))
 endglobal
+
 snippet p "panic() in `if` body" "is_if_body(snip.buffer, snip.line)" bweA
 panic(err)
 endsnippet
@@ -222,7 +223,7 @@ snippet r "return" bw
 return $1
 endsnippet
 
-snippet r "return in `if` body" "px.go.is_if_body(snip.buffer, snip.line)" eb
+snippet r "return in `if` body" "is_if_body(snip.buffer, snip.line)" eb
 return err
 endsnippet
 
