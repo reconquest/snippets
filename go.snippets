@@ -141,8 +141,8 @@ snippet "(\w+) s" "string field in func" "px.go.is_func_declaration(snip.buffer,
 endsnippet
 
 priority 2
-snippet "(\w+) i" "integer field in func" "px.go.is_func_declaration(snip.buffer, snip.line)" wre
-`!p snip.rv=match.group(1)` int$1, $2
+snippet "(\w+) i" "integer field in func" "px.go.is_func_declaration(snip.buffer, snip.line)" wreA
+`!p snip.rv=match.group(1)` int$1, $0
 endsnippet
 
 
