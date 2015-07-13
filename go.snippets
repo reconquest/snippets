@@ -628,14 +628,14 @@ endsnippet
 global !p
 def should_expand_amp(buffer, line, column):
 	line_contents = buffer[line]
+
 	if line_contents.strip().startswith('if '):
 		return True
 
-	if px.util.match_higher_indent(buffer, (line, 0), '^if '):
-		return True
+	prev_line = px.util.get_prev_nonempty_line(buffer, line)
+	(higher_line, _) = px.util.get_higher_indent(buffer, (line, 0))
 
-	prev_line = px.util.get_prev_nonempty_line(snip.buffer, snip.line)
-	if prev_line.strip().startswith('if '):
+	if prev_line == higher_line and prev_line.strip().startswith('if '):
 		return True
 
 	return False
