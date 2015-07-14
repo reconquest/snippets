@@ -1,6 +1,7 @@
 global !p
 import re
 import os.path
+import vim
 
 import px.go
 endglobal
@@ -70,7 +71,7 @@ endsnippet
 
 global !p
 def is_if_body(buffer, line):
-	return re.match('^\s+if err ', px.util.get_prev_nonempty_line(buffer, line))
+	return re.match('^\s+if.*err ', px.util.get_prev_nonempty_line(buffer, line))
 endglobal
 
 snippet p "panic() in `if` body" "is_if_body(snip.buffer, snip.line)" bweA
@@ -91,16 +92,13 @@ def get_value_for_if():
 	return value
 
 def jumper_if(snip):
-	print('post_jump!')
-	print(snip)
 	if snip.tabstops[1].current_text == "err != nil" and snip.tabstop == 1 and snip.jump_direction == 1 :
-		import vim
 		vim.command('call feedkeys("\<C-J>")')
 endglobal
 
 priority -1
-#pre_expand "snip.context = get_value_for_if()"
-#post_jump "jumper_if(snip)"
+pre_expand "snip.context = get_value_for_if()"
+post_jump "jumper_if(snip)"
 snippet i "if" bw
 if ${1:`!p snip.rv=snip.context`} {
     ${2:${VISUAL}}
