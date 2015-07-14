@@ -536,7 +536,7 @@ else:
 	snip.rv = "nil"`
 endsnippet
 
-snippet ef "fmt.Errorf" i
+snippet ef "fmt.Errorf" w
 fmt.Errorf($1, $2)
 endsnippet
 
@@ -631,7 +631,12 @@ def should_expand_amp(buffer, line, column):
 		return True
 
 	prev_line = px.util.get_prev_nonempty_line(buffer, line)
-	(higher_line, _) = px.util.get_higher_indent(buffer, (line, 0))
+
+	higher = px.util.get_higher_indent(buffer, (line, 0))
+	if not higher:
+		return False
+
+	(higher_line, _) = higher
 
 	if prev_line == higher_line and prev_line.strip().startswith('if '):
 		return True
