@@ -4,6 +4,7 @@ import os.path
 import vim
 
 import px.go
+import px.all
 endglobal
 
 snippet n "new simple function" bw
@@ -85,7 +86,7 @@ endsnippet
 global !p
 # todo fix this
 def get_value_for_if():
-	value = px.all.get_last_var_for_snippet()
+	value = px.all.get_last_defined_var_for_snippet()
 	if value == 'err':
 		value = 'err != nil'
 
@@ -721,7 +722,7 @@ ctype = type[0].upper() + type[1:]
 endsnippet
 
 snippet f "for range" bw
-for ${3:key}, ${2:value} := range ${1:`!p snip.rv=px.all.get_last_var_for_snippet()`} {
+for ${3:key}, ${2:value} := range ${1:`!p snip.rv=px.all.get_last_used_var_for_snippet()`} {
 	${4:${VISUAL}}
 }
 endsnippet
