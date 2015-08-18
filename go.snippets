@@ -250,6 +250,11 @@ struct {
 }
 endsnippet
 
+snippet "((\w+)\s*([\w\[\]]+)) toml$" "toml annotation" brA
+`!p snip.rv=match.group(1)` \`toml:"`!p
+snip.rv=px.all.convert_camelcase_to_snakecase(match.group(2))`"\`
+endsnippet
+
 snippet "((\w+)\s*([\w\[\]]+)) js$" "json annotation" brA
 `!p snip.rv=match.group(1)` \`json:"`!p
 snip.rv=px.all.convert_camelcase_to_snakecase(match.group(2))`"\`
@@ -478,6 +483,10 @@ endsnippet
 
 snippet lf "log.Printf" w
 log.Printf($1)
+endsnippet
+
+snippet ld "log.Printf error" w
+log.Printf("$1: %s", err)
 endsnippet
 
 snippet td "todo" bw
