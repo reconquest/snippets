@@ -10,26 +10,31 @@
 
 # Installation
 
+For this awesome features you should use the marvelous library
+[vim-pythonx](https://github.com/reconquest/vim-pythonx) and patched version of
+[ultisnips](https://github.com/reconquest/ultisnips).
+
 ```viml
+Plug 'reconquest/vim-pythonx'
+
 Plug 'reconquest/snippets'
 
-# You should use patched ultisnips!
-Plug 'seletskiy/ultisnips', { 'branch': 'autotrigger' }
-    let g:UltiSnipsSmippetDirectories = [
+Plug 'reconquest/ultisnips'
+    " setting ultisnips snippet directories
+    let g:UltiSnipsSnippetDirectories = [
     \     $HOME . '/.vim/Ultisnips/',
     \     $HOME . '/.vim/bundle/snippets/'
     \]
     let g:UltiSnipsEnableSnipMate = 0
-    let g:UltiSnipsExpandTrigger="<TAB>"
 
-    augroup textwidth_for_snippets
-        au!
-        au FileType snippets set textwidth=0
-    augroup end
-
-Plug 'reconquest/vim-pythonx'
 ```
+
+## Tricks
 
 ```
 imap <C-F> t<TAB>.
 ```
+
+## Note about bugs
+
+Please fire an github issues if you found a bugs in snippets.
