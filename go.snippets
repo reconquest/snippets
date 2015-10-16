@@ -667,10 +667,11 @@ snippet = ":=" iA
 buffer = vim.current.buffer
 line, column = vim.current.window.cursor
 
-if not re.match(r'\w', buffer[line-1][column-1]):
-	snip.rv = "= "
-else:
-	snip.rv = " = "
+if line - 1 >= 0 and column - 1 >= 0:
+	if not re.match(r'\w', buffer[line-1][column-1]):
+		snip.rv = "= "
+	else:
+		snip.rv = " = "
 `
 endsnippet
 
