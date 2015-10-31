@@ -11,15 +11,11 @@
 # Installation
 
 For this awesome features you should use the marvelous library
-[vim-pythonx](https://github.com/reconquest/vim-pythonx) and patched version of
-[ultisnips](https://github.com/reconquest/ultisnips).
+[vim-pythonx](https://github.com/reconquest/vim-pythonx) and
+[ultisnips](https://github.com/sirver/ultisnips).
 
 ```viml
-Plug 'reconquest/vim-pythonx'
-
-Plug 'reconquest/snippets'
-
-Plug 'reconquest/ultisnips'
+Plug 'sirver/ultisnips'
     " setting ultisnips snippet directories
     let g:UltiSnipsSnippetDirectories = [
     \     $HOME . '/.vim/Ultisnips/',
@@ -27,6 +23,8 @@ Plug 'reconquest/ultisnips'
     \]
     let g:UltiSnipsEnableSnipMate = 0
 
+Plug 'reconquest/vim-pythonx'
+Plug 'reconquest/snippets'
 ```
 
 ## Tricks
