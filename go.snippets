@@ -438,42 +438,63 @@ endsnippet
 #`
 #endsnippet
 
+
+global !p
+def action_define_method(snip, pointer=False):
+	a_left = '('
+	a_right = ')'
+
+	buffer = vim.current.buffer
+	line = snip.context['snip'].line + 1
+
+	contents = buffer[line]
+	if line+1 < len(buffer) and buffer[line+1][0] == "\t" and buffer[line][-1] != '{':
+		x = 1
+		while True:
+			if line+x >= len(buffer):
+				break
+
+			contents = contents + buffer[line+x].strip()
+
+			if buffer[line+x] != '' and buffer[line+x][0] == ')':
+				break
+
+			x += 1
+
+
+	if len(contents) > 80:
+		a_left = "(\n\t"
+		a_right = "\n)"
+
+	r_left = ' '
+	r_right = ' '
+
+	if "," in t[3]:
+		r_left = ' ('
+		r_right = ') '
+
+	name, type = px.go.extract_prev_method_binding_for_cursor()
+	if pointer:
+		type = '*' + type
+
+	binding = name + ' ' + type
+
+	return (a_left, a_right, r_left, r_right, binding)
+endglobal
+
 snippet "^d$" "define method" "snip.context={'snip':snip}" bweAr
 `!p
-a_left = '('
-a_right = ')'
+(a_left, a_right, r_left, r_right, binding) = action_define_method(snip)
+`
+func (`!p snip.rv=binding`) $1`!p snip.rv=a_left`$2`!p snip.rv=a_right``!p snip.rv=r_left`$3`!p snip.rv=r_right`{
+	$4
+}
 
-buffer = vim.current.buffer
-line = snip.context['snip'].line + 1
+endsnippet
 
-contents = buffer[line]
-if line+1 < len(buffer) and buffer[line+1][0] == "\t" and buffer[line][-1] != '{':
-	x = 1
-	while True:
-		if line+x >= len(buffer):
-			break
-
-		contents = contents + buffer[line+x].strip()
-
-		if buffer[line+x] != '' and buffer[line+x][0] == ')':
-			break
-
-		x += 1
-
-
-if len(contents) > 80:
-	a_left = "(\n\t"
-	a_right = "\n)"
-
-r_left = ' '
-r_right = ' '
-
-if "," in t[3]:
-	r_left = ' ('
-	r_right = ') '
-
-binding = ' '.join(px.go.extract_prev_method_binding_for_cursor())
-
+snippet "^s$" "define method for pointer" "snip.context={'snip':snip}" bweAr
+`!p
+(a_left, a_right, r_left, r_right, binding) = action_define_method(snip, True)
 `
 func (`!p snip.rv=binding`) $1`!p snip.rv=a_left`$2`!p snip.rv=a_right``!p snip.rv=r_left`$3`!p snip.rv=r_right`{
 	$4
