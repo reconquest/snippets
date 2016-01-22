@@ -16,12 +16,18 @@ For this awesome features you should use the marvelous library
 
 ```viml
 Plug 'sirver/ultisnips'
-    " setting ultisnips snippet directories
+    let g:UltiSnipsUsePythonVersion = 2
+
     let g:UltiSnipsSnippetDirectories = [
-    \     $HOME . '/.vim/Ultisnips/',
+    \     $HOME . '/.vim/UltiSnips/',
     \     $HOME . '/.vim/bundle/snippets/'
     \]
     let g:UltiSnipsEnableSnipMate = 0
+
+    augroup textwidth_for_snippets
+        au!
+        au FileType snippets set textwidth=999
+    augroup end
 
 Plug 'reconquest/vim-pythonx'
 Plug 'reconquest/snippets'
