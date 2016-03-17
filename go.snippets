@@ -393,7 +393,7 @@ t.Fatalf("$1")
 endsnippet
 
 snippet qf "log fatal" bw
-jf err != nil {
+if err != nil {
 	log.Fatal(err)
 }
 endsnippet
