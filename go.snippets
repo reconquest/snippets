@@ -5,15 +5,7 @@ import vim
 
 import px.go
 import px.all
-endglobal
 
-snippet n "new simple function" bw
-func $1($2) $3${3/.+/ /}{
-	$4
-}
-endsnippet
-
-global !p
 def should_expand_case(buffer, line):
     if not px.go.is_switch(buffer, line):
         return False
@@ -28,8 +20,33 @@ def should_expand_case(buffer, line):
 
 def is_first_line(snip):
 	return snip.line == 0
+
+def is_if_condition(snip):
+	print 'is_if_condition'
+	current_line = snip.buffer[snip.line]
+	if re.search("^\s+if ", current_line):
+		print "return True 1"
+		return True
+	prev_line = snip.buffer[snip.line - 1]
+	print prev_line
+	if re.search("&&\s+$", prev_line) or re.search("\|\|\s+$", prev_line):
+		print "return True 2"
+		return True
+	print "return False"
+	return False
+
+def is_if_body(buffer, line):
+	return re.match('^\s+if.*err ', px.util.get_prev_nonempty_line(buffer, line))
 endglobal
 
+########################################################################################
+
+snippet n "new simple function" bw
+func $1($2) $3${3/.+/ /}{
+	$4
+}
+
+endsnippet
 snippet c "case" "should_expand_case(snip.buffer, snip.line)" bweA
 case $1:
 	$2
@@ -69,11 +86,6 @@ func main() {
 	$0
 }
 endsnippet
-
-global !p
-def is_if_body(buffer, line):
-	return re.match('^\s+if.*err ', px.util.get_prev_nonempty_line(buffer, line))
-endglobal
 
 snippet p "panic() in `if` body" "is_if_body(snip.buffer, snip.line)" bweA
 panic(err)
@@ -170,12 +182,6 @@ if ${VISUAL} {
 }
 endsnippet
 
-snippet q "if err != nil return err" bw
-if err != nil {
-	return err
-}
-endsnippet
-
 snippet fe "fmt.Errorf($1 or VISUAL)" w
 fmt.Errorf(${1:${VISUAL}})
 endsnippet
@@ -186,36 +192,6 @@ endsnippet
 
 snippet ff "fmt.Errorf only message" w
 fmt.Errorf("$1")
-endsnippet
-
-snippet qe "if err != nil return error with message" bw
-if err != nil {
-	return fmt.Errorf("$1: %s", err.Error())
-}
-endsnippet
-
-snippet qq "if err != nil return two variables, second is err" bw
-if err != nil {
-	return ${1:nil}, err
-}
-endsnippet
-
-snippet qqe "if err != nil return two variables, error with message" bw
-if err != nil {
-	return ${1:nil}, fmt.Errorf("$2: %s", err.Error())
-}
-endsnippet
-
-snippet qp "if err != nil panic" bwA
-if err != nil {
-	panic(err)
-}
-endsnippet
-
-snippet qn "if ... == nil" bwA
-if ${1:value} == nil {
-	${0:${VISUAL}}
-}
 endsnippet
 
 snippet r "return" bw
@@ -250,7 +226,7 @@ struct {
 }
 endsnippet
 
-snippet "((\w+)\s*([\w\[\]]+)) toml$" "toml annotation" brA
+snippet "((\w+)\s*([\w\[\]]+)) to$" "toml annotation" brA
 `!p snip.rv=match.group(1)` \`toml:"`!p
 snip.rv=px.all.convert_camelcase_to_snakecase(match.group(2))`"\`
 endsnippet
@@ -335,10 +311,6 @@ endsnippet
 
 snippet mm "make map" w
 make(map[${1:string}]${2:interface\{\}})
-endsnippet
-
-snippet nn "!= nil" w
-${1:${VISUAL}} != nil
 endsnippet
 
 snippet if "interface" w
@@ -558,7 +530,7 @@ name = t[1] + str(randint(10, 9999))
 fmt.Printf("`!p snip.rv=t[1]`: %s\n", string(ej`!p snip.rv=name`))
 endsnippet
 
-snippet te "func Test" bw
+snippet "^e" "func Test" wrA
 func Test$1(t *testing.T) {
 	$2
 }
@@ -604,13 +576,6 @@ var (
 )
 endsnippet
 
-snippet /n "!= nil"
-!= nil$0
-endsnippet
-
-snippet .n "== nil"
-== nil$0
-endsnippet
 
 global !p
 def gocode_complete_function(snip):
@@ -683,27 +648,6 @@ snippet & "expand amp" "should_expand_amp(snip.buffer, snip.line, snip.column)" 
 && $0
 endsnippet
 
-snippet = ":=" iA
-`!p
-buffer = vim.current.buffer
-line, column = vim.current.window.cursor
-
-if line - 1 >= 0 and column - 1 >= 0:
-	if not re.match(r'\w', buffer[line-1][column-1]):
-		snip.rv = "= "
-	else:
-		snip.rv = " = "
-`
-endsnippet
-
-priority 2
-snippet "= =" "" Ai
-`!p snip.rv="== "`
-endsnippet
-
-snippet "= \" "wut" Ai
-`!p snip.rv=":= "`
-endsnippet
 
 snippet ,- "underscore" iA
 , _
@@ -766,4 +710,61 @@ snippet fo "for without body" bw
 for {
 	${1:${VISUAL}}
 }
+endsnippet
+
+
+snippet = "" iA
+`!p
+buffer = vim.current.buffer
+line, column = vim.current.window.cursor
+
+if line - 1 >= 0 and column - 1 >= 0:
+	if not re.match(r'\w', buffer[line-1][column-1]):
+		snip.rv = "= "
+	else:
+		snip.rv = " = "
+`
+endsnippet
+
+priority 2
+snippet "= =" "" "is_if_condition(snip)" Aie
+== $0
+endsnippet
+
+priority 2
+snippet "= =" "" Ai
+:= $0
+endsnippet
+
+priority 3
+snippet "== =" "" Ai
+!= $0
+endsnippet
+
+priority 3
+snippet "!= =" "" Ai
+== $0
+endsnippet
+
+priority 3
+snippet ":= =" "" Ai
+= $0
+endsnippet
+
+snippet "=  " "!= nil" A
+!= nil$0
+endsnippet
+
+snippet "= n" "" "is_if_condition(snip)" Aie
+= nil$0
+endsnippet
+
+priority 4
+snippet "== nil=" "" "is_if_condition(snip)" Aie
+!= nil$0
+endsnippet
+
+priority 4
+snippet "!= nil=" "" "is_if_condition(snip)" Aie
+== nil$0
 endsnippet
