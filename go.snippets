@@ -22,17 +22,12 @@ def is_first_line(snip):
 	return snip.line == 0
 
 def is_if_condition(snip):
-	print 'is_if_condition'
 	current_line = snip.buffer[snip.line]
 	if re.search("^\s+if ", current_line):
-		print "return True 1"
 		return True
 	prev_line = snip.buffer[snip.line - 1]
-	print prev_line
 	if re.search("&&\s+$", prev_line) or re.search("\|\|\s+$", prev_line):
-		print "return True 2"
 		return True
-	print "return False"
 	return False
 
 def is_if_body(buffer, line):
