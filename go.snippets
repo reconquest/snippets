@@ -527,6 +527,8 @@ endsnippet
 
 snippet "^e" "func Test" wrA
 func Test$1(t *testing.T) {
+	test := assert.New(t)
+
 	$2
 }
 endsnippet
