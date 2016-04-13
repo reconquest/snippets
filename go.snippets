@@ -1,59 +1,22 @@
 global !p
-import re
-import os.path
-import vim
-
-import px.go
-import px.all
-
-def should_expand_case(buffer, line):
-    if not px.go.is_switch(buffer, line):
-        return False
-
-    switch_line = px.go.get_bracket_line(buffer, line)
-    switch_line_indent = px.util.get_indentation(buffer[switch_line])
-
-    if switch_line_indent == px.util.get_indentation(buffer[line]):
-        return True
-
-    return False
-
-def is_first_line(snip):
-	return snip.line == 0
-
-def is_if_condition(snip):
-	current_line = snip.buffer[snip.line]
-	if re.search("^\s+if ", current_line):
-		return True
-	prev_line = snip.buffer[snip.line - 1]
-	if re.search("&&\s+$", prev_line) or re.search("\|\|\s+$", prev_line):
-		return True
-	return False
-
-def is_if_body(buffer, line):
-	return re.match('^\s+if.*err ', px.util.get_prev_nonempty_line(buffer, line))
-
-def is_string():
-	return px.all.is_syntax_string(vim.current.window.cursor)
-
+from snippets.go import *
 endglobal
 
-########################################################################################
-
-snippet n "" "is_string()" bwe
+snippet n "" "not is_string()" bwe
 func $1($2) $3${3/.+/ /}{
 	$4
 }
 
 endsnippet
-context "is_string() and should_expand_case(snip.buffer, snip.line)"
+
+context "not is_string() and should_expand_case(snip.buffer, snip.line)"
 snippet c "" bweA
 case $1:
 	$2
 $3
 endsnippet
 
-context "is_string() and px.go.is_before_first_func(snip.buffer, snip.line)"
+context "not is_string() and px.go.is_before_first_func(snip.buffer, snip.line)"
 snippet "^s$" "" bwreA
 `!p
 if re.match("^([\w\[\]{}]+)$", t[2]):
@@ -101,20 +64,6 @@ snippet lf "" bweA
 log.Fatal(err)
 endsnippet
 
-global !p
-# todo fix this
-def get_value_for_if():
-	value = px.all.get_last_defined_var_for_snippet()
-	if value == 'err':
-		value = 'err != nil'
-
-	return value
-
-def jumper_if(snip):
-	if snip.tabstops[1].current_text == "err != nil" and snip.tabstop == 1 and snip.jump_direction == 1 :
-		vim.command('call feedkeys("\<C-J>")')
-endglobal
-
 priority -1
 pre_expand "snip.context = get_value_for_if()"
 post_jump "jumper_if(snip)"
@@ -124,71 +73,71 @@ if ${1:`!p snip.rv=snip.context`} {
 }
 endsnippet
 
-context "is_string() and px.go.is_func_declaration(snip.buffer, snip.line)"
+context "not is_string() and px.go.is_func_declaration(snip.buffer, snip.line)"
 snippet e "" we
 error
 endsnippet
 
-context "is_string() and px.go.is_type_declaration(snip.buffer, snip.line)"
+context "not is_string() and px.go.is_type_declaration(snip.buffer, snip.line)"
 snippet i "" bwe
 $1 int
 endsnippet
 
-context "is_string() and px.go.is_func_declaration(snip.buffer, snip.line)"
+context "not is_string() and px.go.is_func_declaration(snip.buffer, snip.line)"
 snippet i "" we
 $1 int,
 endsnippet
 
-context "is_string() and px.go.is_type_declaration(snip.buffer, snip.line)"
+context "not is_string() and px.go.is_type_declaration(snip.buffer, snip.line)"
 snippet s "" bwe
 $1 string
 endsnippet
 
-context "is_string() and px.go.is_func_declaration(snip.buffer, snip.line)"
+context "not is_string() and px.go.is_func_declaration(snip.buffer, snip.line)"
 snippet s "" we
 $1 string,
 endsnippet
 
-context "is_string() and px.go.is_type_declaration(snip.buffer, snip.line)"
+context "not is_string() and px.go.is_type_declaration(snip.buffer, snip.line)"
 snippet f "" bwe
 $1 float64
 endsnippet
 
-context "is_string() and px.go.is_func_declaration(snip.buffer, snip.line)"
+context "not is_string() and px.go.is_func_declaration(snip.buffer, snip.line)"
 snippet f "" we
 $1 float64,
 endsnippet
 
-context "is_string() and px.go.is_func_declaration(snip.buffer, snip.line)"
+context "not is_string() and px.go.is_func_declaration(snip.buffer, snip.line)"
 priority 2
 snippet "(\w+) s" "" re
 `!p snip.rv=match.group(1)` string, $0
 endsnippet
 
-context "is_string() and px.go.is_func_declaration(snip.buffer, snip.line)"
+context "not is_string() and px.go.is_func_declaration(snip.buffer, snip.line)"
 priority 2
 snippet "(\w+) i" "" wre
 `!p snip.rv=match.group(1)` int$1, $0
 endsnippet
 
 
-context "is_string() and px.go.is_func_declaration(snip.buffer, snip.line)"
+context "not is_string() and px.go.is_func_declaration(snip.buffer, snip.line)"
 priority 2
 snippet "(\w+)" "" we
 `!p snip.rv=match.group(1)` float64, $0
 endsnippet
 
-context "is_string() and px.go.is_type_declaration(snip.buffer, snip.line)"
+context "not is_string() and px.go.is_type_declaration(snip.buffer, snip.line)"
 snippet m "" bwe
 $1 map[${2:string}]${3:interface{}}
 endsnippet
 
-context "is_string() and px.go.is_func_declaration(snip.buffer, snip.line)"
+context "not is_string() and px.go.is_func_declaration(snip.buffer, snip.line)"
 snippet m "" we
 $1 map[${2:string}]${3:interface{}}$4,
 endsnippet
 
-context "is_string() and px.go.is_func_declaration(snip.buffer, snip.line)"
+context "not is_string() and px.go.is_func_declaration(snip.buffer, snip.line)"
 priority 2
 snippet "(\w+) m" "" we
 `!p snip.rv=match.group(1)` map[${2:string}]${3:interface{}}, $0
@@ -232,7 +181,7 @@ snippet "}([\w ])" "else before closing bracket" bwrA
 }
 endsnippet
 
-context "is_string() and px.go.is_before_first_func(snip.buffer, snip.line)"
+context "not is_string() and px.go.is_before_first_func(snip.buffer, snip.line)"
 snippet "^c$" "" bwreA
 const (
 	$0
@@ -345,11 +294,11 @@ case ${3:Type}:
 }
 endsnippet
 
-snippet ,n ", nil" "is_string() and px.go.is_return_argument(snip.buffer, snip.line, snip.column)"  iAe
+snippet ,n ", nil" "not is_string() and px.go.is_return_argument(snip.buffer, snip.line, snip.column)"  iAe
 , nil
 endsnippet
 
-snippet  n, ", nil" "is_string() and px.go.is_return_argument(snip.buffer, snip.line, snip.column)" wAe
+snippet  n, ", nil" "not is_string() and px.go.is_return_argument(snip.buffer, snip.line, snip.column)" wAe
 nil,
 endsnippet
 
@@ -413,72 +362,11 @@ snippet rf "return false" bw
 return false
 endsnippet
 
-# @TODO: fix this, should separate line if len > 79 and add commas
-#global !p
-#def should_expand_zap(snip):
-	#return False
-
-	#if px.util.match_higher_indent(snip.buffer, (snip.line, 0), '^func '):
-		#if len(snip.buffer[snip.line]) > 79:
-			#return snip.buffer[snip.line].replace(", ", ",\n\t")
-
-	#return False
-#endglobal
-
-#snippet "\t(.*)" "" "should_expand_zap(snip)" bwreA
-#`!p
-#snip.rv=snip.context
-#`
-#endsnippet
-
-
-global !p
-def action_define_method(snip, pointer=False):
-	a_left = '('
-	a_right = ')'
-
-	buffer = vim.current.buffer
-	line = snip.context['snip'].line + 1
-
-	contents = buffer[line]
-	if line+1 < len(buffer) and buffer[line+1][0] == "\t" and buffer[line][-1] != '{':
-		x = 1
-		while True:
-			if line+x >= len(buffer):
-				break
-
-			contents = contents + buffer[line+x].strip()
-
-			if buffer[line+x] != '' and buffer[line+x][0] == ')':
-				break
-
-			x += 1
-
-
-	if len(contents) > 80:
-		a_left = "(\n\t"
-		a_right = "\n)"
-
-	r_left = ' '
-	r_right = ' '
-
-	if "," in t[3]:
-		r_left = ' ('
-		r_right = ') '
-
-	name, type = px.go.extract_prev_method_binding_for_cursor()
-	if pointer:
-		type = '*' + type
-
-	binding = name + ' ' + type
-
-	return (a_left, a_right, r_left, r_right, binding)
-endglobal
 
 context "snip.context={'snip':snip}"
 snippet "^d$" "" bweAr
 `!p
-(a_left, a_right, r_left, r_right, binding) = action_define_method(snip)
+(a_left, a_right, r_left, r_right, binding) = action_define_method(snip, t)
 `
 func (`!p snip.rv=binding`) $1`!p snip.rv=a_left`$2`!p snip.rv=a_right``!p snip.rv=r_left`$3`!p snip.rv=r_right`{
 	$4
@@ -489,7 +377,7 @@ endsnippet
 context "snip.context={'snip':snip}"
 snippet "^s$" "" bweAr
 `!p
-(a_left, a_right, r_left, r_right, binding) = action_define_method(snip, True)
+(a_left, a_right, r_left, r_right, binding) = action_define_method(snip, t, True)
 `
 func (`!p snip.rv=binding`) $1`!p snip.rv=a_left`$2`!p snip.rv=a_right``!p snip.rv=r_left`$3`!p snip.rv=r_right`{
 	$4
@@ -561,7 +449,7 @@ func Test$1(t *testing.T) {
 }
 endsnippet
 
-snippet , "return ... , nil" "is_string() and px.go.is_return_argument(snip.buffer, snip.line, snip.column)" ie
+snippet , "return ... , nil" "not is_string() and px.go.is_return_argument(snip.buffer, snip.line, snip.column)" ie
 , `!p if px.go.is_in_err_condition(vim.current.buffer, vim.current.window.cursor[0], vim.current.window.cursor[1]):
 	snip.rv = "err"
 else:
@@ -601,74 +489,10 @@ var (
 )
 endsnippet
 
-
-global !p
-def gocode_complete_function(snip):
-	(snip_ret, snip_func) = px.go.get_gocode_complete(False)
-	snip_full = px.go.get_gocode_complete(True)
-
-	cur_line = re.sub('\w+\.\w+$', '', snip.buffer[snip.line][:snip.column])
-	cur_line = cur_line + "" + snip.buffer[snip.line	][snip.column+1:]
-	snip.buffer[snip.line] = cur_line
-
-	prev_line = px.util.get_prev_nonempty_line(snip.buffer, snip.line)
-
-	if prev_line[-1] == ',' or prev_line[-1] == '(' or prev_line[-1] == '&' or cur_line.strip() != '':
-		snip.expand_anon(snip_func)
-		return
-
-
-	matches = re.search('\${(\d+):error}', snip_ret)
-	if not matches:
-		snip.expand_anon(snip_full)
-		return
-
-	placeholder_err = matches.group(1)
-	snip_full = snip_full.replace(
-		'${'+placeholder_err+':error}',
-		'${'+placeholder_err+':err}',
-	)
-
-	actions = {
-		'post_jump': """placeholder_err = """+placeholder_err +"""
-if snip.tabstop == 0:
-	err = snip.tabstops[placeholder_err].current_text
-	if err != '_':
-		snip.expand_anon("\\nif " + err + " != nil {\\n\\t$1\\n}")
-"""
-	}
-
-	snip.expand_anon(
-		snip_full,
-		actions = actions,
-	)
-endglobal
-
-context "is_string() and px.go.gocode_can_complete()"
+context "not is_string() and px.go.gocode_can_complete()"
 pre_expand "gocode_complete_function(snip)"
 snippet "(\w+\.\w+)" "" re
 endsnippet
-
-global !p
-def should_expand_amp(buffer, line, column):
-	line_contents = buffer[line]
-
-	if line_contents.strip().startswith('if '):
-		return True
-
-	prev_line = px.util.get_prev_nonempty_line(buffer, line)
-
-	higher = px.util.get_higher_indent(buffer, (line, 0))
-	if not higher:
-		return False
-
-	(higher_line, _) = higher
-
-	if prev_line == higher_line and prev_line.strip().startswith('if '):
-		return True
-
-	return False
-endglobal
 
 snippet & "expand amp" "should_expand_amp(snip.buffer, snip.line, snip.column)" Awe
 && $0
