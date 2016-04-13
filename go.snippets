@@ -32,23 +32,29 @@ def is_if_condition(snip):
 
 def is_if_body(buffer, line):
 	return re.match('^\s+if.*err ', px.util.get_prev_nonempty_line(buffer, line))
+
+def is_string():
+	return px.all.is_syntax_string(vim.current.window.cursor)
+
 endglobal
 
 ########################################################################################
 
-snippet n "new simple function" bw
+snippet n "" "is_string()" bwe
 func $1($2) $3${3/.+/ /}{
 	$4
 }
 
 endsnippet
-snippet c "case" "should_expand_case(snip.buffer, snip.line)" bweA
+context "is_string() and should_expand_case(snip.buffer, snip.line)"
+snippet c "" bweA
 case $1:
 	$2
 $3
 endsnippet
 
-snippet "^s$" "type struct" "px.go.is_before_first_func(snip.buffer, snip.line)" bwreA
+context "is_string() and px.go.is_before_first_func(snip.buffer, snip.line)"
+snippet "^s$" "" bwreA
 `!p
 if re.match("^([\w\[\]{}]+)$", t[2]):
         type_left = " "
@@ -62,19 +68,22 @@ else:
 $0
 endsnippet
 
+context "is_first_line(snip)"
 priority 2
-snippet p "package + guess package name" "is_first_line(snip)" bweA
+snippet p "" bweA
 package ${1:`!p snip.rv=px.go.guess_package_name_from_file_name(snip.fn)`}
 
 $0
 endsnippet
 
+context "is_first_line(snip)"
 priority 2
-snippet "package m" "package main" "is_first_line(snip)" bwrAe
+snippet "package m" "" bwrAe
 package main
 endsnippet
 
-snippet m "package main and func main" "snip.line == 0 and snip.column == 0" eA
+context "snip.line == 0 and snip.column == 0"
+snippet m "" eA
 package main
 
 func main() {
@@ -82,11 +91,13 @@ func main() {
 }
 endsnippet
 
-snippet p "panic() in `if` body" "is_if_body(snip.buffer, snip.line)" bweA
+context "is_if_body(snip.buffer, snip.line)"
+snippet p "" bweA
 panic(err)
 endsnippet
 
-snippet lf "log.Fatal() in `if` body" "is_if_body(snip.buffer, snip.line)" bweA
+context "is_if_body(snip.buffer, snip.line)"
+snippet lf "" bweA
 log.Fatal(err)
 endsnippet
 
@@ -113,60 +124,73 @@ if ${1:`!p snip.rv=snip.context`} {
 }
 endsnippet
 
-snippet e "error in func declaration" "px.go.is_func_declaration(snip.buffer, snip.line)" we
+context "is_string() and px.go.is_func_declaration(snip.buffer, snip.line)"
+snippet e "" we
 error
 endsnippet
 
-snippet i "integer field in type" "px.go.is_type_declaration(snip.buffer, snip.line)" bwe
+context "is_string() and px.go.is_type_declaration(snip.buffer, snip.line)"
+snippet i "" bwe
 $1 int
 endsnippet
 
-snippet i "integer field in func" "px.go.is_func_declaration(snip.buffer, snip.line)" we
+context "is_string() and px.go.is_func_declaration(snip.buffer, snip.line)"
+snippet i "" we
 $1 int,
 endsnippet
 
-snippet s "string field in type" "px.go.is_type_declaration(snip.buffer, snip.line)" bwe
+context "is_string() and px.go.is_type_declaration(snip.buffer, snip.line)"
+snippet s "" bwe
 $1 string
 endsnippet
 
-snippet s "string field in func" "px.go.is_func_declaration(snip.buffer, snip.line)" we
+context "is_string() and px.go.is_func_declaration(snip.buffer, snip.line)"
+snippet s "" we
 $1 string,
 endsnippet
 
-snippet f "float64 field" "px.go.is_type_declaration(snip.buffer, snip.line)" bwe
+context "is_string() and px.go.is_type_declaration(snip.buffer, snip.line)"
+snippet f "" bwe
 $1 float64
 endsnippet
 
-snippet f "float64 field" "px.go.is_func_declaration(snip.buffer, snip.line)" we
+context "is_string() and px.go.is_func_declaration(snip.buffer, snip.line)"
+snippet f "" we
 $1 float64,
 endsnippet
 
+context "is_string() and px.go.is_func_declaration(snip.buffer, snip.line)"
 priority 2
-snippet "(\w+) s" "string field in func" "px.go.is_func_declaration(snip.buffer, snip.line)" re
+snippet "(\w+) s" "" re
 `!p snip.rv=match.group(1)` string, $0
 endsnippet
 
+context "is_string() and px.go.is_func_declaration(snip.buffer, snip.line)"
 priority 2
-snippet "(\w+) i" "integer field in func" "px.go.is_func_declaration(snip.buffer, snip.line)" wre
+snippet "(\w+) i" "" wre
 `!p snip.rv=match.group(1)` int$1, $0
 endsnippet
 
 
+context "is_string() and px.go.is_func_declaration(snip.buffer, snip.line)"
 priority 2
-snippet "(\w+)" "float64 field in func" "px.go.is_func_declaration(snip.buffer, snip.line)" we
+snippet "(\w+)" "" we
 `!p snip.rv=match.group(1)` float64, $0
 endsnippet
 
-snippet m "map field in type" "px.go.is_type_declaration(snip.buffer, snip.line)" bwe
+context "is_string() and px.go.is_type_declaration(snip.buffer, snip.line)"
+snippet m "" bwe
 $1 map[${2:string}]${3:interface{}}
 endsnippet
 
-snippet m "map field in func" "px.go.is_func_declaration(snip.buffer, snip.line)" we
+context "is_string() and px.go.is_func_declaration(snip.buffer, snip.line)"
+snippet m "" we
 $1 map[${2:string}]${3:interface{}}$4,
 endsnippet
 
+context "is_string() and px.go.is_func_declaration(snip.buffer, snip.line)"
 priority 2
-snippet "(\w+) m" "map field in func" "px.go.is_func_declaration(snip.buffer, snip.line)" we
+snippet "(\w+) m" "" we
 `!p snip.rv=match.group(1)` map[${2:string}]${3:interface{}}, $0
 endsnippet
 
@@ -193,7 +217,8 @@ snippet r "return" bw
 return $1
 endsnippet
 
-snippet r "return in `if` body" "is_if_body(snip.buffer, snip.line)" eb
+context "is_if_body(snip.buffer, snip.line)"
+snippet r "" eb
 return err
 endsnippet
 
@@ -207,7 +232,8 @@ snippet "}([\w ])" "else before closing bracket" bwrA
 }
 endsnippet
 
-snippet "^c$" "const before first func" "px.go.is_before_first_func(snip.buffer, snip.line)" bwreA
+context "is_string() and px.go.is_before_first_func(snip.buffer, snip.line)"
+snippet "^c$" "" bwreA
 const (
 	$0
 )
@@ -319,11 +345,11 @@ case ${3:Type}:
 }
 endsnippet
 
-snippet ,n ", nil" "px.go.is_return_argument(snip.buffer, snip.line, snip.column)"  iAe
+snippet ,n ", nil" "is_string() and px.go.is_return_argument(snip.buffer, snip.line, snip.column)"  iAe
 , nil
 endsnippet
 
-snippet  n, ", nil" "px.go.is_return_argument(snip.buffer, snip.line, snip.column)" wAe
+snippet  n, ", nil" "is_string() and px.go.is_return_argument(snip.buffer, snip.line, snip.column)" wAe
 nil,
 endsnippet
 
@@ -449,7 +475,8 @@ def action_define_method(snip, pointer=False):
 	return (a_left, a_right, r_left, r_right, binding)
 endglobal
 
-snippet "^d$" "define method" "snip.context={'snip':snip}" bweAr
+context "snip.context={'snip':snip}"
+snippet "^d$" "" bweAr
 `!p
 (a_left, a_right, r_left, r_right, binding) = action_define_method(snip)
 `
@@ -459,7 +486,8 @@ func (`!p snip.rv=binding`) $1`!p snip.rv=a_left`$2`!p snip.rv=a_right``!p snip.
 
 endsnippet
 
-snippet "^s$" "define method for pointer" "snip.context={'snip':snip}" bweAr
+context "snip.context={'snip':snip}"
+snippet "^s$" "" bweAr
 `!p
 (a_left, a_right, r_left, r_right, binding) = action_define_method(snip, True)
 `
@@ -478,7 +506,7 @@ log.Printf($1)
 endsnippet
 
 snippet ld "log.Printf error" w
-log.Printf("$1: %s", err)
+log.Printf("$1: %s", ${2:err})
 endsnippet
 
 snippet td "todo" bw
@@ -533,7 +561,7 @@ func Test$1(t *testing.T) {
 }
 endsnippet
 
-snippet , "return ... , nil" "px.go.is_return_argument(snip.buffer, snip.line, snip.column)" ie
+snippet , "return ... , nil" "is_string() and px.go.is_return_argument(snip.buffer, snip.line, snip.column)" ie
 , `!p if px.go.is_in_err_condition(vim.current.buffer, vim.current.window.cursor[0], vim.current.window.cursor[1]):
 	snip.rv = "err"
 else:
@@ -616,8 +644,9 @@ if snip.tabstop == 0:
 	)
 endglobal
 
+context "is_string() and px.go.gocode_can_complete()"
 pre_expand "gocode_complete_function(snip)"
-snippet "(\w+\.\w+)" "gocode complete function return variables and arguments" "px.go.gocode_can_complete()" re
+snippet "(\w+\.\w+)" "" re
 endsnippet
 
 global !p
