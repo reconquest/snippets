@@ -199,3 +199,142 @@ def should_expand_amp(snip):
         return True
 
     return False
+
+
+def is_inside_docopt_section(snip, section):
+    if not px.syntax.is_string(px.cursor.from_vim(snip.cursor)):
+        return False
+
+    match = px.whitespaces.match_higher_indent(snip.buffer, snip.cursor, '(?i)' + section)
+    if not match:
+        return False
+
+    return True
+
+def docopt_format_options(snip, separator='  ', indenting=' '):
+    match = px.whitespaces.match_higher_indent(snip.buffer, snip.cursor, '(?i)options')
+    if not match:
+        return
+
+    usage_begins_at = match[1] + 1
+    usage_ends_at = usage_begins_at
+    longest_option = ''
+
+    tab_width = int(vim.eval('&ts'))
+
+    for line in snip.buffer[usage_begins_at:]:
+        if line.strip() == '`':
+            break
+
+        if re.match(r'^\w', line.strip()):
+            break
+
+        option = parse_docopt_option(line, tab_width)
+
+        if len(option['first_column']) > len(longest_option):
+            longest_option = option['first_column']
+
+        usage_ends_at += 1
+
+    for (index, line) in enumerate(snip.buffer[usage_begins_at:usage_ends_at]):
+        if index + usage_begins_at == snip.cursor[0]:
+            continue
+
+        option = parse_docopt_option(line, tab_width)
+        indent = ''
+
+        if option['first_column'].strip() == '':
+            indent = indenting
+
+        snip.buffer[usage_begins_at+index] = \
+            option['first_column'].ljust(len(longest_option)) + \
+            separator + \
+            indent + option['second_column']
+
+
+    snip.cursor.set(snip.cursor[0], len(snip.buffer[snip.cursor[0]]))
+
+def parse_docopt_option(line, tab_width=4):
+    print(line)
+    match = re.match(
+        """(?x)
+            ^(?P<indent>(?P<first>
+                (\s+)
+                (
+                    (
+                        \s*?
+                        (--?\w* ([= ]?(<[\w-]+>|[A-Z_]+))? )
+                    )+
+                )?
+            )
+            \s+)
+            (?P<second>.*)
+        """,
+        line.expandtabs(tab_width)
+    )
+
+    if not match:
+        return None
+
+    result = {
+        'first_column': match.group('first'),
+        'second_column': match.group('second'),
+        'indent': len(match.group('indent'))
+    }
+
+    if result['first_column'].strip() == '':
+        result['first_column'] = ''
+
+    return result
+
+def split_long_docopt_line(t, snip):
+    if snip.c != "":
+        return snip.c
+
+    opt_line = snip.buffer[snip.snippet_start[0]].expandtabs(
+        int(vim.eval('&ts'))
+    )
+
+    if len(opt_line) > 79:
+        split_boundary = len(opt_line) - len(t[2])
+        first_line, second_line = t[2].rsplit(' ', 1)
+
+        indentation = ' ' * (split_boundary + 1) # +1 for extra indenting
+
+        t[2] = indentation + second_line
+
+        return first_line + "\n"
+    else:
+        return ''
+
+def get_options_indentation(snip):
+    if snip.buffer.cursor[0] != snip.snippet_start[0]:
+        return snip.c
+
+    tab_width = int(vim.eval('&ts'))
+
+    prev_opt = parse_docopt_option(
+        snip.buffer[snip.snippet_start[0]-1], tab_width
+    )
+
+    if not prev_opt:
+        return snip.c
+
+    curr_opt = parse_docopt_option(
+        snip.buffer[snip.snippet_start[0]], tab_width
+    )
+
+    if not curr_opt:
+        return snip.c
+
+    curr_indent = len(curr_opt['first_column'])
+
+    if prev_opt['first_column'] == '':
+        prev_indent = prev_opt['indent'] - 1
+    else:
+        prev_indent = prev_opt['indent']
+
+    if curr_indent >= prev_indent:
+        return ' ' * 2
+
+    return ' ' * (prev_indent - curr_indent)
