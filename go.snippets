@@ -16,7 +16,7 @@ case $1:
 $3
 endsnippet
 
-context "not is_string() and px.go.is_before_first_func(snip.buffer, snip.line)"
+context "not is_string() and is_before_first_func(snip)"
 snippet "^s$" "" bwreA
 `!p
 if re.match("^([\w\[\]{}]+)$", t[2]):
@@ -34,7 +34,7 @@ endsnippet
 context "is_first_line(snip)"
 priority 2
 snippet p "" bweA
-package ${1:`!p snip.rv=px.go.guess_package_name_from_file_name(snip.fn)`}
+package ${1:`!p snip.rv=guess_package_from_file_name(snip.fn)`}
 
 $0
 endsnippet
@@ -54,90 +54,94 @@ func main() {
 }
 endsnippet
 
-context "is_if_body(snip.buffer, snip.line)"
+context "is_if_body(snip)"
 snippet p "" bweA
 panic(err)
 endsnippet
 
-context "is_if_body(snip.buffer, snip.line)"
+context "is_if_body(snip)"
 snippet lf "" bweA
 log.Fatal(err)
 endsnippet
 
+context "is_for_body(snip)""
+snippet c "continue in if" eb
+continue
+endsnippet
+
 priority -1
-pre_expand "snip.context = get_value_for_if()"
-post_jump "jumper_if(snip)"
+post_jump "jump_to_if_body_on_err_not_nil(snip)"
 snippet i "if" bw
-if ${1:`!p snip.rv=snip.context`} {
+if ${1:`!p snip.rv=get_value_for_if(snip.c)`} {
     ${2:${VISUAL}}
 }
 endsnippet
 
-context "not is_string() and px.go.is_func_declaration(snip.buffer, snip.line)"
+context "not is_string() and is_func_decl(snip)"
 snippet e "" we
 error
 endsnippet
 
-context "not is_string() and px.go.is_type_declaration(snip.buffer, snip.line)"
+context "not is_string() and is_type_decl(snip)"
 snippet i "" bwe
 $1 int
 endsnippet
 
-context "not is_string() and px.go.is_func_declaration(snip.buffer, snip.line)"
+context "not is_string() and is_func_decl(snip)"
 snippet i "" we
 $1 int,
 endsnippet
 
-context "not is_string() and px.go.is_type_declaration(snip.buffer, snip.line)"
+context "not is_string() and is_type_decl(snip)"
 snippet s "" bwe
 $1 string
 endsnippet
 
-context "not is_string() and px.go.is_func_declaration(snip.buffer, snip.line)"
+context "not is_string() and is_func_decl(snip)"
 snippet s "" we
 $1 string,
 endsnippet
 
-context "not is_string() and px.go.is_type_declaration(snip.buffer, snip.line)"
+context "not is_string() and is_type_decl(snip)"
 snippet f "" bwe
 $1 float64
 endsnippet
 
-context "not is_string() and px.go.is_func_declaration(snip.buffer, snip.line)"
+context "not is_string() and is_func_decl(snip)"
 snippet f "" we
 $1 float64,
 endsnippet
 
-context "not is_string() and px.go.is_func_declaration(snip.buffer, snip.line)"
+context "not is_string() and is_func_decl(snip)"
 priority 2
 snippet "(\w+) s" "" re
 `!p snip.rv=match.group(1)` string, $0
 endsnippet
 
-context "not is_string() and px.go.is_func_declaration(snip.buffer, snip.line)"
+context "not is_string() and is_func_decl(snip)"
 priority 2
 snippet "(\w+) i" "" wre
 `!p snip.rv=match.group(1)` int$1, $0
 endsnippet
 
 
-context "not is_string() and px.go.is_func_declaration(snip.buffer, snip.line)"
+context "not is_string() and is_func_decl(snip)"
 priority 2
 snippet "(\w+)" "" we
 `!p snip.rv=match.group(1)` float64, $0
 endsnippet
 
-context "not is_string() and px.go.is_type_declaration(snip.buffer, snip.line)"
+context "not is_string() and is_type_decl(snip)"
 snippet m "" bwe
 $1 map[${2:string}]${3:interface{}}
 endsnippet
 
-context "not is_string() and px.go.is_func_declaration(snip.buffer, snip.line)"
+context "not is_string() and is_func_decl(snip)"
 snippet m "" we
 $1 map[${2:string}]${3:interface{}}$4,
 endsnippet
 
-context "not is_string() and px.go.is_func_declaration(snip.buffer, snip.line)"
+context "not is_string() and is_func_decl(snip)"
 priority 2
 snippet "(\w+) m" "" we
 `!p snip.rv=match.group(1)` map[${2:string}]${3:interface{}}, $0
@@ -166,7 +170,7 @@ snippet r "return" bw
 return $1
 endsnippet
 
-context "is_if_body(snip.buffer, snip.line)"
+context "is_if_body(snip)"
 snippet r "" eb
 return err
 endsnippet
@@ -181,7 +185,7 @@ snippet "}([\w ])" "else before closing bracket" bwrA
 }
 endsnippet
 
-context "not is_string() and px.go.is_before_first_func(snip.buffer, snip.line)"
+context "not is_string() and is_before_first_func(snip)"
 snippet "^c$" "" bwreA
 const (
 	$0
@@ -196,14 +200,14 @@ struct {
 }
 endsnippet
 
-snippet "((\w+)\s*([\w\[\]]+)) to$" "toml annotation" brA
+snippet "((\w+)\s*([\w\[\]]+)) to$" "toml annotation" "not px.syntax.is_string(snip.cursor)" brAe
 `!p snip.rv=match.group(1)` \`toml:"`!p
-snip.rv=px.all.convert_camelcase_to_snakecase(match.group(2))`"\`
+snip.rv=px.util.convert_camelcase_to_snakecase(match.group(2))`"\`
 endsnippet
 
-snippet "((\w+)\s*([\w\[\]]+)) js$" "json annotation" brA
+snippet "((\w+)\s*([\w\[\]]+)) js$" "json annotation"  "not px.syntax.is_string(snip.cursor)" brAe
 `!p snip.rv=match.group(1)` \`json:"`!p
-snip.rv=px.all.convert_camelcase_to_snakecase(match.group(2))`"\`
+snip.rv=px.util.convert_camelcase_to_snakecase(match.group(2))`"\`
 endsnippet
 
 snippet msi "map[string]interface" w
@@ -227,7 +231,7 @@ $3
 endsnippet
 
 snippet pe "fmt.Printf(%#v" bw
-fmt.Println("XXXXXX `!p snip.rv=os.path.basename(vim.current.buffer.name)+":"+str(vim.current.window.cursor[0])`")
+fmt.Println("XXXXXX `!p snip.rv=os.path.basename(px.buffer.get().name)+":"+str(px.cursor.get()[0])`")
 endsnippet
 
 snippet pr "fmt.Printf(%#v" bw
@@ -238,7 +242,7 @@ if " " in t[1]:
 	left=''
 	right='\\n")'
 
-left = " "+os.path.basename(vim.current.buffer.name)+":"+str(vim.current.window.cursor[0])+": "+left
+left = " "+os.path.basename(px.buffer.get().name)+":"+str(px.cursor.get()[0])+": "+left
 `fmt.Printf("XXXXXX`!p snip.rv=left`$1`!p snip.rv=right`
 endsnippet
 
@@ -294,11 +298,11 @@ case ${3:Type}:
 }
 endsnippet
 
-snippet ,n ", nil" "not is_string() and px.go.is_return_argument(snip.buffer, snip.line, snip.column)"  iAe
+snippet ,n ", nil" "not is_string() and px.langs.go.is_return_argument(snip.buffer, snip.line, snip.column)"  iAe
 , nil
 endsnippet
 
-snippet  n, ", nil" "not is_string() and px.go.is_return_argument(snip.buffer, snip.line, snip.column)" wAe
+snippet  n, ", nil" "not is_string() and px.langs.go.is_return_argument(snip.buffer, snip.line, snip.column)" wAe
 nil,
 endsnippet
 
@@ -362,7 +366,6 @@ snippet rf "return false" bw
 return false
 endsnippet
 
-
 context "snip.context={'snip':snip}"
 snippet "^d$" "" bweAr
 `!p
@@ -402,7 +405,7 @@ snippet td "todo" bw
 endsnippet
 
 snippet l "last slice usage" iw
-${1:`!p snip.rv=px.go.get_previous_slice_usage()`}[$2]
+${1:`!p snip.rv=px.langs.go.get_previous_slice_usage()`}[$2]
 endsnippet
 
 snippet "(func\s.*\)\s+)([\w\d_\s\{\}\[\]\*\.]+),\s?([\w\d_\s\{\}\[\]\*\.]+)" "add commas around multple return variables" r
@@ -449,8 +452,9 @@ func Test$1(t *testing.T) {
 }
 endsnippet
 
-snippet , "return ... , nil" "not is_string() and px.go.is_return_argument(snip.buffer, snip.line, snip.column)" ie
-, `!p if px.go.is_in_err_condition(vim.current.buffer, vim.current.window.cursor[0], vim.current.window.cursor[1]):
+context "not is_string() and px.langs.go.is_return_argument(snip.buffer, snip.line, snip.column)"
+snippet , "return ... , nil" ie
+, `!p if px.langs.go.is_in_err_condition(px.buffer.get(), px.cursor.get()[0], px.cursor.get()[1]):
 	snip.rv = "err"
 else:
 	snip.rv = "nil"`
@@ -462,8 +466,8 @@ endsnippet
 
 snippet tx "this instance" w
 `!p
-buffer = vim.current.buffer
-line, column = vim.current.window.cursor
+buffer = px.buffer.get()
+line, column = px.cursor.get()
 
 result = 't'
 while True:
@@ -489,12 +493,16 @@ var (
 )
 endsnippet
 
-context "not is_string() and px.go.gocode_can_complete()"
+context "not is_string() and px.langs.go.gocode_can_complete()"
 pre_expand "gocode_complete_function(snip)"
 snippet "(\w+\.\w+)" "" re
 endsnippet
 
-snippet & "expand amp" "should_expand_amp(snip.buffer, snip.line, snip.column)" Awe
+global !p
+endglobal
+
+context "should_expand_amp(snip)"
+snippet & "expand amp" Awe
 && $0
 endsnippet
 
@@ -521,7 +529,10 @@ snippet "^o$" "new" rA
 if t[1]:
 	type = t[1]
 else:
-	bindings = px.go.extract_prev_method_binding_for_cursor()
+	bindings = px.langs.go.extract_prev_method_binding_for_cursor(
+		px.buffer.get(),
+		px.cursor.get()
+	)
 	if not bindings:
 		type = 'someStruct'
 	else:
@@ -539,7 +550,9 @@ snippet "^p$" "new" rA
 if t[1]:
 	type = t[1]
 else:
-	bindings = px.go.extract_prev_method_binding_for_cursor()
+	bindings = px.langs.go.extract_prev_method_binding(
+		px.buffer.get(), px.cursor.get()
+	)
 	if not bindings:
 		type = 'someStruct'
 	else:
@@ -552,7 +565,12 @@ ctype = type[0].upper() + type[1:]
 endsnippet
 
 snippet f "for range" bw
-for ${3:key}, ${2:value} := range ${1:`!p snip.rv=px.all.get_last_used_var_for_snippet()`} {
+for ${3:key}, ${2:value} := range ${1:`!p
+		snip.rv = px.snippets.complete_identifier_for_placeholder(
+			px.cursor.get(), snip.c,
+			px.langs.go.complete_not_used_identifier
+		)
+`} {
 	${4:${VISUAL}}
 }
 endsnippet
@@ -563,18 +581,33 @@ for {
 }
 endsnippet
 
+global !p
+def get_padded_equal_sign(selection=None):
+	if not selection:
+		cursor = px.cursor.get()
+		selection = px.buffer.get()[cursor[0]][:cursor[1]]
 
-snippet = "" iA
-`!p
-buffer = vim.current.buffer
-line, column = vim.current.window.cursor
+	if not selection:
+		return "="
 
-if line - 1 >= 0 and column - 1 >= 0:
-	if not re.match(r'\w', buffer[line-1][column-1]):
-		snip.rv = "= "
+	if re.match(r'\w', selection[-1]):
+		return " = "
 	else:
-		snip.rv = " = "
-`
+		return "= "
+endglobal
+
+priority 10
+snippet = "" "snip.last_placeholder and snip.last_placeholder.current_text" iAe
+`!p snip.rv = snip.context + get_padded_equal_sign(snip.context)`
+endsnippet
+
+priority 1
+snippet = "" "snip.visual_text" iAe
+`!p snip.rv = snip.context + get_padded_equal_sign(snip.context)`
+endsnippet
+
+snippet = "" "not px.syntax.is_string(snip.cursor)" iAe
+`!p snip.rv = get_padded_equal_sign()`
 endsnippet
 
 priority 2
@@ -602,7 +635,7 @@ snippet ":= =" "" Ai
 = $0
 endsnippet
 
-snippet "=  " "!= nil" A
+snippet "=  " "!= nil" "is_if_condition(snip)" Aer
 != nil$0
 endsnippet
 
@@ -611,11 +644,198 @@ snippet "= n" "" "is_if_condition(snip)" Aie
 endsnippet
 
 priority 4
-snippet "== nil=" "" "is_if_condition(snip)" Aie
+snippet "== nil[=n]" "" "is_if_condition(snip)" Aier
 != nil$0
 endsnippet
 
 priority 4
-snippet "!= nil=" "" "is_if_condition(snip)" Aie
+snippet "!= nil[=n]" "" "is_if_condition(snip)" Aier
 == nil$0
+endsnippet
+
+########################################################################################
+
+global !p
+def get_program_name_from_usage(snip):
+	prev_line = snip.buffer[snip.snippet_start[0] - 1]
+	return prev_line.strip().split(' ', 1)[0]
+
+def guess_binary_name_from_path():
+	return os.path.basename(os.path.realpath('.'))
+
+def add_usage(snip):
+	px.langs.go.goto_const();
+	snip.expand_anon("""const version = "${2:1.0}"
+	
+const usage = \`{PROGRAM} - $1
+	
+$3
+	
+Usage:
+	{PROGRAM} -h | --help
+	$4
+
+Options:
+	-h --help  Show this help.
+	$0
+`
+	
+""".replace('{PROGRAM}', snip.tabstops[1].current_text), options='m')
+endglobal
+
+global !p
+def is_inside_docopt_section(snip, section):
+	if not px.syntax.is_string(px.cursor.from_vim(snip.cursor)):
+		return False
+
+	match = px.whitespaces.match_higher_indent(snip.buffer, snip.cursor, '(?i)' + section)
+	if not match:
+		return False
+
+	return True
+
+def docopt_format_options(snip, separator='  ', indenting=' '):
+	match = px.whitespaces.match_higher_indent(snip.buffer, snip.cursor, '(?i)options')
+	if not match:
+		return
+
+	usage_begins_at = match[1] + 1
+	usage_ends_at = usage_begins_at
+	longest_option = ''
+
+	tab_width = int(vim.eval('&ts'))
+
+	for line in snip.buffer[usage_begins_at:]:
+		if line.strip() == '`':
+			break
+
+		option = parse_docopt_option(line, tab_width)
+
+		if len(option['first_column']) > len(longest_option):
+			longest_option = option['first_column']
+
+		usage_ends_at += 1
+
+	for (index, line) in enumerate(snip.buffer[usage_begins_at:usage_ends_at]):
+		if index + usage_begins_at == snip.cursor[0]:
+			continue
+
+		option = parse_docopt_option(line, tab_width)
+		indent = ''
+
+		if option['first_column'].strip() == '':
+			indent = indenting
+
+		snip.buffer[usage_begins_at+index] = \
+			option['first_column'].ljust(len(longest_option)) + \
+			separator + \
+			indent + option['second_column']
+
+
+	snip.cursor.set(snip.cursor[0], len(snip.buffer[snip.cursor[0]]))
+
+def parse_docopt_option(line, tab_width=4):
+	match = re.match(
+		"""(?x)
+			^(?P<indent>(?P<first>
+				(\s+)
+				(
+					(
+						\s*?
+						(--?\w* ([= ]?(<[\w-]+>|[A-Z_]+))? )
+					)+
+				)?
+			)
+			\s+)
+			(?P<second>.*)
+		""",
+		line.expandtabs(tab_width)
+	)
+
+	if not match:
+		return None
+
+	result = {
+		'first_column': match.group('first'),
+		'second_column': match.group('second'),
+		'indent': len(match.group('indent'))
+	}
+
+	if result['first_column'].strip() == '':
+		result['first_column'] = ''
+
+	return result
+
+def split_long_docopt_line(t, snip):
+	if snip.c != "":
+		return snip.c
+
+	opt_line = snip.buffer[snip.snippet_start[0]].expandtabs(
+		int(vim.eval('&ts'))
+	)
+
+	if len(opt_line) > 79:
+		split_boundary = len(opt_line) - len(t[2])
+		first_line, second_line = t[2].rsplit(' ', 1)
+
+		indentation = ' ' * (split_boundary + 1) # +1 for extra indenting
+
+		t[2] = indentation + second_line
+
+		return first_line + "\n"
+	else:
+		return ''
+
+def get_options_indentation(snip):
+	if snip.buffer.cursor[0] != snip.snippet_start[0]:
+		return snip.c
+
+	tab_width = int(vim.eval('&ts'))
+
+	prev_opt = parse_docopt_option(
+		snip.buffer[snip.snippet_start[0]-1], tab_width
+	)
+
+	if not prev_opt:
+		return snip.c
+
+	curr_opt = parse_docopt_option(
+		snip.buffer[snip.snippet_start[0]], tab_width
+	)
+
+	if not curr_opt:
+		return snip.c
+
+	curr_indent = len(curr_opt['first_column'])
+
+	if prev_opt['first_column'] == '':
+		prev_indent = prev_opt['indent'] - 1
+	else:
+		prev_indent = prev_opt['indent']
+
+	if curr_indent >= prev_indent:
+		return ' ' * 2
+
+	return ' ' * (prev_indent - curr_indent)
+endglobal
+
+post_jump "if snip.tabstop == 0: add_usage(snip)"
+snippet do "docopt" b
+args, err := docopt.Parse(nil, true, "${1:`!p snip.rv = guess_binary_name_from_path()`} " + version, false)
+if err != nil {
+	panic(err)
+}
+endsnippet
+
+snippet - "docopt command declaration" "is_inside_docopt_section(snip, 'usage')" beA
+`!p snip.rv = get_program_name_from_usage(snip)` -$0
+endsnippet
+
+post_jump "if snip.tabstop == 2: docopt_format_options(snip)"
+snippet - "docopt option declaration" "is_inside_docopt_section(snip, 'options')" beA
+-$1`!p snip.rv=get_options_indentation(snip)``!p snip.rv=split_long_docopt_line(t, snip)`$2
+endsnippet
+
+snippet [ "docopt option default with matchem" "is_inside_docopt_section(snip, 'options')" eA
+[default: $1
 endsnippet
