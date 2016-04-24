@@ -351,6 +351,7 @@ def parse_docopt_option(line, tab_width=4):
 
     return result
 
+
 def split_long_docopt_line(t, snip):
     if snip.c != "":
         return snip.c
@@ -363,13 +364,14 @@ def split_long_docopt_line(t, snip):
         split_boundary = len(opt_line) - len(t[2])
         first_line, second_line = t[2].rsplit(' ', 1)
 
-        indentation = ' ' * (split_boundary + 1) # +1 for extra indenting
+        indentation = ' ' * (split_boundary + 1)  # +1 for extra indenting
 
         t[2] = indentation + second_line
 
         return first_line + "\n"
     else:
         return ''
+
 
 def get_options_indentation(snip):
     if snip.buffer.cursor[0] != snip.snippet_start[0]:
