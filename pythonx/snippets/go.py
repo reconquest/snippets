@@ -226,65 +226,108 @@ def is_inside_docopt_section(snip, section):
     if not px.syntax.is_string(px.cursor.from_vim(snip.cursor)):
         return False
 
-    match = px.whitespaces.match_higher_indent(snip.buffer, snip.cursor, '(?i)' + section)
+    match = px.whitespaces.match_higher_indent(snip.buffer, snip.cursor,
+        '(?i)' + section)
     if not match:
         return False
 
     return True
 
+
 def docopt_format_options(snip, separator='  ', indenting=' '):
-    match = px.whitespaces.match_higher_indent(snip.buffer, snip.cursor, '(?i)options')
+    match = px.whitespaces.match_higher_indent(snip.buffer, snip.cursor,
+        '(?i)options')
     if not match:
         return
 
-    usage_begins_at = match[1] + 1
-    usage_ends_at = usage_begins_at
-    longest_option = ''
+    options_line, options_line_number = match
 
-    tab_width = int(vim.eval('&ts'))
+    while True:
+        match = px.whitespaces.match_exact_indent_as_in_line(
+            snip.buffer,
+            (options_line_number - 1, 0),
+            options_line,
+            '(?i)options',
+            direction=-1,
+        )
 
-    for line in snip.buffer[usage_begins_at:]:
-        if line.strip() == '`':
+        if not match:
             break
 
-        if re.match(r'^\w', line.strip()):
+        options_line_number, _ = match
+
+    usage_begins_at = options_line_number + 1
+
+    longest_option, usage_ends_at = docopt_get_longest_option(snip.buffer,
+        usage_begins_at)
+
+    docopt_align_options(snip.buffer, snip.cursor, len(longest_option),
+        usage_begins_at,
+        usage_ends_at,
+        separator, indenting)
+
+    snip.cursor.set(snip.cursor[0], len(snip.buffer[snip.cursor[0]]))
+
+
+def docopt_get_longest_option(buffer, usage_begins_at):
+    tab_width = int(vim.eval('&ts'))
+
+    usage_ends_at = usage_begins_at
+    longest_option = ''
+    for line in buffer[usage_begins_at:]:
+        if line.strip() == '`' or line.strip() == '`)':
+            print(line)
             break
 
         option = parse_docopt_option(line, tab_width)
-
-        if len(option['first_column']) > len(longest_option):
-            longest_option = option['first_column']
+        if option:
+            if len(option['first_column']) > len(longest_option):
+                longest_option = option['first_column']
 
         usage_ends_at += 1
 
-    for (index, line) in enumerate(snip.buffer[usage_begins_at:usage_ends_at]):
-        if index + usage_begins_at == snip.cursor[0]:
+    return longest_option, usage_ends_at
+
+
+def docopt_align_options(
+    buffer, cursor, longest_option_length,
+    usage_begins_at, usage_ends_at,
+    separator, indenting
+):
+    tab_width = int(vim.eval('&ts'))
+
+    for (index, line) in enumerate(buffer[usage_begins_at:usage_ends_at]):
+        if index + usage_begins_at == cursor[0]:
             continue
 
         option = parse_docopt_option(line, tab_width)
+        if not option:
+            continue
+
         indent = ''
 
         if option['first_column'].strip() == '':
             indent = indenting
 
-        snip.buffer[usage_begins_at+index] = \
-            option['first_column'].ljust(len(longest_option)) + \
+        buffer[usage_begins_at+index] = \
+            option['first_column'].ljust(longest_option_length) + \
             separator + \
             indent + option['second_column']
 
 
-    snip.cursor.set(snip.cursor[0], len(snip.buffer[snip.cursor[0]]))
-
 def parse_docopt_option(line, tab_width=4):
-    print(line)
     match = re.match(
         """(?x)
             ^(?P<indent>(?P<first>
                 (\s+)
                 (
                     (
-                        \s*?
-                        (--?\w* ([= ]?(<[\w-]+>|[A-Z_]+))? )
+                        (
+                            \s*?
+                            (-[\w-]* ([ =]( <[\w_-]+>|[A-Z_]+) )? )
+                        ) | (
+                            ( <[\w_-]+>|[A-Z_]+ )
+                        )
                     )+
                 )?
             )
