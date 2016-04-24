@@ -64,8 +64,29 @@ def is_before_first_func(snip):
 def is_string():
     return px.syntax.is_string(px.cursor.get())
 
+
 def guess_package_from_file_name(path):
     return px.langs.go.packages.guess_package_name_from_file_name(path)
+
+
+def get_value_for_for(current_value):
+    def skip_err(identifier):
+        if px.common.get_active_identifier_skipper()(identifier):
+            return True
+
+        if identifier.name == 'err':
+            return True
+
+        return False
+
+    value = px.snippets.complete_identifier_for_placeholder(
+        px.cursor.get(),
+        current_value,
+        px.langs.go.get_not_used_identifier_completion,
+        should_skip=skip_err,
+    )
+
+    return value
 
 
 def get_value_for_if(current_value):

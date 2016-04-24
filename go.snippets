@@ -565,12 +565,7 @@ ctype = type[0].upper() + type[1:]
 endsnippet
 
 snippet f "for range" bw
-for ${3:key}, ${2:value} := range ${1:`!p
-		snip.rv = px.snippets.complete_identifier_for_placeholder(
-			px.cursor.get(), snip.c,
-			px.langs.go.complete_not_used_identifier
-		)
-`} {
+for ${3}, ${2} := range ${1:`!p snip.rv=get_value_for_for(snip.c)`} {
 	${4:${VISUAL}}
 }
 endsnippet
