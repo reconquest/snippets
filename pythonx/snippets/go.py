@@ -19,9 +19,9 @@ def should_expand_case(buffer, line):
         return False
 
     switch_line = px.langs.go.get_bracket_line(buffer, line)
-    switch_line_indent = px.util.get_indentation(buffer[switch_line])
+    switch_line_indent = px.whitespaces.get_indentation(buffer[switch_line])
 
-    if switch_line_indent == px.util.get_indentation(buffer[line]):
+    if switch_line_indent == px.whitespaces.get_indentation(buffer[line]):
         return True
 
     return False
