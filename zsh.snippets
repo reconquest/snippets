@@ -1,0 +1,22 @@
+global !p
+from snippets.zsh import *
+
+import px
+for full_name, short_name in px.libs().iteritems():
+	exec "import %s as %s" % (full_name, short_name)
+endglobal
+
+context "is_zgen_section()"
+snippet zg "" weA
+`!p snip.rv=" "*snip.context['indentation']`zgen load $1
+endsnippet
+
+context "is_zgen_section()"
+snippet "^.*https?://github.com/([^ ]+).*" "" werA
+`!p
+snip.rv = " " * px.whitespaces.get_indentation(\
+	buffer.get_prev_nonempty_line()\
+)
+
+`zgen load `!p snip.rv=match.group(1)`
+endsnippet
