@@ -117,24 +117,27 @@ def action_define_method(snip, tabstops, pointer=False):
     a_right = ')'
 
     buffer = px.buffer.get()
-    buffer = px.cursor.get()
+    cursor = px.cursor.get()
 
-    line = snip.context['snip'].line + 1
+    line = snip.context['snip'].line - 1
+
+    print(line)
 
     contents = buffer[line]
-    if line+1 < len(buffer):
-        if buffer[line+1][0] == "\t" and buffer[line][-1] != '{':
-            x = 1
-            while True:
-                if line+x >= len(buffer):
-                    break
+    if line-1 < len(buffer) and len(buffer[line-1]) > 0:
+        if buffer[line-1][0] == "\t":
+            if buffer[line-1][-1] != '{':
+                x = 0
+                while True:
+                    if line+x > len(buffer):
+                        break
 
-                contents = contents + buffer[line+x].strip()
+                    contents = contents + buffer[line+x].strip()
 
-                if buffer[line+x] != '' and buffer[line+x][0] == ')':
-                    break
+                    if buffer[line+x] != '' and buffer[line+x][0] == ')':
+                        break
 
-                x += 1
+                    x += 1
 
     if len(contents) > 80:
         a_left = "(\n\t"
@@ -148,7 +151,7 @@ def action_define_method(snip, tabstops, pointer=False):
         r_right = ') '
 
     name, type = px.langs.go.extract_prev_method_binding(
-        snip.buffer, snip.cursor
+        buffer, cursor
     )
     if pointer:
         type = '*' + type
