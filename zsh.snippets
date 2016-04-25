@@ -2,8 +2,7 @@ global !p
 from snippets.zsh import *
 
 import px
-for full_name, short_name in px.libs().iteritems():
-	exec "import %s as %s" % (full_name, short_name)
+import px.buffer
 endglobal
 
 context "is_zgen_section()"
@@ -15,7 +14,7 @@ context "is_zgen_section()"
 snippet "^.*https?://github.com/([^ ]+).*" "" werA
 `!p
 snip.rv = " " * px.whitespaces.get_indentation(\
-	buffer.get_prev_nonempty_line()\
+	px.buffer.get_prev_nonempty_line()\
 )
 
 `zgen load `!p snip.rv=match.group(1)`

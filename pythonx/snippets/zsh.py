@@ -2,10 +2,10 @@
 
 import re
 import px.whitespaces
-import buffer
+import px.buffer
 
 def is_zgen_section():
-	line = buffer.get_prev_nonempty_line()
+	line = px.buffer.get_prev_nonempty_line()
 	if re.search('zgen load', line):
 		return True
 
