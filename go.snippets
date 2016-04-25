@@ -510,7 +510,7 @@ snippet "^o$" "new" rA
 if t[1]:
 	type = t[1]
 else:
-	bindings = px.langs.go.extract_prev_method_binding_for_cursor(
+	bindings = px.langs.go.extract_prev_method_binding(
 		px.buffer.get(),
 		px.cursor.get()
 	)
