@@ -121,8 +121,6 @@ def action_define_method(snip, tabstops, pointer=False):
 
     line = snip.context['snip'].line - 1
 
-    print(line)
-
     contents = buffer[line]
     if line-1 < len(buffer) and len(buffer[line-1]) > 0:
         if buffer[line-1][0] == "\t":
