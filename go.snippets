@@ -456,7 +456,7 @@ while True:
 	if line == 0:
 		break
 
-	line_contents = buffer[line - 1]
+	line_contents = buffer[line]
 	matches = re.match(r'(?m)^func \(([^)]+)\s+([^)]+)\) ', line_contents)
 	if not matches:
 		continue
