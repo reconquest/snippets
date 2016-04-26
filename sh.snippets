@@ -39,3 +39,15 @@ if px.snippets.get_jumper_position(snip) == 1:
 		print(2)
 `local $1$2
 endsnippet
+
+context "snip.visual_text and not snip.visual_text.strip().startswith('set -x')"
+snippet "" "wrap in set -x" re
+set -x
+${VISUAL}
+set +x
+endsnippet
+
+context "snip.visual_text.strip().startswith('set -x')"
+snippet "" "wrap in set -x" re
+${VISUAL/\n\s+set \+x|set -x\n\s+//g}
+endsnippet
