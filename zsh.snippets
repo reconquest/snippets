@@ -7,7 +7,7 @@ endglobal
 
 context "is_zgen_section()"
 snippet zg "" weA
-`!p snip.rv=" "*snip.context['indentation']`zgen load $1
+zgen load $1
 endsnippet
 
 context "is_zgen_section()"
@@ -15,7 +15,7 @@ snippet "^.*https?://github.com/([^ ]+).*" "" werA
 `!p
 snip.rv = " " * px.whitespaces.get_indentation(\
 	px.buffer.get_prev_nonempty_line()\
-)
+)[0]
 
 `zgen load `!p snip.rv=match.group(1)`
 endsnippet
