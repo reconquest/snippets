@@ -13,6 +13,11 @@ prefix = "{}:{}: {}".format(
 `printf 'XXXXXX `!p snip.rv=prefix`$1 >&2
 endsnippet
 
+post_jump "px.snippets.expand(snip)"
+snippet prd "Description" b
+pr$1 >${2:/tmp/debug}
+endsnippet
+
 snippet in "if string empty" b
 if [ -n "$$1" ]; then
 	${2:${VISUAL}}
