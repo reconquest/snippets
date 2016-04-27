@@ -2,6 +2,17 @@ global !p
 import px.snippets
 endglobal
 
+snippet pr "print debug" bw
+`!p
+prefix = t[1] + ": %q\\n' "
+prefix = "{}:{}: {}".format(
+    os.path.basename(px.buffer.get().name),
+    str(px.cursor.get()[0]),
+    prefix
+)
+`printf 'XXXXXX `!p snip.rv=prefix`$1 >&2
+endsnippet
+
 snippet in "if string empty" b
 if [ -n "$$1" ]; then
 	${2:${VISUAL}}
