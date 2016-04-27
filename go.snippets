@@ -2,6 +2,29 @@ global !p
 from snippets.go import *
 endglobal
 
+priority 2
+snippet e "" wb
+err := ``
+endsnippet
+
+priority 2
+context "not is_string()""
+snippet = "" wbA
+${1:err} := ``
+endsnippet
+
+priority 3
+context "not is_string()""
+snippet "(.*)," "" reA
+`!p snip.rv=match.group(1)`${1/^.*$/,/} $1
+endsnippet
+
+priority 2
+context "not is_string()""
+snippet "^(\s+)," "" breA
+`!p snip.rv=match.group(1)+""`$1${1/.+/,/} ``
+endsnippet
+
 snippet n "" "not is_string()" bwe
 func $1($2) $3${3/.+/ /}{
 	$4
@@ -280,16 +303,33 @@ case ${3:Type}:
 }
 endsnippet
 
-snippet ,n ", nil" "not is_string() and px.langs.go.is_return_argument(snip.buffer, snip.line, snip.column)"  iAe
+snippet xxx "" w
+`!p print(snip)`
+`!p snip.expand_anon()`
+endsnippet
+
+priority 5
+context "not is_string() and px.langs.go.is_return_argument(snip.buffer, snip.line, snip.column)"
+snippet ", n" ", nil"  ie
 , nil
 endsnippet
 
-snippet  n, ", nil" "not is_string() and px.langs.go.is_return_argument(snip.buffer, snip.line, snip.column)" wAe
-nil,
+priority 5
+context "not is_string() and px.langs.go.is_return_argument(snip.buffer, snip.line, snip.column)"
+snippet  ", e" "err, " ie
+, err``
 endsnippet
 
-snippet ,e ", err" wA
-, err
+priority 5
+context "not is_string() and px.langs.go.is_return_argument(snip.buffer, snip.line, snip.column)"
+snippet  n, "nil, " Ae
+nil, ``
+endsnippet
+
+priority 5
+context "not is_string() and px.langs.go.is_return_argument(snip.buffer, snip.line, snip.column)"
+snippet  e, "err, " Ae
+err, ``
 endsnippet
 
 snippet "return e" "return err" bw
@@ -678,5 +718,5 @@ snippet "\s*-" "docopt option declaration" "is_inside_docopt_section(snip, 'opti
 endsnippet
 
 snippet [ "docopt option default with matchem" "is_inside_docopt_section(snip, 'options')" eA
-[default: $1
+`!p snip.rv="["`default: $1
 endsnippet
