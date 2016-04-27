@@ -2,6 +2,26 @@ global !p
 from snippets.go import *
 endglobal
 
+context "is_if_condition(snip)"
+snippet e "" w
+${1:${VISUAL}} == "$2"
+endsnippet
+
+context "is_if_condition(snip)"
+snippet en "" w
+${1:${VISUAL}} != "$2"
+endsnippet
+
+context "is_if_condition(snip)"
+snippet l "" w
+len(${1:${VISUAL}}) == ${2:0}
+endsnippet
+
+context "is_if_condition(snip)"
+snippet ln "" w
+len(${1:${VISUAL}}) != ${2:0}
+endsnippet
+
 priority 2
 snippet e "" wb
 err := ``
@@ -55,7 +75,7 @@ $0
 endsnippet
 
 context "is_first_line(snip)"
-priority 2
+priority 1000
 snippet p "" bweA
 package ${1:`!p snip.rv=guess_package_from_file_name(snip.fn)`}
 
@@ -309,25 +329,25 @@ snippet xxx "" w
 endsnippet
 
 priority 5
-context "not is_string() and px.langs.go.is_return_argument(snip.buffer, snip.line, snip.column)"
+context "not is_string()"
 snippet ", n" ", nil"  ie
 , nil
 endsnippet
 
 priority 5
-context "not is_string() and px.langs.go.is_return_argument(snip.buffer, snip.line, snip.column)"
+context "not is_string()"
 snippet  ", e" "err, " ie
 , err``
 endsnippet
 
 priority 5
-context "not is_string() and px.langs.go.is_return_argument(snip.buffer, snip.line, snip.column)"
+context "not is_string()"
 snippet  n, "nil, " Ae
 nil, ``
 endsnippet
 
 priority 5
-context "not is_string() and px.langs.go.is_return_argument(snip.buffer, snip.line, snip.column)"
+context "not is_string()"
 snippet  e, "err, " Ae
 err, ``
 endsnippet
