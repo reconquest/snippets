@@ -14,7 +14,7 @@ endsnippet
 
 snippet i "if [" b
 if [ $1 ]; then
-	$2
+	${VISUAL}
 fi
 endsnippet
 
@@ -40,6 +40,7 @@ if px.snippets.get_jumper_position(snip) == 1:
 `local $1$2
 endsnippet
 
+priority -1
 context "snip.visual_text and not snip.visual_text.strip().startswith('set -x')"
 snippet "" "wrap in set -x" re
 set -x
