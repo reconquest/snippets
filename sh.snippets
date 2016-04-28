@@ -68,3 +68,18 @@ context "snip.visual_text.strip().startswith('set -x')"
 snippet "" "wrap in set -x" re
 ${VISUAL/\n\s+set \+x|set -x\n\s+//g}
 endsnippet
+
+snippet c "" w
+case "$1" in
+	$2)
+		$3
+		;;$4
+esac
+endsnippet
+snippet "    ;;" "" wr
+    ;;
+
+$1)
+	$2
+	;;
+endsnippet

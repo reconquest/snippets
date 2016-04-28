@@ -205,6 +205,11 @@ snippet "}([\w ])" "else before closing bracket" bwrA
 }
 endsnippet
 
+priority 2
+snippet "} " "else before closing bracket" bwrA
+} else {
+endsnippet
+
 context "not is_string() and is_before_first_func(snip)"
 snippet "^c$" "" bwreA
 const (
