@@ -1,0 +1,18 @@
+global !p
+import px
+import px.whitespaces
+import px.buffer
+import px.cursor
+endglobal
+
+# uppercase for keys
+context "not re.search('=', px.buffer.get()[px.cursor.get()[0]])"
+snippet "^([^\[])$" "" wreA
+`!p snip.rv=match.group(1).upper()`$1=$2
+endsnippet
+
+# uppercase for headers
+pre_expand "px.whitespaces.ensure_newlines(snip.buffer, px.cursor.get(), 1)"
+snippet "^\[(\w)" "" wrA
+[`!p snip.rv=match.group(1).upper()`
+endsnippet
