@@ -51,13 +51,13 @@ def insert_extracted_method_call(snip):
 
 
 def after_def(snip):
-   prev_line = snip.buffer[snip.line-1].strip()
-   return prev_line.startswith("def ") or prev_line.startswith("class ")
+    prev_line = snip.buffer[snip.line-1].strip()
+    return prev_line.startswith("def ") or prev_line.startswith("class ")
 endglobal
 
 snippet i "if"
 if $1:
-   ${0:${VISUAL}}
+    ${0:${VISUAL}}
 endsnippet
 
 snippet r "return"
@@ -69,12 +69,12 @@ pre_expand "expand_method_in_right_place(snip)"
 post_expand "ensure_newlines(snip.snippet_start, snip.snippet_end)"
 snippet d "def"
 def $1($2):
-   $3
+    $3
 endsnippet
 
 snippet f "for"
 for $1 in $2:
-   ${0:${VISUAL}}
+    ${0:${VISUAL}}
 endsnippet
 
 snippet p "print" b
@@ -91,10 +91,10 @@ endsnippet
 
 global !p
 def filter_previous_buffer(snip, pattern):
-   for line in snip.buffer[0:snip.line]:
-       if not re.match(pattern, line):
-           return False
-   return True
+    for line in snip.buffer[0:snip.line]:
+        if not re.match(pattern, line):
+            return False
+    return True
 endglobal
 
 snippet "^i" "import" "filter_previous_buffer(snip, '^(#|$|import |from )')" reA
@@ -107,14 +107,14 @@ endsnippet
 
 snippet e "self.assertEquals" "match_higher_indent(snip.buffer, snip.cursor, 'def test')" be
 self.assertEqual(
-   $1,
-   $2
+    $1,
+    $2
 )
 endsnippet
 
 snippet d "def test" "not after_def(snip) and match_higher_indent(snip.buffer, snip.cursor, 'class \w+\(unittest')" be
 def test$1(self):
-   $2
+    $2
 endsnippet
 
 pre_expand "expand_method_in_right_place(snip)"
@@ -122,28 +122,28 @@ post_expand "ensure_newlines(snip.snippet_start, snip.snippet_end)"
 post_jump "insert_extracted_method_call(snip)"
 snippet d "def" "not after_def(snip) and match_higher_indent(snip.buffer, snip.cursor, 'class ')" be
 def $1(self$2):
-   ${3:${VISUAL}}
+    ${3:${VISUAL}}
 endsnippet
 
 snippet "^cu" "class unit test" br
 import unittest
 
 class $1TestCase(unittest.TestCase):
-   $2
+    $2
 
 if __name__ == '__main__':
-   unittest.main()
+    unittest.main()
 endsnippet
 
 post_expand "ensure_newlines(snip.snippet_start, snip.snippet_end)"
 snippet c "class" b
 class $1:
-   $2
+    $2
 endsnippet
 
 snippet c "class constructor" "match_higher_indent(snip.buffer, snip.cursor, '^class')" be
 def __init__(self${1/.+/, /}$1):
-   $2
+    $2
 endsnippet
 
 snippet d "docstring" "after_def(snip)" be
