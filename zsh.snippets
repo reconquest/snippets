@@ -2,7 +2,9 @@ global !p
 from snippets.zsh import *
 
 import px
-import px.buffer
+for full_name, name in px.libs().items():
+    exec "import " + full_name
+    exec "import " + full_name + " as " + name
 endglobal
 
 context "is_zgen_section()"

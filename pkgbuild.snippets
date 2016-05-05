@@ -1,7 +1,8 @@
 global !p
 import px
-import px.buffer
-import px.cursor
+for full_name, name in px.libs().items():
+    exec "import " + full_name
+    exec "import " + full_name + " as " + name
 endglobal
 
 snippet pk "pkgbuild skeleton" b
