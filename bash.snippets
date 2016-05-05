@@ -46,11 +46,18 @@ function $1() {
 }
 endsnippet
 
-snippet "([:n])" "function" rw
+snippet "^([:n])$" "function" rw
 `!p
 if match.group(1) == ":":
     snip.rv = ":"
 `$1() {
+	$2
+}
+endsnippet
+
+snippet "^(:[:\w]+)$" "function" rw
+`!p
+snip.rv=match.group(1)`() {
 	$2
 }
 endsnippet
@@ -104,3 +111,4 @@ while ${1:[ $2 ]}; do
     $3
 done
 endsnippet
+

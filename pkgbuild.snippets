@@ -18,8 +18,7 @@ makedepends=(
 source=(
     "$1::git+ssh://$3.git"
 )
-md5sums=(SKIP)
-license=("GPL")
+md5sums=("SKIP")
 
 pkgver() {
     cd "$srcdir/$pkgname"
@@ -47,11 +46,6 @@ endsnippet
 priority 2
 snippet c "" w
 install -DT "$srcdir/$pkgname/$1" "$pkgdir/$2"
-endsnippet
-
-context "not re.search('=', px.buffer.get()[px.cursor.get()[0]])"
-snippet "^(\w)$" "" wreA
-`!p snip.rv=match.group(1)`$1=$2
 endsnippet
 
 priority 3
