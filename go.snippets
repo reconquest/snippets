@@ -746,3 +746,32 @@ endsnippet
 snippet [ "docopt option default with matchem" "is_inside_docopt_section(snip, 'options')" eA
 `!p snip.rv="["`default: $1
 endsnippet
+
+global !p
+def fix_matchem(char):
+    vim.eval('MatchemMatchDelete("{}")'.format(char))
+    end = snip.snippet_end
+    snip.buffer[end[0]] = str(snip.buffer[end[0]][:end[1]]) + str(snip.buffer[end[0]][end[1]+1:])
+endglobal
+
+post_expand "fix_matchem('[')"
+snippet args[ "args[blah]" wA
+args[`!p
+
+if t[1].startswith('-'):
+     if len(t[1]) > 2:
+        snip.rv = '"-'
+     else:
+        snip.rv = '"'
+else:
+    snip.rv = '"<'
+
+`$1`!p
+
+if t[1].startswith('-'):
+    snip.rv = '"'
+else:
+    snip.rv = '>"'
+
+`].(${2:string})$0
+endsnippet
