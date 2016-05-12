@@ -1,16 +1,22 @@
-global !p
+
+global !p "# NOQA"
 import px.snippets
 endglobal
 
 snippet pr "print debug" bw
 `!p
-prefix = t[1] + ": %q\\n' "
+if " " in t[1]:
+    suffix = "\\n' >"
+    prefix = ''
+else:
+    suffix = ' >'
+    prefix = t[1] + ": %q\\n' "
 prefix = "{}:{}: {}".format(
     os.path.basename(px.buffer.get().name),
     str(px.cursor.get()[0]),
     prefix
 )
-`printf 'XXXXXX `!p snip.rv=prefix`$1 >&2
+`printf 'XXXXXX `!p snip.rv=prefix`$1`!p snip.rv=suffix`&2
 endsnippet
 
 post_jump "px.snippets.expand(snip)"
@@ -67,14 +73,13 @@ post_jump "px.snippets.make_jumper(snip)"
 snippet l "local" be
 `!p
 if px.snippets.get_jumper_position(snip) == 1:
-	if re.search(r' $', t[1]):
-		t[1] = t[1][:-1] + "="
-		px.snippets.advance_jumper(snip)
-		print(1)
-	if re.search(r'[^=][$]$', t[1]):
-		t[1] = t[1][:-1] + "=$"
-		px.snippets.advance_jumper(snip)
-		print(2)
+    if '\n' not in t[1]:
+        if re.search(r' $', t[1]):
+            t[1] = t[1][:-1] + "="
+            px.snippets.advance_jumper(snip)
+        if re.search(r'[^=][$]$', t[1]):
+            t[1] = t[1][:-1] + "=$"
+            px.snippets.advance_jumper(snip)
 `local $1$2
 endsnippet
 
@@ -98,7 +103,7 @@ case "$1" in
 		;;$4
 esac
 endsnippet
-snippet "    ;;" "" wr
+snippet "    ;;" "" wrm
     ;;
 
 $1)
@@ -112,3 +117,42 @@ while ${1:[ $2 ]}; do
 done
 endsnippet
 
+snippet r "for" b
+for $1 in "$2"; do
+    $3
+done
+endsnippet
+
+snippet sa "source absolute path" b
+_base_dir="$(dirname "$(readlink -f "${BASH_SOURCE[0]}")")"
+source $_base_dir/$1
+endsnippet
+
+snippet # "shdoc" b
+# @description $1
+endsnippet
+
+snippet "# a" "shdoc arg" b
+# @arg $$1
+endsnippet
+
+snippet "# e" "shdoc exitcode" b
+# @exitcode $1
+endsnippet
+
+snippet "# s" "shdoc see" b
+# @see $1
+endsnippet
+
+snippet "# x" "shdoc example" b
+# @example
+#   $1
+endsnippet
+
+snippet "# n" "shdoc noargs" b
+# @noargs
+endsnippet
+
+snippet "# o" "shdoc stdout" b
+# @stdout $1
+endsnippet
