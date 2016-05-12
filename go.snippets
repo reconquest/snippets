@@ -416,7 +416,7 @@ snippet rf "return false" bw
 return false
 endsnippet
 
-context "not is_string() and px.langs.go.extract_prev_method_binding(snip.buffer, snip.cursor)) and {'line': snip.line}"
+context "not is_string() and px.langs.go.extract_prev_method_binding(snip.buffer, snip.cursor) and {'line': snip.line}"
 snippet "^d$" "" bweAr
 `!p
 (a_left, a_right, r_left, r_right, binding) = action_define_method(snip.context, t, True)
