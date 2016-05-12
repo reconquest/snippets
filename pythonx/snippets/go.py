@@ -112,14 +112,14 @@ def jump_to_if_body_on_err_not_nil(snip):
             px.snippets.expect_cursor_jump(px.cursor.get())
 
 
-def action_define_method(snip, tabstops, pointer=False):
+def action_define_method(context, tabstops, pointer=False):
     a_left = '('
     a_right = ')'
 
     buffer = px.buffer.get()
     cursor = px.cursor.get()
 
-    line = snip.context['snip'].line - 1
+    line = context['line'] - 1
 
     contents = buffer[line]
     if line-1 < len(buffer) and len(buffer[line-1]) > 0:
@@ -148,9 +148,15 @@ def action_define_method(snip, tabstops, pointer=False):
         r_left = ' ('
         r_right = ') '
 
-    name, type = px.langs.go.extract_prev_method_binding(
+    prev_binding = px.langs.go.extract_prev_method_binding(
         buffer, cursor
     )
+
+    if not prev_binding:
+        return
+
+    name, type = prev_binding
+
     if pointer:
         type = '*' + type
 

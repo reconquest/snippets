@@ -200,12 +200,14 @@ snippet ,e ", err" iA
 , err$0
 endsnippet
 
-snippet "}([\w ])" "else before closing bracket" bwrA
+context "px.langs.go.is_if_bracket(snip.buffer, snip.line, snip.column)"
+snippet "}([\w])" "else before closing bracket" bwrA
 } else {
 	`!p snip.rv=match.group(1)`$1
 }
 endsnippet
 
+context "px.langs.go.is_if_bracket(snip.buffer, snip.line, snip.column)"
 priority 2
 snippet "} " "else before closing bracket" bwrA
 } else {
@@ -414,21 +416,10 @@ snippet rf "return false" bw
 return false
 endsnippet
 
-context "snip.context={'snip':snip}"
+context "not is_string() and px.langs.go.extract_prev_method_binding(snip.buffer, snip.cursor)) and {'line': snip.line}"
 snippet "^d$" "" bweAr
 `!p
-(a_left, a_right, r_left, r_right, binding) = action_define_method(snip, t)
-`
-func (`!p snip.rv=binding`) $1`!p snip.rv=a_left`$2`!p snip.rv=a_right``!p snip.rv=r_left`$3`!p snip.rv=r_right`{
-	$4
-}
-
-endsnippet
-
-context "snip.context={'snip':snip}"
-snippet "^s$" "" bweAr
-`!p
-(a_left, a_right, r_left, r_right, binding) = action_define_method(snip, t, True)
+(a_left, a_right, r_left, r_right, binding) = action_define_method(snip.context, t, True)
 `
 func (`!p snip.rv=binding`) $1`!p snip.rv=a_left`$2`!p snip.rv=a_right``!p snip.rv=r_left`$3`!p snip.rv=r_right`{
 	$4
