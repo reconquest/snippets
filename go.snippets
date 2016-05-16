@@ -1,5 +1,7 @@
 global !p
 from snippets.go import *
+
+import px.whitespaces
 endglobal
 
 context "is_if_condition(snip)"
@@ -110,6 +112,7 @@ continue
 endsnippet
 
 priority -1
+pre_expand "px.common.get_active_completer().reset()"
 post_jump "jump_to_if_body_on_err_not_nil(snip)"
 snippet i "if" bw
 if ${1:`!p snip.rv=get_value_for_if(snip.c)`} {
@@ -659,9 +662,21 @@ def before_equal_sign(snip):
         return False
 
     return line[snip.column+1] == '='
+
+
+def is_inside_struct_instance(snip):
+    print(px.whitespaces.match_higher_indent(snip.buffer, snip.cursor, '[\s\w.,]+:='))
+    return px.whitespaces.match_higher_indent(snip.buffer, snip.cursor, '[\s\w.,]+:=')
+
+
+def is_viable_for_equal_statement(snip):
+    return not is_string() and \
+        not is_inside_brackets(snip) and \
+        not before_equal_sign(snip) and \
+        not is_inside_struct_instance(snip)
 endglobal
 
-context "not is_string() and not is_inside_brackets(snip) and not before_equal_sign(snip)"
+context "is_viable_for_equal_statement(snip)"
 snippet : "" iAe
  :=`!p snip.rv = ' '`
 endsnippet
