@@ -651,7 +651,27 @@ snippet = "" "snip.visual_text" iAe
 `!p snip.rv = snip.context + get_padded_equal_sign(snip.context)`
 endsnippet
 
-snippet = "" "not px.syntax.is_string(snip.cursor)" iAe
+global !p
+def is_inside_brackets(sni):
+    line = snip.buffer[snip.line]
+
+    return px.cursor.is_between(line, snip.cursor, '\[', '\]')
+
+
+def before_equal_sign(snip):
+    line = snip.buffer[snip.line]
+    if len(line) <= snip.column+1:
+        return False
+
+    return line[snip.column+1] == '='
+endglobal
+
+context "not is_string() and not is_inside_brackets(snip) and not before_equal_sign(snip)"
+snippet : "" iAe
+ :=`!p snip.rv = ' '`
+endsnippet
+
+snippet = "" "not is_string()" iAe
 `!p snip.rv = get_padded_equal_sign()`
 endsnippet
 
