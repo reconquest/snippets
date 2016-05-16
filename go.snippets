@@ -364,6 +364,17 @@ snippet "return e" "return err" bw
 return err
 endsnippet
 
+snippet "return h" "return hierr" bw
+return hierr.Errorf(
+    err
+    \`$1\``!p
+
+snip.rv = ", " if t[2] else ','
+
+`$2,
+)
+endsnippet
+
 snippet "return n" "return nil" bw
 return nil
 endsnippet
