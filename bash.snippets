@@ -35,7 +35,21 @@ alias $1='$2'
 endsnippet
 
 snippet i "if [" b
-if [ $1 ]; then
+`!p
+brackets = 0
+if t[1].startswith('-') or t[1].startswith('"') or t[1].startswith('! -') or t[1].startswith('! "'):
+    brackets = 2
+`if`!p
+if brackets > 0:
+    snip.rv=" "+("["*brackets)+" "
+else:
+    snip.rv=" "
+`$1`!p
+if brackets > 0:
+    snip.rv=" "+("]"*brackets)
+else:
+    snip.rv=""
+`; then
 	${2:${VISUAL}}
 fi
 endsnippet
@@ -61,7 +75,7 @@ if match.group(1) == ":":
 }
 endsnippet
 
-snippet "^(:[:\w]+)$" "function" rw
+snippet "^(:[\w-]+)$" "function" rw
 `!p
 snip.rv=match.group(1)`() {
 	$2
