@@ -75,7 +75,7 @@ if match.group(1) == ":":
 }
 endsnippet
 
-snippet "^(:[\w-]+)$" "function" rw
+snippet "^(:[:\w-]+)$" "function" rw
 `!p
 snip.rv=match.group(1)`() {
 	$2
