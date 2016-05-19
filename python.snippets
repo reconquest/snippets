@@ -8,9 +8,10 @@ from px.whitespaces import *
 endglobal
 
 global !p
-def ensure_newlines(start, end):
-   px.langs.python.ensure_newlines(snip.buffer, start)
-   px.langs.python.ensure_newlines_after(snip.buffer, end)
+def ensure_newlines(snip):
+   px.langs.python.ensure_newlines(snip.buffer, snip.snippet_start)
+   px.langs.python.ensure_newlines_after(snip.buffer, snip.snippet_end)
+   snip.cursor.preserve()
 
 def expand_method_in_right_place(snip):
    if isinstance(snip.context, dict):
@@ -69,7 +70,7 @@ endsnippet
 
 priority 10
 pre_expand "expand_method_in_right_place(snip)"
-post_expand "ensure_newlines(snip.snippet_start, snip.snippet_end)"
+post_expand "ensure_newlines(snip)"
 snippet d "def"
 def $1($2):
     $3
@@ -117,7 +118,7 @@ def test$1(self):
 endsnippet
 
 pre_expand "expand_method_in_right_place(snip)"
-post_expand "ensure_newlines(snip.snippet_start, snip.snippet_end)"
+post_expand "ensure_newlines(snip)"
 post_jump "insert_extracted_method_call(snip)"
 snippet d "def" "not after_def(snip) and match_higher_indent(snip.buffer, snip.cursor, 'class ')" be
 def $1(self$2):
