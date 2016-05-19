@@ -1,1 +1,172 @@
-extends bash
+
+global !p "# NOQA"
+import px.snippets
+endglobal
+
+snippet pr "print debug" bw
+`!p
+if " " in t[1]:
+    suffix = "\\n' >"
+    prefix = ''
+else:
+    suffix = ' >'
+    prefix = t[1] + ": %q\\n' "
+prefix = "{}:{}: {}".format(
+    os.path.basename(px.buffer.get().name),
+    str(px.cursor.get()[0]),
+    prefix
+)
+`printf 'XXXXXX `!p snip.rv=prefix`$1`!p snip.rv=suffix`&2
+endsnippet
+
+post_jump "px.snippets.expand(snip)"
+snippet pd "Description" b
+pr$1 >>${2:/tmp/debug}
+endsnippet
+
+snippet in "if string empty" b
+if [ -n "$$1" ]; then
+	${2:${VISUAL}}
+fi
+endsnippet
+
+snippet a "alias" b
+alias $1='$2'
+endsnippet
+
+snippet i "if [" b
+`!p
+brackets = 0
+if t[1].startswith('-') or t[1].startswith('"') or t[1].startswith('! -') or t[1].startswith('! "'):
+    brackets = 2
+`if`!p
+if brackets > 0:
+    snip.rv=" "+("["*brackets)+" "
+else:
+    snip.rv=" "
+`$1`!p
+if brackets > 0:
+    snip.rv=" "+("]"*brackets)
+else:
+    snip.rv=""
+`; then
+	${2:${VISUAL}}
+fi
+endsnippet
+
+snippet o "if [" b
+if $1; then
+	${2:${VISUAL}}
+fi
+endsnippet
+
+snippet f "function" b
+function $1() {
+	$2
+}
+endsnippet
+
+snippet "^([:n])$" "function" rw
+`!p
+if match.group(1) == ":":
+    snip.rv = ":"
+`$1() {
+	$2
+}
+endsnippet
+
+snippet "^(:[:\w-]+)$" "function" rw
+`!p
+snip.rv=match.group(1)`() {
+	$2
+}
+endsnippet
+
+context "px.snippets.make_context(snip)"
+post_jump "px.snippets.make_jumper(snip)"
+snippet l "local" be
+`!p
+if px.snippets.get_jumper_position(snip) == 1:
+    if '\n' not in t[1]:
+        if re.search(r' $', t[1]):
+            t[1] = t[1][:-1] + "="
+            px.snippets.advance_jumper(snip)
+        if re.search(r'[^=][$]$', t[1]):
+            t[1] = t[1][:-1] + "=$"
+            px.snippets.advance_jumper(snip)
+`local $1$2
+endsnippet
+
+priority -1
+context "snip.visual_text and not snip.visual_text.strip().startswith('set -x')"
+snippet "" "wrap in set -x" re
+set -x
+${VISUAL}
+set +x
+endsnippet
+
+context "snip.visual_text.strip().startswith('set -x')"
+snippet "" "wrap in set -x" re
+${VISUAL/\n\s+set \+x|set -x\n\s+//g}
+endsnippet
+
+snippet c "" w
+case "$1" in
+	$2)
+		$3
+		;;$4
+esac
+endsnippet
+snippet "    ;;" "" wrm
+    ;;
+
+$1)
+	$2
+	;;
+endsnippet
+
+snippet w "while" b
+while ${1:[ $2 ]}; do
+    $3
+done
+endsnippet
+
+snippet r "for" b
+for $1 in "$2"; do
+    $3
+done
+endsnippet
+
+snippet sa "source absolute path" b
+_base_dir="$(dirname "$(readlink -f "${BASH_SOURCE[0]}")")"
+source $_base_dir/$1
+endsnippet
+
+snippet # "shdoc" b
+# @description $1
+endsnippet
+
+snippet "# a" "shdoc arg" b
+# @arg $$1
+endsnippet
+
+snippet "# e" "shdoc exitcode" b
+# @exitcode $1
+endsnippet
+
+snippet "# s" "shdoc see" b
+# @see $1
+endsnippet
+
+snippet "# x" "shdoc example" b
+# @example
+#   $1
+endsnippet
+
+snippet "# n" "shdoc noargs" b
+# @noargs
+endsnippet
+
+snippet "# o" "shdoc stdout" b
+# @stdout $1
+endsnippet

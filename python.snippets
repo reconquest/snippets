@@ -98,7 +98,7 @@ def filter_previous_buffer(snip, pattern):
 endglobal
 
 snippet "^i" "import" "filter_previous_buffer(snip, '^(#|$|import |from )')" reA
-import
+import $0
 endsnippet
 
 snippet "^import (\w+)" "from ... import" br
