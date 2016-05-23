@@ -679,7 +679,7 @@ def before_equal_sign(snip):
 
 def is_inside_struct_instance(snip):
     return px.whitespaces.match_higher_indent(
-        snip.buffer, snip.cursor, '^[\s\w.,]+:=\s+[\w.]+{'
+        snip.buffer, snip.cursor, '^[\w.]+{'
     )
 
 
@@ -691,7 +691,7 @@ def is_viable_for_equal_statement(snip):
 endglobal
 
 context "is_viable_for_equal_statement(snip)"
-snippet : "" iAe
+snippet : "colon equals auto" iAe
  :=`!p snip.rv = ' '`
 endsnippet
 
