@@ -90,6 +90,9 @@ def get_value_for_for(current_value):
 
 
 def get_value_for_if(current_value):
+    if current_value != '':
+        return current_value
+
     value = px.snippets.complete_identifier_for_placeholder(
         px.cursor.get(),
         current_value,
