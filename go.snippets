@@ -203,17 +203,19 @@ snippet ,e ", err" iA
 , err$0
 endsnippet
 
-context "px.langs.go.is_if_bracket(snip.buffer, snip.line, snip.column)"
+context "px.langs.go.is_if_bracket(snip.buffer, snip.line, snip.column-1)"
 snippet "}([\w])" "else before closing bracket" bwrA
 } else {
 	`!p snip.rv=match.group(1)`$1
 }
 endsnippet
 
-context "px.langs.go.is_if_bracket(snip.buffer, snip.line, snip.column)"
+context "px.langs.go.is_if_bracket(snip.buffer, snip.line, snip.column-1)"
 priority 2
 snippet "} " "else before closing bracket" bwrA
 } else {
+    $1
+}
 endsnippet
 
 context "not is_string() and is_before_first_func(snip)"
@@ -559,7 +561,7 @@ snippet ,- "underscore" iA
 , _
 endsnippet
 
-snippet "^t" "" wAr
+snippet "^t" "not is_string()" wAre
 type (
 `!p
 snip.rv=snip.v.text.replace("type ", "\t")
