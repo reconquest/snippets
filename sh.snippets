@@ -1,3 +1,9 @@
+global !p
+import px
+for full_name, name in px.libs().items():
+    exec "import " + full_name
+    exec "import " + full_name + " as " + name
+endglobal
 
 global !p "# NOQA"
 import px.snippets
@@ -82,19 +88,22 @@ snip.rv=match.group(1)`() {
 }
 endsnippet
 
-context "px.snippets.make_context(snip)"
-post_jump "px.snippets.make_jumper(snip)"
-snippet l "local" be
+context "px.whitespaces.match_higher_indent(px.buffer.get(), px.cursor.get(), '^([a-z0-9A-Z:_-])+\(\)\s*\{')"
+snippet l "local" wbeA
 `!p
-if px.snippets.get_jumper_position(snip) == 1:
-    if '\n' not in t[1]:
-        if re.search(r' $', t[1]):
-            t[1] = t[1][:-1] + "="
-            px.snippets.advance_jumper(snip)
-        if re.search(r'[^=][$]$', t[1]):
-            t[1] = t[1][:-1] + "=$"
-            px.snippets.advance_jumper(snip)
-`local $1$2
+try:
+    once
+except:
+    once = True
+    line = px.buffer.get_prev_nonempty_line()
+    print(line)
+    matches = re.match(r'\s+local \w+="\$(\d+)"', line)
+    if matches:
+        arg = '$' + str(int(matches.group(1))+1)
+    else:
+        arg = '$1'
+
+`local $1="${2:`!p snip.rv=arg`}"
 endsnippet
 
 priority -1
