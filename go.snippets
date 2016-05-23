@@ -646,6 +646,17 @@ snippet = "" "snip.last_placeholder and snip.last_placeholder.current_text" iAe
 `!p snip.rv = snip.context + get_padded_equal_sign(snip.context)`
 endsnippet
 
+priority 10
+post_expand "fix_matchem('(')"
+snippet ( "" "snip.last_placeholder and snip.last_placeholder.current_text" iAe
+$1(`!p snip.rv = snip.context`)
+endsnippet
+
+priority 10
+snippet ! "" "snip.last_placeholder and snip.last_placeholder.current_text" iAe
+!`!p snip.rv = snip.context`
+endsnippet
+
 priority 1
 snippet = "" "snip.visual_text" iAe
 `!p snip.rv = snip.context + get_padded_equal_sign(snip.context)`
