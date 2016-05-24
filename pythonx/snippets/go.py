@@ -16,7 +16,8 @@ def _line(snip, diff=0):
 
 def should_expand_case(buffer, line):
     if not px.langs.go.is_switch(buffer, line):
-        return False
+        if not px.langs.go.is_select(buffer, line):
+            return False
 
     switch_line = px.langs.go.get_bracket_line(buffer, line)
     switch_line_indent = px.whitespaces.get_indentation(buffer[switch_line])
@@ -89,8 +90,8 @@ def get_value_for_for(current_value):
     return value
 
 
-def get_value_for_if(current_value):
-    if current_value != '':
+def get_value_for_if(current_value, context, value_tabstop=1):
+    if 'tabstop' in context and context['tabstop'] != value_tabstop:
         return current_value
 
     value = px.snippets.complete_identifier_for_placeholder(
@@ -106,6 +107,7 @@ def get_value_for_if(current_value):
 
 
 def jump_to_if_body_on_err_not_nil(snip):
+    snip.context['tabstop'] = snip.tabstop
     if snip.tabstops[1].current_text == "err != nil":
         if snip.tabstop == 1:
             if snip.jump_direction == 1:

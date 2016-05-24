@@ -1,6 +1,8 @@
 global !p
 from snippets.go import *
 
+import px.snippets
+
 import px.whitespaces
 endglobal
 
@@ -47,13 +49,14 @@ snippet "^(\s+)," "" breA
 `!p snip.rv=match.group(1)+""`$1${1/.+/,/} ``
 endsnippet
 
-snippet n "" "not is_string()" bwe
+snippet "^n" "" "not is_string()" bweAr
 func $1($2) $3${3/.+/ /}{
 	$4
 }
 
 endsnippet
 
+priority 10
 context "not is_string() and should_expand_case(snip.buffer, snip.line)"
 snippet c "" bweA
 case $1:
@@ -112,10 +115,11 @@ continue
 endsnippet
 
 priority -1
+context "px.snippets.make_context(snip)"
 pre_expand "px.common.get_active_completer().reset()"
 post_jump "jump_to_if_body_on_err_not_nil(snip)"
 snippet i "if" bw
-if ${1:`!p snip.rv=get_value_for_if(snip.c)`} {
+if ${1:`!p snip.rv=get_value_for_if(snip.c, snip.context)`} {
     ${2:${VISUAL}}
 }
 endsnippet
@@ -252,7 +256,7 @@ snippet msi "map[string]interface" w
 map[string]interface{}
 endsnippet
 
-snippet sw "switch" bw
+snippet s "switch" bw
 switch ${1:name} {
 case ${2:true}:
 	$3
@@ -260,8 +264,16 @@ $4
 }
 endsnippet
 
-snippet swt "switch true" bw
+snippet w "switch true" bw
 switch {
+case ${1}:
+	$2
+$3
+}
+endsnippet
+
+snippet se "select" bw
+select {
 case ${1}:
 	$2
 $3
@@ -364,8 +376,8 @@ snippet "return e" "return err" bw
 return err
 endsnippet
 
-snippet "return h" "return hierr" bw
-return hierr.Errorf(
+snippet "return(.*)h" "return hierr" bwr
+return`!p snip.rv = match.group(1)`hierr.Errorf(
     err,
     \`$1\`,${3:
     $2,}
@@ -376,7 +388,7 @@ snippet "return n" "return nil" bw
 return nil
 endsnippet
 
-snippet "r (.)" "return letter" bwrA
+snippet "r (.)" "return auto" bwrA
 return `!p snip.rv=match.group(1)`
 endsnippet
 
@@ -554,7 +566,7 @@ snippet & "expand amp" Awe
 endsnippet
 
 
-snippet ,- "underscore" iA
+snippet ", ," "underscore auto" iAr
 , _
 endsnippet
 
