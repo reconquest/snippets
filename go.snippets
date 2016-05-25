@@ -37,16 +37,30 @@ snippet = "" wbA
 ${1:err} := ``
 endsnippet
 
-priority 3
-context "not is_string()""
-snippet "(.*)," "" reA
-`!p snip.rv=match.group(1)`${1/^.*$/,/} $1
-endsnippet
+global !p
+def insert_space(snip, space=" "):
+    line = snip.buffer[snip.line]
+    if snip.buffer[snip.line] != snip.context:
+        line = snip.context
 
-priority 2
-context "not is_string()""
-snippet "^(\s+)," "" breA
-`!p snip.rv=match.group(1)+""`$1${1/.+/,/} ``
+    snip.buffer[snip.line] = \
+        line[:snip.column+1] + \
+        space + \
+        line[snip.column+1:]
+
+    snip.cursor.set(
+        snip.line,
+        snip.column + len(space) + 1,
+    )
+endglobal
+
+priority 3
+# preserving original line 'and snip.buffer[snip.line]' to prevent
+# ) deletion by matchem
+context "not is_string() and snip.buffer[snip.line]"
+post_jump "insert_space(snip)"
+snippet , "comma auto" eAi
+,
 endsnippet
 
 snippet "^n" "" "not is_string()" bweAr
