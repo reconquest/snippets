@@ -390,12 +390,38 @@ snippet "return e" "return err" bw
 return err
 endsnippet
 
+global !p
+
+
+def get_indent_levels(snip, base_line):
+    if snip.context is None:
+        snip.context = {}
+
+    snip.context['upper_indent'] = px.whitespaces.get_indentation(
+        snip.buffer[base_line]
+    )[1]
+
+    snip.context['inner_indent'] = px.whitespaces.get_indentation(
+        snip.buffer[base_line+1]
+    )[1]
+
+    return snip.context
+endglobal
+
+context "get_indent_levels(snip, snip.line)"
+post_expand "get_indent_levels(snip, snip.snippet_start[0])"
 snippet "return(.*)h" "return hierr" bwr
 return`!p snip.rv = match.group(1)`hierr.Errorf(
     err,
-    \`$1\`,${3:
-    $2,}
-)
+    \`$1\``!p
+
+snip.rv = (",\n" + snip.context['inner_indent'] if t[2] else ",")
+
+`$2`!p
+
+snip.rv = ("," if t[2] else "") + "\n" + snip.context['upper_indent'] + ")"
+
+`
 endsnippet
 
 snippet "return n" "return nil" bw
@@ -665,23 +691,28 @@ def get_padded_equal_sign(selection=None):
 endglobal
 
 priority 10
-snippet = "" "snip.last_placeholder and snip.last_placeholder.current_text" iAe
+snippet = "visual equals" "snip.last_placeholder and snip.last_placeholder.current_text" iAe
 `!p snip.rv = snip.context + get_padded_equal_sign(snip.context)`
 endsnippet
 
 priority 10
 post_expand "fix_matchem('(')"
-snippet ( "" "snip.last_placeholder and snip.last_placeholder.current_text" iAe
+snippet ( "visual paren" "snip.last_placeholder and snip.last_placeholder.current_text" iAe
 $1(`!p snip.rv = snip.context`)
 endsnippet
 
 priority 10
-snippet ! "" "snip.last_placeholder and snip.last_placeholder.current_text" iAe
+snippet ! "visual exclam" "snip.last_placeholder and snip.last_placeholder.current_text" iAe
 !`!p snip.rv = snip.context`
 endsnippet
 
+priority 10
+snippet . "visual period dot" "snip.last_placeholder and snip.last_placeholder.current_text" iAe
+`!p snip.rv = snip.context`.
+endsnippet
+
 priority 1
-snippet = "" "snip.visual_text" iAe
+snippet = "visual equals" "snip.visual_text" iAe
 `!p snip.rv = snip.context + get_padded_equal_sign(snip.context)`
 endsnippet
 
