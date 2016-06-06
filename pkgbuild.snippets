@@ -20,7 +20,7 @@ makedepends=(
     "git"
 )
 source=(
-    "$1::git+ssh://$4.git"
+    "$pkgname::git+ssh://$4/$pkgname.git"
 )
 md5sums=("SKIP")
 
@@ -35,7 +35,7 @@ pkgver() {
 build() {
     cd "$srcdir/$pkgname"
 
-    $7
+    ${7:}
 }
 
 package() {
@@ -49,7 +49,9 @@ endsnippet
 
 priority 2
 snippet c "" w
-install -DT "$srcdir/$pkgname/$1" "$pkgdir/$2"
+install -DT \
+    "$srcdir/$pkgname/$1" \
+    "$pkgdir/$2"
 endsnippet
 
 priority 3
