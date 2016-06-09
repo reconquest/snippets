@@ -883,3 +883,67 @@ else:
 
 `].(${2:string})$0
 endsnippet
+
+snippet x "log.Infof args of function on next line"
+`!p
+def is_next_line_contains_function_call_only(buffer, line):
+	return re.match('.*\($', buffer[line + 1])
+
+def get_function_name_from_line(buffer, line):
+	matches = re.match('^(\t*|.*=\s)([\w\.]*)\($', buffer[line + 1])
+	if matches:
+		return matches.group(2)
+
+def get_function_args_count(buffer, line, line_first_arg):
+	while line <= len(buffer):
+		line += 1
+		matches = re.match(r'.*\)$', buffer[line])
+		if matches:
+			return line - line_first_arg
+
+def run(buffer, line):
+	if not is_next_line_contains_function_call_only(buffer, line):
+		return
+
+	function_name = get_function_name_from_line(buffer, line)
+	line_current_arg = line + 2
+	args_count = get_function_args_count(buffer, line, line_current_arg)
+	if args_count == 0:
+		return
+
+	buffer.append(
+		snip.mkline(
+			formatLogInfoFunction % (
+				os.path.basename(px.buffer.get().name),
+				line_current_arg + args_count,
+				function_name
+			),
+		),
+		line
+	)
+
+	line += 1
+	line_current_arg += 1
+	line_last_arg = line_current_arg + args_count
+
+	while line_current_arg < line_last_arg:
+		arg = buffer[line_current_arg].strip()[:-1] # [:-1] to remove ','
+
+		buffer.append(
+			snip.mkline(formatLogInfo % (arg.replace('"', r'\"'), arg)),
+			line
+		)
+
+		line_current_arg += 2
+		line += 1
+		line_last_arg += 1
+
+buffer = px.buffer.get()
+line, _ = px.cursor.get()
+
+formatLogInfo = 'log.Debugf("\\t%%s: %%#v", "%s", %s); '
+formatLogInfoFunction = 'log.Debugf("%s:%s: %%s", "%s()"); '
+
+run(buffer, line)
+`
+endsnippet
