@@ -884,7 +884,25 @@ else:
 `].(${2:string})$0
 endsnippet
 
-snippet x "log.Infof args of function on next line"
+# Snippet to call log.Debugf with function args.
+# Should be expanded on line before actual function call.
+# Function call should be formatted like following pattern:
+#
+#	 foo := bar(
+#		arg1,
+#		arg2,
+#		arg3,
+#	 )
+#
+# or like this pattern:
+#
+#	 bar(
+#		arg1,
+#		arg2,
+#		arg3,
+#	 )
+#
+snippet x "log.Debugf args of function on next line"
 `!p
 def is_next_line_contains_function_call_only(buffer, line):
 	return re.match('.*\($', buffer[line + 1])
@@ -915,7 +933,7 @@ def run(buffer, line):
 		snip.mkline(
 			formatLogInfoFunction % (
 				os.path.basename(px.buffer.get().name),
-				line_current_arg + args_count,
+				line_current_arg + args_count + 1,
 				function_name
 			),
 		),
