@@ -816,7 +816,7 @@ def guess_binary_name_from_path():
 
 def add_usage(snip):
 	px.langs.go.goto_const();
-	snip.expand_anon("""const version = "${2:1.0}"
+	snip.expand_anon("""var version = "${2:1.0}"
 
 var usage = \`{PROGRAM} - $1
 
