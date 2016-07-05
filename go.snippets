@@ -251,12 +251,12 @@ struct {
 }
 endsnippet
 
-snippet "((\w+)\s*([\w\[\]]+)) to$" "toml annotation" "not px.syntax.is_string(snip.cursor)" brAe
+snippet "((\w+)\s+([\w\[\]]+)) to$" "toml annotation" "not px.syntax.is_string(snip.cursor)" brAe
 `!p snip.rv=match.group(1)` \`toml:"`!p
 snip.rv=px.util.convert_camelcase_to_snakecase(match.group(2))`"\`
 endsnippet
 
-snippet "((\w+)\s*([\w\[\]]+)) js$" "json annotation"  "not px.syntax.is_string(snip.cursor)" brAe
+snippet "((\w+)\s+([\w\[\]]+)) js$" "json annotation"  "not px.syntax.is_string(snip.cursor)" brAe
 `!p snip.rv=match.group(1)` \`json:"`!p
 snip.rv=px.util.convert_camelcase_to_snakecase(match.group(2))`"\`
 endsnippet
@@ -320,7 +320,17 @@ func main() {
 }
 endsnippet
 
+post_jump "px.snippets.expand(snip)"
 snippet "^v" "var" bwrA
+vr$1
+endsnippet
+
+post_jump "px.snippets.expand(snip)"
+snippet "v" "var" bwr
+vr$1
+endsnippet
+
+snippet "vr" "var" bwr
 `!p
 vis = "// variables"
 if snip.v.text  != "":
@@ -589,12 +599,6 @@ while True:
 snip.rv=result`
 endsnippet
 
-snippet v "var ()" bw
-var (
-	$1
-)
-endsnippet
-
 context "not is_string() and px.langs.go.gocode_can_complete()"
 pre_expand "gocode_complete_function(snip)"
 snippet "(\w+\.\w+)" "" re
@@ -740,11 +744,17 @@ def is_inside_struct_instance(snip):
     )
 
 
+def is_inside_map(snip):
+    return px.whitespaces.match_higher_indent(
+        snip.buffer, snip.cursor, 'map\S+{$'
+    )
+
 def is_viable_for_equal_statement(snip):
     return not is_string() and \
         not is_inside_brackets(snip) and \
         not before_equal_sign(snip) and \
-        not is_inside_struct_instance(snip)
+        not is_inside_struct_instance(snip) and \
+        not is_inside_map(snip)
 endglobal
 
 context "is_viable_for_equal_statement(snip)"

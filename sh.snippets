@@ -43,7 +43,11 @@ endsnippet
 snippet i "if [" b
 `!p
 brackets = 0
-if t[1].startswith('-') or t[1].startswith('"') or t[1].startswith('! -') or t[1].startswith('! "'):
+if t[1].startswith('-') or \
+        t[1].startswith('"') or \
+        t[1].startswith('! -') or \
+        t[1].startswith('! "') or \
+        t[1].startswith('$('):
     brackets = 2
 `if`!p
 if brackets > 0:
@@ -88,21 +92,41 @@ snip.rv=match.group(1)`() {
 }
 endsnippet
 
-context "px.whitespaces.match_higher_indent(px.buffer.get(), px.cursor.get(), '^([a-z0-9A-Z:_-])+\(\)\s*\{')"
+global !p
+def is_in_function(snip):
+    return px.whitespaces.match_higher_indent(
+        snip.buffer,
+        snip.cursor,
+        '^([\w:_-])+\(\)\s*\{'
+    )
+
+def replace_line_with_indent(snip):
+    line = snip.buffer[snip.cursor[0]]
+    snip.buffer[snip.cursor[0]] = px.whitespaces.get_indentation(line)[1]
+    snip.cursor.preserve()
+
+    return line
+endglobal
+
+context "is_in_function(snip)"
+pre_expand "snip.context = replace_line_with_indent(snip)"
 snippet l "local" wbeA
 `!p
 try:
     once
 except:
     once = True
-    line = px.buffer.get_prev_nonempty_line()
-    print(line)
-    matches = re.match(r'\s+local \w+="\$(\d+)"', line)
-    if matches:
-        arg = '$' + str(int(matches.group(1))+1)
+    curr_line = snip.context.strip()[1:]
+    print(curr_line)
+    if curr_line != "":
+        arg="$({})".format(curr_line)
     else:
-        arg = '$1'
-
+        prev_line = px.buffer.get_prev_nonempty_line()
+        matches = re.match(r'\s+local \w+="\$(\d+)"', prev_line)
+        if matches:
+            arg = '$' + str(int(matches.group(1))+1)
+        else:
+            arg = '$1'
 `local $1="${2:`!p snip.rv=arg`}"
 endsnippet
 
@@ -178,4 +202,12 @@ endsnippet
 
 snippet "# o" "shdoc stdout" b
 # @stdout $1
+endsnippet
+
+snippet is "import:source" b
+import:source "$1"
+endsnippet
+
+snippet "import:source \"r" "import:source reconquest" rA
+import:source "github.com/reconquest/$1
 endsnippet
