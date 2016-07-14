@@ -251,17 +251,17 @@ struct {
 }
 endsnippet
 
-snippet "((\w+)\s+([\w\[\]]+)) to$" "toml annotation" "not px.syntax.is_string(snip.cursor)" brAe
+snippet "((\w+)\s*([\w\[\]]+)) to$" "toml annotation" "not px.syntax.is_string(snip.cursor)" bre
 `!p snip.rv=match.group(1)` \`toml:"`!p
 snip.rv=px.util.convert_camelcase_to_snakecase(match.group(2))`"\`
 endsnippet
 
-snippet "((\w+)\s+([\w\[\]]+)) js$" "json annotation"  "not px.syntax.is_string(snip.cursor)" brAe
+snippet "((\w+)\s*([\w\[\]]+)) js$" "json annotation"  "not px.syntax.is_string(snip.cursor)" bre
 `!p snip.rv=match.group(1)` \`json:"`!p
 snip.rv=px.util.convert_camelcase_to_snakecase(match.group(2))`"\`
 endsnippet
 
-snippet "((\w+)\s+([\w\[\]]+)) sc$" "schema annotation"  "not px.syntax.is_string(snip.cursor)" brAe
+snippet "((\w+)\s+([\w\[\]]+)) sc$" "schema annotation"  "not px.syntax.is_string(snip.cursor)" bre
 `!p snip.rv=match.group(1)` \`schema:"`!p
 snip.rv=px.util.convert_camelcase_to_snakecase(match.group(2))`"\`
 endsnippet
