@@ -44,13 +44,13 @@ def insert_space(snip, space=" "):
         line = snip.context
 
     snip.buffer[snip.line] = \
-        line[:snip.column+1] + \
+        line[:snip.column] + \
         space + \
-        line[snip.column+1:]
+        line[snip.column:]
 
     snip.cursor.set(
         snip.line,
-        snip.column + len(space) + 1,
+        snip.column + len(space),
     )
 endglobal
 
@@ -60,7 +60,13 @@ priority 3
 context "not is_string() and snip.buffer[snip.line]"
 post_jump "insert_space(snip)"
 snippet , "comma auto" eAi
-,
+,X
+endsnippet
+
+snippet n "func anonymous" b
+func ($1) $2${2/.+/ /}{
+	$3
+}
 endsnippet
 
 snippet "^n" "" "not is_string()" bweAr
@@ -435,6 +441,11 @@ snip.rv = (",\n" + snip.context['inner_indent'] if t[2] else ",")
 snip.rv = ("," if t[2] else "") + "\n" + snip.context['upper_indent'] + ")"
 
 `
+endsnippet
+
+post_jump "px.snippets.expand(snip)"
+snippet rh "" b
+return h$1
 endsnippet
 
 snippet "return n" "return nil" bw
