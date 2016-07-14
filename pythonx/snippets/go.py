@@ -132,7 +132,7 @@ def action_define_method(context, tabstops, pointer=False):
             if buffer[line-1][-1] != '{':
                 x = 0
                 while True:
-                    if line+x > len(buffer):
+                    if line+x >= len(buffer):
                         break
 
                     contents = contents + buffer[line+x].strip()
