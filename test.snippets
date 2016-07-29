@@ -1,0 +1,17 @@
+snippet te "tests:ensure" b
+tests:ensure $1
+endsnippet
+
+snippet tn "tests:not" b
+tests:not $1
+endsnippet
+
+snippet tne "tests:not tests:ensure" b
+tests:not tests:ensure $1
+endsnippet
+
+snippet ad "tests:assert-no-diff" b
+tests:assert-no-diff ${1:stdout} <<EXPECTED
+$2
+EXPECTED
+endsnippet
