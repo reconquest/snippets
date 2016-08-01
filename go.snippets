@@ -531,12 +531,12 @@ snippet l "last slice usage" iw
 ${1:`!p snip.rv=px.langs.go.get_previous_slice_usage()`}[$2]
 endsnippet
 
-snippet "(func\s.*\)\s+)([\w\d_\s\{\}\[\]\*\.]+),\s?([\w\d_\s\{\}\[\]\*\.]+)" "add commas around multple return variables" r
-`!p snip.rv=match.group(1)`(`!p snip.rv=match.group(2)`, `!p snip.rv=match.group(3)`)
+snippet "(func\s.*\)\s+)([\w\d_\s\{\}\[\]\*\.]+),\s?([\w\d_\s\{\}\[\]\*\.]+)" "add commas around multple return variables" rA
+`!p snip.rv=match.group(1)`(`!p snip.rv=match.group(2)`, `!p snip.rv=match.group(3)`$0)
 endsnippet
 
-snippet "^\)\s+?([\w\d_\s\{\}\[\]\*\.]+),\s+?([\w\d_\s\{\}\[\]\*\.]+)" "return multipleadd commas around multple return variables" r
-) (`!p snip.rv=match.group(1)`, `!p snip.rv=match.group(2)`)
+snippet "^\)\s+?([\w\d_\s\{\}\[\]\*\.]+),\s+?([\w\d_\s\{\}\[\]\*\.]+)" "return multipleadd commas around multple return variables" rA
+) (`!p snip.rv=match.group(1)`, `!p snip.rv=match.group(2)`$0)
 endsnippet
 
 snippet lp "log.Printf" wA
