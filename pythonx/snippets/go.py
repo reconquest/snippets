@@ -291,7 +291,7 @@ def docopt_format_options(snip, separator='  ', indenting=' '):
 
 
 def docopt_get_longest_option(buffer, usage_begins_at):
-    tab_width = int(vim.eval('&ts'))
+    tab_width = int(vim.eval('&ts')) / 2
 
     usage_ends_at = usage_begins_at
     longest_option = ''
@@ -315,7 +315,7 @@ def docopt_align_options(
     usage_begins_at, usage_ends_at,
     separator, indenting
 ):
-    tab_width = int(vim.eval('&ts'))
+    tab_width = int(vim.eval('&ts')) / 2
 
     for (index, line) in enumerate(buffer[usage_begins_at:usage_ends_at]):
         if index + usage_begins_at == cursor[0]:
@@ -378,7 +378,7 @@ def split_long_docopt_line(t, snip):
         return snip.c
 
     opt_line = snip.buffer[snip.snippet_start[0]].expandtabs(
-        int(vim.eval('&ts'))
+        int(vim.eval('&ts')) / 2
     )
 
     if len(opt_line) > 79:
@@ -398,7 +398,7 @@ def get_options_indentation(snip):
     if snip.buffer.cursor[0] != snip.snippet_start[0]:
         return snip.c
 
-    tab_width = int(vim.eval('&ts'))
+    tab_width = int(vim.eval('&ts')) / 2
 
     prev_opt = parse_docopt_option(
         snip.buffer[snip.snippet_start[0]-1], tab_width
