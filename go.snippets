@@ -78,11 +78,25 @@ endsnippet
 
 priority 10
 context "not is_string() and should_expand_case(snip.buffer, snip.line)"
-snippet c "" bweA
+snippet c "switch case" bweA
 case $1:
 	$2
 $3
 endsnippet
+
+priority 10
+context "not is_string() and should_expand_case(snip.buffer, snip.line)"
+snippet d "switch default" bweA
+default:
+    $1
+endsnippet
+
+priority 10
+context "not is_string() and should_expand_fallthrough(snip.buffer, snip.line)"
+snippet f "switch fallthrough" bweA
+fallthrough
+endsnippet
+
 
 context "not is_string() and is_before_first_func(snip)"
 priority 10

@@ -14,6 +14,15 @@ def _line(snip, diff=0):
     return snip.buffer[snip.line + diff]
 
 
+def should_expand_fallthrough(buffer, line):
+    if not px.langs.go.is_switch(buffer, line):
+        if not px.langs.go.is_select(buffer, line):
+            return False
+
+    prev_line = px.buffer.get_prev_nonempty_line(buffer, line)
+    return prev_line.strip().startswith('case ')
+
+
 def should_expand_case(buffer, line):
     if not px.langs.go.is_switch(buffer, line):
         if not px.langs.go.is_select(buffer, line):
