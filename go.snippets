@@ -844,12 +844,12 @@ var usage = \`{PROGRAM} - $1
 $3
 
 Usage:
-	{PROGRAM} -h | --help
-	$4
+  {PROGRAM} -h | --help
+  $4
 
 Options:
-	-h --help  Show this help.
-	$0
+  -h --help  Show this help.
+  $0
 `
 
 """.replace('{PROGRAM}', snip.tabstops[1].current_text), options='m')
@@ -869,7 +869,7 @@ endsnippet
 
 post_jump "if snip.tabstop == 2: docopt_format_options(snip)"
 snippet "\s*-" "docopt option declaration" "is_inside_docopt_section(snip, 'options')" beAr
-    -$1`!p snip.rv=get_options_indentation(snip)``!p snip.rv=split_long_docopt_line(t, snip)`$2
+  -$1`!p snip.rv=get_options_indentation(snip)``!p snip.rv=split_long_docopt_line(t, snip)`$2
 endsnippet
 
 snippet [ "docopt option default with matchem" "is_inside_docopt_section(snip, 'options')" eA
