@@ -7,3 +7,12 @@ snippet "" "link" "snip.visual_text" ire
 [${1:${VISUAL}}]($2)
 endsnippet
 
+
+snippet "\\?cite" "\cite" rw
+\cite${1:[$2]}{$3}$0
+endsnippet
+
+snippet "\\?textc(ite)?" "\textcite" r
+\textcite${1:[$2]}{$3}$0
+endsnippet
+

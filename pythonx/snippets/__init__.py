@@ -1,6 +1,2 @@
-# def complete(tabstop, fullword, prefix=""):
-    # input = prefix + tabstop
-    # if fullword.startswith(input):
-        # return fullword[len(input):]
-    # return ""
-
+def get_selected_placeholder(snip):
+    return snip.last_placeholder and snip.last_placeholder.current_text

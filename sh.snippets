@@ -1,4 +1,8 @@
 global !p
+from snippets import *
+endglobal
+
+global !p
 import px
 for full_name, name in px.libs().items():
     exec "import " + full_name
@@ -210,4 +214,22 @@ endsnippet
 
 snippet "import:source \"r" "import:source reconquest" rA
 import:source "github.com/reconquest/$1
+endsnippet
+
+snippet "\$(\d+)-" "${N:-} var default" Air
+\${`!p snip.rv = match.group(1)`:-$1}
+endsnippet
+
+context "re.match(r'\$(\d+)', get_selected_placeholder(snip) or '')"
+snippet - "${N:-} var default auto visual" Aie
+${`!p snip.rv = snip.context.group(1)`:-$1}
+endsnippet
+
+snippet "\$(\d+)\+" "${N:+} var alternate" Air
+\${`!p snip.rv = match.group(1)`:+$1}
+endsnippet
+
+context "re.match(r'\$(\d+)', get_selected_placeholder(snip) or '')"
+snippet + "${N:+} var alternate auto visual" Aie
+${`!p snip.rv = snip.context.group(1)`:+$1}
 endsnippet

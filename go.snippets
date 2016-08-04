@@ -1,4 +1,6 @@
 global !p
+
+from snippets import *
 from snippets.go import *
 
 import px.snippets
@@ -723,23 +725,23 @@ def get_padded_equal_sign(selection=None):
 endglobal
 
 priority 10
-snippet = "visual equals" "snip.last_placeholder and snip.last_placeholder.current_text" iAe
+snippet = "visual equals" "get_selected_placeholder(snip)" iAe
 `!p snip.rv = snip.context + get_padded_equal_sign(snip.context)`
 endsnippet
 
 priority 10
 post_expand "fix_matchem('(')"
-snippet ( "visual paren" "snip.last_placeholder and snip.last_placeholder.current_text" iAe
+snippet ( "visual paren" "get_selected_placeholder(snip)" iAe
 $1(`!p snip.rv = snip.context`)
 endsnippet
 
 priority 10
-snippet ! "visual exclam" "snip.last_placeholder and snip.last_placeholder.current_text" iAe
+snippet ! "visual exclam" "get_selected_placeholder(snip)" iAe
 !`!p snip.rv = snip.context`
 endsnippet
 
 priority 10
-snippet . "visual period dot" "snip.last_placeholder and snip.last_placeholder.current_text" iAe
+snippet . "visual period dot" "get_selected_placeholder(snip)" iAe
 `!p snip.rv = snip.context`.
 endsnippet
 
