@@ -175,8 +175,10 @@ if match.group(0) == 'e':
 endsnippet
 
 context "not is_string() and is_func_decl(snip)"
-snippet "((?<!,)\s)?([sife])" "" wer
+snippet "((?<!,)\s)([sife])" "" wer
 `!p
+if match.group(1):
+    UltiSnips_Manager.jump_forwards()
 if match.group(2) == 's':
 	typeName = 'string'
 if match.group(2) == 'i':
@@ -199,6 +201,31 @@ elif t[2] != '':
 	commaAfter = ', '
 
 `$1 `!p snip.rv = typeName + commaAfter`$2
+endsnippet
+
+context "not is_string() and is_func_decl(snip)"
+snippet "(\w)([sife])" "" wer
+`!p snip.rv = match.group(1)``!p
+if match.group(2) == 's':
+	typeName = 'string'
+if match.group(2) == 'i':
+	typeName = 'int'
+if match.group(2) == 'f':
+	typeName = 'float64'
+if match.group(2) == 'e':
+	typeName = 'error'
+
+commaAfter = ''
+if t[1] == ' ':
+	commaAfter = ','
+elif t[1] == ',':
+	t[1] = ', '
+elif t[1].startswith(', '):
+	commaAfter = ''
+elif t[1] != '':
+	commaAfter = ', '
+
+` `!p snip.rv = typeName + commaAfter`$0
 endsnippet
 
 context "not is_string() and is_type_decl(snip)"
