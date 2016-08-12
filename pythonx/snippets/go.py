@@ -315,7 +315,7 @@ def docopt_align_options(
     usage_begins_at, usage_ends_at,
     separator, indenting
 ):
-    tab_width = int(vim.eval('&ts')) / 2
+    tab_width = int(vim.eval('&ts'))
 
     for (index, line) in enumerate(buffer[usage_begins_at:usage_ends_at]):
         if index + usage_begins_at == cursor[0]:
@@ -398,7 +398,7 @@ def get_options_indentation(snip):
     if snip.buffer.cursor[0] != snip.snippet_start[0]:
         return snip.c
 
-    tab_width = int(vim.eval('&ts')) / 2
+    tab_width = int(vim.eval('&ts'))
 
     prev_opt = parse_docopt_option(
         snip.buffer[snip.snippet_start[0]-1], tab_width
