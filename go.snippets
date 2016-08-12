@@ -202,6 +202,13 @@ elif t[2] != '':
 endsnippet
 
 context "not is_string() and is_type_decl(snip)"
+snippet "t" "anon struct" wer
+ struct {
+    $1
+}
+endsnippet
+
+context "not is_string() and is_type_decl(snip)"
 snippet m "" bwe
 $1 map[${2:string}]${3:interface{}}
 endsnippet
