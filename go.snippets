@@ -8,35 +8,24 @@ import px.snippets
 import px.whitespaces
 endglobal
 
+context "extract_comment_subject(snip)"
+snippet "^(\s*)/" "comment subject" rA
+`!p snip.rv=match.group(1)`// `!p snip.rv=snip.context` $1
+endsnippet
 
-global !p
-def extract_comment_subject(snip):
-    if is_string():
-        return
-
-    next_line = snip.buffer[snip.line + 1]
-
-    matches = re.match(r'^type (\w+)', next_line)
-    if matches:
-        return matches.group(1)
-
-    matches = re.match(r'^func ([^\)]+\)\s)?([^\(]+)', next_line)
-    if matches:
-        return matches.group(2)
-
-    matches = re.match(r'^\s+(\w+).*', next_line)
-    if matches:
-        return matches.group(1)
-
-    matches = re.match(r'^(var|const) ([\w]+)', next_line)
-    if matches:
-        return matches.group(2)
-
-endglobal
+context "extract_comment_subject(snip, ['var', 'const', 'type', 'block'])"
+snippet "^(\s*)// (\w+) r" "comment represents" rA
+`!p snip.rv=match.group(1)`// `!p snip.rv=match.group(2)` represents $1
+endsnippet
 
 context "extract_comment_subject(snip)"
-snippet "^(\s*)/" "" rA
-`!p snip.rv=match.group(1)`// `!p snip.rv=snip.context` $1
+snippet "^(\s*)// (\w+) i" "comment is" rA
+`!p snip.rv=match.group(1)`// `!p snip.rv=match.group(2)` is a $1
+endsnippet
+
+context "extract_comment_subject(snip, 'func')"
+snippet "^(\s*)// (\w+) r" "comment returns" rA
+`!p snip.rv=match.group(1)`// `!p snip.rv=match.group(2)` returns $1
 endsnippet
 
 context "is_if_condition(snip)"

@@ -450,3 +450,26 @@ def generate_implementation(snip):
     ))
 
     snip.cursor.preserve()
+
+
+def extract_comment_subject(snip, kind=['type', 'func', 'var', 'const', 'block']):
+    if is_string():
+        return
+
+    next_line = snip.buffer[snip.line + 1]
+
+    matches = re.match(r'^type (\w+)', next_line)
+    if matches and 'type' in kind:
+        return matches.group(1)
+
+    matches = re.match(r'^func ([^\)]+\)\s)?([^\(]+)', next_line)
+    if matches and 'func' in kind:
+        return matches.group(2)
+
+    matches = re.match(r'^\s+(\w+).*', next_line)
+    if matches and 'block' in kind:
+        return matches.group(1)
+
+    matches = re.match(r'^(var|const) ([\w]+)', next_line)
+    if matches and ('const' in kind or 'var' in kind):
+        return matches.group(2)
