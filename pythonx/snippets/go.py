@@ -156,7 +156,9 @@ def action_define_method(context, tabstops, pointer=False):
         a_right = "\n)"
 
     r_left = ' '
-    r_right = ' '
+    r_right = ''
+    if tabstops[3]:
+        r_right = ' '
 
     if "," in tabstops[3]:
         r_left = ' ('
@@ -425,3 +427,26 @@ def get_options_indentation(snip):
         return ' ' * 2
 
     return ' ' * (prev_indent - curr_indent)
+
+
+def generate_implementation(snip):
+    prev_binding = px.langs.go.extract_prev_method_binding(
+        snip.buffer, snip.cursor
+    )
+
+    if not prev_binding:
+        return
+
+    name, type = prev_binding
+
+    interface = snip.buffer[snip.cursor[0]]
+
+    del snip.buffer[snip.cursor[0]]
+
+    vim.command('call feedkeys("\<ESC>:GoImpl {} {} {}\<CR>")'.format(
+        name,
+        "*"+type,
+        interface,
+    ))
+
+    snip.cursor.preserve()

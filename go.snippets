@@ -96,7 +96,7 @@ snippet , "comma auto" eAi
 ,X
 endsnippet
 
-snippet n "func anonymous" b
+snippet n "func anonymous" w
 func ($1) $2${2/.+/ /}{
 	$3
 }
@@ -264,6 +264,10 @@ snippet "t" "anon struct" wer
  struct {
     $1
 }
+endsnippet
+
+snippet de "defer" b
+defer $1($2)
 endsnippet
 
 context "not is_string() and is_type_decl(snip)"
@@ -721,7 +725,7 @@ err.Error()
 endsnippet
 
 context "not is_string()"
-snippet "^o$" "new" rA
+snippet "^o$" "new" reA
 `!p
 
 if t[1]:
@@ -742,7 +746,8 @@ ctype = type[0].upper() + type[1:]
 }
 endsnippet
 
-snippet "^p$" "new" rA
+context "not is_string()"
+snippet "^p$" "new" reA
 `!p
 
 if t[1]:
@@ -832,7 +837,7 @@ def before_equal_sign(snip):
 
 def is_inside_struct_instance(snip):
     return px.whitespaces.match_higher_indent(
-        snip.buffer, snip.cursor, '[\w.]+{$'
+        snip.buffer, snip.cursor, '[\w.]+{$|} {$'
     )
 
 
@@ -854,12 +859,12 @@ def is_viable_for_equal_statement(snip):
         not is_inside_case_condition(snip)
 endglobal
 
-context "is_viable_for_equal_statement(snip)"
+context "not is_string() and is_viable_for_equal_statement(snip)"
 snippet : "colon equals auto" iAe
  :=`!p snip.rv = ' '`
 endsnippet
 
-context "is_inside_struct_instance(snip)"
+context "not is_string() and is_inside_struct_instance(snip)"
 snippet : "colon space auto" iAe
 :`!p snip.rv = ' '`
 endsnippet
@@ -989,6 +994,10 @@ else:
     snip.rv = '>"'
 
 `].(${2:string})$0
+endsnippet
+
+pre_expand "generate_implementation(snip)"
+snippet "^[\w.]{3,}" "goimpl" r
 endsnippet
 
 # Snippet to call log.Debugf with function args.
