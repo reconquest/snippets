@@ -996,10 +996,6 @@ else:
 `].(${2:string})$0
 endsnippet
 
-pre_expand "generate_implementation(snip)"
-snippet "^[\w.]{3,}" "goimpl" r
-endsnippet
-
 # Snippet to call log.Debugf with function args.
 # Should be expanded on line before actual function call.
 # Function call should be formatted like following pattern:
@@ -1080,4 +1076,9 @@ formatLogInfoFunction = 'log.Debugf("%s:%s: %%s", "%s()"); '
 
 run(buffer, line)
 `
+endsnippet
+
+priority 10
+pre_expand "generate_implementation(snip)"
+snippet "^[\w.]{3,}" "goimpl" r
 endsnippet
