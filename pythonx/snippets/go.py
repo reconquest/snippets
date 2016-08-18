@@ -381,7 +381,7 @@ def split_long_docopt_line(t, snip):
         int(vim.eval('&ts')) / 2
     )
 
-    if len(opt_line) > 79:
+    if len(opt_line) > 79 and ' ' in t[2]:
         split_boundary = len(opt_line) - len(t[2])
         first_line, second_line = t[2].rsplit(' ', 1)
 
