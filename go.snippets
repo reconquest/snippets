@@ -482,7 +482,7 @@ post_expand "get_indent_levels(snip, snip.snippet_start[0])"
 snippet "return(.*)h" "return hierr" bwr
 return`!p snip.rv = match.group(1)`hierr.Errorf(
     err,
-    \`$1\``!p
+    "$1"`!p
 
 snip.rv = (",\n" + snip.context['inner_indent'] if t[2] else ",")
 
@@ -810,12 +810,17 @@ def is_inside_map(snip):
         snip.buffer, snip.cursor, 'map\S+{$'
     )
 
+def is_inside_case_condition(snip):
+    line = snip.buffer[snip.line]
+    return re.match('^\s+case ', line)
+
 def is_viable_for_equal_statement(snip):
     return not is_string() and \
         not is_inside_brackets(snip) and \
         not before_equal_sign(snip) and \
         not is_inside_struct_instance(snip) and \
-        not is_inside_map(snip)
+        not is_inside_map(snip) and \
+        not is_inside_case_condition(snip)
 endglobal
 
 context "is_viable_for_equal_statement(snip)"
@@ -938,7 +943,7 @@ snippet args[ "args[blah]" wA
 args[`!p
 
 if t[1].startswith('-'):
-     if len(t[1]) > 2:
+     if len(t[1]) > 2 and not t[1].startswith('--'):
         snip.rv = '"-'
      else:
         snip.rv = '"'
