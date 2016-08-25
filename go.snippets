@@ -54,7 +54,7 @@ err := ``
 endsnippet
 
 priority 2
-context "not is_string()""
+context "not is_string() and not is_comment()""
 snippet = "" wbA
 ${1:err} := ``
 endsnippet
@@ -79,7 +79,7 @@ endglobal
 priority 3
 # preserving original line 'and snip.buffer[snip.line]' to prevent
 # ) deletion by matchem
-context "not is_string() and snip.buffer[snip.line]"
+context "not is_string() and not is_comment() and snip.buffer[snip.line]"
 post_jump "insert_space(snip)"
 snippet , "comma auto" eAi
 ,X
@@ -91,7 +91,7 @@ func ($1) $2${2/.+/ /}{
 }
 endsnippet
 
-snippet "^n" "" "not is_string()" bweAr
+snippet "^n" "" "not is_string() and not is_comment()" bweAr
 func $1($2) $3${3/.+/ /}{
 	$4
 }
@@ -99,7 +99,7 @@ func $1($2) $3${3/.+/ /}{
 endsnippet
 
 priority 10
-context "not is_string() and should_expand_case(snip.buffer, snip.line)"
+context "not is_string() and not is_comment() and should_expand_case(snip.buffer, snip.line)"
 snippet c "switch case" bweA
 case $1:
 	$2
@@ -107,20 +107,20 @@ $3
 endsnippet
 
 priority 10
-context "not is_string() and should_expand_case(snip.buffer, snip.line)"
+context "not is_string() and not is_comment() and should_expand_case(snip.buffer, snip.line)"
 snippet d "switch default" bweA
 default:
     $1
 endsnippet
 
 priority 10
-context "not is_string() and should_expand_fallthrough(snip.buffer, snip.line)"
+context "not is_string() and not is_comment() and should_expand_fallthrough(snip.buffer, snip.line)"
 snippet f "switch fallthrough" bweA
 fallthrough
 endsnippet
 
 
-context "not is_string() and is_before_first_func(snip)"
+context "not is_string() and not is_comment() and is_before_first_func(snip)"
 priority 10
 snippet "^s$" "type struct auto" bwreA
 `!p
@@ -180,42 +180,42 @@ if ${1:`!p snip.rv=get_value_for_if(snip.c, snip.context)`} {
 }
 endsnippet
 
-context "not is_string() and (is_type_decl(snip) or is_func_decl(snip))"
+context "not is_string() and not is_comment() and (is_type_decl(snip) or is_func_decl(snip))"
 snippet s "" ei
  string
 endsnippet
 
-context "not is_string() and (is_type_decl(snip) or is_func_decl(snip))"
+context "not is_string() and not is_comment() and (is_type_decl(snip) or is_func_decl(snip))"
 snippet i "" ei
  int
 endsnippet
 
-context "not is_string() and (is_type_decl(snip) or is_func_decl(snip))"
+context "not is_string() and not is_comment() and (is_type_decl(snip) or is_func_decl(snip))"
 snippet 6 "" ei
  int64
 endsnippet
 
-context "not is_string() and (is_type_decl(snip) or is_func_decl(snip))"
+context "not is_string() and not is_comment() and (is_type_decl(snip) or is_func_decl(snip))"
 snippet f "" ei
  float64
 endsnippet
 
-context "not is_string() and (is_type_decl(snip) or is_func_decl(snip))"
+context "not is_string() and not is_comment() and (is_type_decl(snip) or is_func_decl(snip))"
 snippet y "" ei
  []byte
 endsnippet
 
-context "not is_string() and (is_type_decl(snip) or is_func_decl(snip))"
+context "not is_string() and not is_comment() and (is_type_decl(snip) or is_func_decl(snip))"
 snippet b "" ei
  bool
 endsnippet
 
-context "not is_string() and (is_type_decl(snip) or is_func_decl(snip))"
+context "not is_string() and not is_comment() and (is_type_decl(snip) or is_func_decl(snip))"
 snippet e "" ei
  error
 endsnippet
 
-context "not is_string() and is_type_decl(snip)"
+context "not is_string() and not is_comment() and is_type_decl(snip)"
 snippet "t" "anon struct" wer
  struct {
     $1
@@ -226,12 +226,12 @@ snippet de "defer" b
 defer $1($2)
 endsnippet
 
-context "not is_string() and is_type_decl(snip)"
+context "not is_string() and not is_comment() and is_type_decl(snip)"
 snippet m "" bwe
 $1 map[${2:string}]${3:interface{}}
 endsnippet
 
-context "not is_string() and is_func_decl(snip)"
+context "not is_string() and not is_comment() and is_func_decl(snip)"
 snippet m "" we
 $1 map[${2:string}]${3:interface{}}${4/.+/(?0:, )/}$4
 endsnippet
@@ -283,7 +283,7 @@ snippet "} " "else before closing bracket" bwrA
 }
 endsnippet
 
-context "not is_string() and is_before_first_func(snip)"
+context "not is_string() and not is_comment() and is_before_first_func(snip)"
 snippet "^c$" "" bwreA
 const (
 	$0
@@ -420,25 +420,25 @@ case ${3:Type}:
 endsnippet
 
 priority 5
-context "not is_string()"
+context "not is_string() and not is_comment()"
 snippet ", n" ", nil"  ie
 , nil
 endsnippet
 
 priority 5
-context "not is_string()"
+context "not is_string() and not is_comment()"
 snippet  ", e" "err, " ie
 , err``
 endsnippet
 
 priority 5
-context "not is_string()"
+context "not is_string() and not is_comment()"
 snippet  n, "nil, " Ae
 nil, ``
 endsnippet
 
 priority 5
-context "not is_string()"
+context "not is_string() and not is_comment()"
 snippet  e, "err, " Ae
 err, ``
 endsnippet
@@ -541,7 +541,7 @@ snippet rf "return false" bw
 return false
 endsnippet
 
-context "not is_string() and px.langs.go.extract_prev_method_binding(snip.buffer, snip.cursor) and {'line': snip.line}"
+context "not is_string() and not is_comment() and px.langs.go.extract_prev_method_binding(snip.buffer, snip.cursor) and {'line': snip.line}"
 snippet "^d$" "" bweAr
 `!p
 (a_left, a_right, r_left, r_right, binding) = action_define_method(snip.context, t, True)
@@ -616,7 +616,7 @@ func Test$1(t *testing.T) {
 }
 endsnippet
 
-context "not is_string() and px.langs.go.is_return_argument(snip.buffer, snip.line, snip.column)"
+context "not is_string() and not is_comment() and px.langs.go.is_return_argument(snip.buffer, snip.line, snip.column)"
 snippet , "return ... , nil" ie
 , `!p if px.langs.go.is_in_err_condition(px.buffer.get(), px.cursor.get()[0], px.cursor.get()[1]):
 	snip.rv = "err"
@@ -651,7 +651,7 @@ while True:
 snip.rv=result`
 endsnippet
 
-context "not is_string() and px.langs.go.gocode_can_complete()"
+context "not is_string() and not is_comment() and px.langs.go.gocode_can_complete()"
 pre_expand "gocode_complete_function(snip)"
 snippet "(\w+\.\w+)" "" re
 endsnippet
@@ -669,7 +669,7 @@ snippet ", ," "underscore auto" iAr
 , _
 endsnippet
 
-snippet "^t" "not is_string()" wAre
+snippet "^t" "not is_string() and not is_comment()" wAre
 type (
 `!p
 snip.rv=snip.v.text.replace("type ", "\t")
@@ -680,7 +680,7 @@ snippet err.E "err.Error()" wA
 err.Error()
 endsnippet
 
-context "not is_string()"
+context "not is_string() and not is_comment()"
 snippet "^o$" "new" reA
 `!p
 
@@ -702,7 +702,7 @@ ctype = type[0].upper() + type[1:]
 }
 endsnippet
 
-context "not is_string()"
+context "not is_string() and not is_comment()"
 snippet "^p$" "new" reA
 `!p
 
@@ -807,7 +807,7 @@ def is_inside_case_condition(snip):
     return re.match('^\s+case ', line)
 
 def is_viable_for_equal_statement(snip):
-    return not is_string() and \
+    return not is_string() and not is_comment() and \
         not is_inside_brackets(snip) and \
         not before_equal_sign(snip) and \
         not is_inside_struct_instance(snip) and \
@@ -815,17 +815,17 @@ def is_viable_for_equal_statement(snip):
         not is_inside_case_condition(snip)
 endglobal
 
-context "not is_string() and is_viable_for_equal_statement(snip)"
+context "not is_string() and not is_comment() and is_viable_for_equal_statement(snip)"
 snippet : "colon equals auto" iAe
  :=`!p snip.rv = ' '`
 endsnippet
 
-context "not is_string() and is_inside_struct_instance(snip)"
+context "not is_string() and not is_comment() and is_inside_struct_instance(snip)"
 snippet : "colon space auto" iAe
 :`!p snip.rv = ' '`
 endsnippet
 
-snippet = "" "not is_string()" iAe
+snippet = "" "not is_string() and not is_comment()" iAe
 `!p snip.rv = get_padded_equal_sign()`
 endsnippet
 

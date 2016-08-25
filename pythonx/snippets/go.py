@@ -75,6 +75,9 @@ def is_string():
     return px.syntax.is_string(px.cursor.get())
 
 
+def is_comment():
+    return px.syntax.is_comment(px.cursor.get())
+
 def guess_package_from_file_name(path):
     return px.langs.go.packages.guess_package_name_from_file_name(path)
 
