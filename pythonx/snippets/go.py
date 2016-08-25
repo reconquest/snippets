@@ -452,7 +452,10 @@ def generate_implementation(snip):
     snip.cursor.preserve()
 
 
-def extract_comment_subject(snip, kind=['type', 'func', 'var', 'const', 'block']):
+def extract_comment_subject(
+    snip,
+    kind=['type', 'func', 'var', 'const', 'block']
+):
     if is_string():
         return
 
@@ -462,7 +465,7 @@ def extract_comment_subject(snip, kind=['type', 'func', 'var', 'const', 'block']
     if matches and 'type' in kind:
         return matches.group(1)
 
-    matches = re.match(r'^func ([^\)]+\)\s)?([^\(]+)', next_line)
+    matches = re.match(r'^func ([^\)]+\)\s)?(\w+)', next_line)
     if matches and 'func' in kind:
         return matches.group(2)
 
