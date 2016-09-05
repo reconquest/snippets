@@ -104,6 +104,18 @@ def is_in_function(snip):
         '^([\w:_-])+\(\)\s*\{'
     )
 
+
+def is_local_def(snip):
+    prev_line = px.buffer.get_prev_nonempty_line()
+    if re.match(r'.*{$', prev_line):
+        return True
+
+    if re.match(r'\s+local \w+="\$(\d+)"', prev_line):
+        return True
+    else:
+        return False
+
+
 def replace_line_with_indent(snip):
     line = snip.buffer[snip.cursor[0]]
     snip.buffer[snip.cursor[0]] = px.whitespaces.get_indentation(line)[1]
@@ -112,7 +124,7 @@ def replace_line_with_indent(snip):
     return line
 endglobal
 
-context "is_in_function(snip)"
+context "is_in_function(snip) and is_local_def(snip)"
 pre_expand "snip.context = replace_line_with_indent(snip)"
 snippet l "local" wbeA
 `!p
@@ -132,6 +144,10 @@ except:
         else:
             arg = '$1'
 `local $1="${2:`!p snip.rv=arg`}"
+endsnippet
+
+snippet l "local" wb
+local $0
 endsnippet
 
 priority -1

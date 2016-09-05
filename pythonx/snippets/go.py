@@ -129,12 +129,11 @@ def jump_to_if_body_on_err_not_nil(snip):
             px.snippets.expect_cursor_jump(px.cursor.get())
 
 
-def action_define_method(context, tabstops, pointer=False):
+def action_define_method(cursor, context, tabstops, pointer=False):
     a_left = '('
     a_right = ')'
 
     buffer = px.buffer.get()
-    cursor = px.cursor.get()
 
     line = context['line'] - 1
 
