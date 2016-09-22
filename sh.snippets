@@ -44,25 +44,25 @@ snippet a "alias" b
 alias $1='$2'
 endsnippet
 
+pre_expand "snip.context = replace_line_with_indent(snip)"
 snippet i "if [" b
 `!p
+try:
+    condition
+except:
+    condition = snip.context.strip()[1:]
+
 brackets = 0
 if t[1].startswith('-') or \
         t[1].startswith('"') or \
-        t[1].startswith('! -') or \
-        t[1].startswith('! "') or \
+        t[1].startswith('!') or \
         t[1].startswith('$('):
     brackets = 2
+
 `if`!p
-if brackets > 0:
-    snip.rv=" "+("["*brackets)+" "
-else:
-    snip.rv=" "
-`$1`!p
-if brackets > 0:
-    snip.rv=" "+("]"*brackets)
-else:
-    snip.rv=""
+snip.rv=" " + "["*brackets + " " if brackets > 0 else " "
+`${1:`!p snip.rv = condition`}`!p
+snip.rv=" " + "]"*brackets       if brackets > 0 else ""
 `; then
 	${2:${VISUAL}}
 fi
@@ -74,25 +74,27 @@ if $1; then
 fi
 endsnippet
 
-snippet f "function" b
-function $1() {
-	$2
-}
-endsnippet
-
 snippet "^([:n])$" "function" rw
 `!p
 if match.group(1) == ":":
     snip.rv = ":"
 `$1() {
-	$2
+    ${0:${VISUAL}}
 }
 endsnippet
 
 snippet "^(:[:\w-]+)$" "function" rw
 `!p
 snip.rv=match.group(1)`() {
-	$2
+    ${0:${VISUAL}}
+}
+endsnippet
+
+
+context "snip.visual_text"
+snippet : "function visual auto" bA
+:$1() {
+    ${0:${VISUAL}}
 }
 endsnippet
 
@@ -110,7 +112,7 @@ def is_local_def(snip):
     if re.match(r'.*{$', prev_line):
         return True
 
-    if re.match(r'\s+local \w+="\$(\d+)"', prev_line):
+    if re.match(r'\s+local \w+="?\$(\d+)"?', prev_line):
         return True
     else:
         return False
@@ -133,17 +135,24 @@ try:
 except:
     once = True
     curr_line = snip.context.strip()[1:]
+    var = ""
     print(curr_line)
     if curr_line != "":
-        arg="$({})".format(curr_line)
+        matches = re.match(r'\s*(\w+)=(.*)', curr_line)
+
+        if matches:
+            var = matches.group(1)
+            arg = matches.group(2)
+        else:
+            arg="$({})".format(curr_line)
     else:
         prev_line = px.buffer.get_prev_nonempty_line()
-        matches = re.match(r'\s+local \w+="\$(\d+)"', prev_line)
+        matches = re.match(r'\s+local \w+="?\$(\d+)"?', prev_line)
         if matches:
             arg = '$' + str(int(matches.group(1))+1)
         else:
             arg = '$1'
-`local $1="${2:`!p snip.rv=arg`}"
+`local ${1:`!p snip.rv=var`}=${2:`!p snip.rv=arg`}
 endsnippet
 
 snippet l "local" wb
@@ -184,7 +193,11 @@ while ${1:[ $2 ]}; do
 done
 endsnippet
 
-snippet r "for" b
+snippet r "return" b
+return $1
+endsnippet
+
+snippet f "for" b
 for $1 in "$2"; do
     $3
 done
