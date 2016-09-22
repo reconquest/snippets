@@ -478,7 +478,7 @@ endglobal
 
 context "get_indent_levels(snip, snip.line)"
 post_expand "get_indent_levels(snip, snip.snippet_start[0])"
-snippet "return(.*)h" "return ser" bwr
+snippet "return(.*)s" "return ser" bwr
 return`!p snip.rv = match.group(1)`ser.Errorf(
     err,
     "$1"`!p
