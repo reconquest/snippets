@@ -28,6 +28,11 @@ snippet "^(\s*)// (\w+) r" "comment returns" rA
 `!p snip.rv=match.group(1)`// `!p snip.rv=match.group(2)` returns $1
 endsnippet
 
+context "extract_comment_subject(snip, 'func')"
+snippet "^(\s*)// (\w+) s" "comment verb suffix" rA
+`!p snip.rv=match.group(1)`// `!p snip.rv=match.group(2)` `!p snip.rv=match.group(2).lower()`s $1
+endsnippet
+
 context "is_if_condition(snip)"
 snippet e "" w
 ${1:${VISUAL}} == "$2"

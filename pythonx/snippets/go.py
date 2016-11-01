@@ -120,6 +120,9 @@ def get_value_for_if(current_value, context, value_tabstop=1):
 
 def jump_to_if_body_on_err_not_nil(snip):
     snip.context['tabstop'] = snip.tabstop
+    if len(snip.tabstops) >= 1:
+        return
+
     if snip.tabstops[1].current_text == "err != nil":
         if snip.tabstop == 1:
             if snip.jump_direction == 1:

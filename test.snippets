@@ -1,17 +1,39 @@
-snippet te "tests:ensure" b
-tests:ensure $1
+snippet tests:a "tests:assert-" bA
+tests:assert-$0
 endsnippet
 
-snippet tn "tests:not" b
-tests:not $1
+snippet tests:assert-q "tests:assert-equals" A
+tests:assert-equals $0
 endsnippet
 
-snippet tne "tests:not tests:ensure" b
-tests:not tests:ensure $1
+snippet tests:assert-o "tests:assert-stdout" A
+tests:assert-stdout $0
 endsnippet
 
-snippet ad "tests:assert-no-diff" b
+snippet tests:assert-e "tests:assert-stderr" A
+tests:assert-stderr $0
+endsnippet
+
+snippet tests:assert-d "tests:assert-no-diff" A
 tests:assert-no-diff ${1:stdout} <<EXPECTED
-$2
+$0
 EXPECTED
+endsnippet
+
+snippet tests:n "tests:not" b
+tests:not $0
+endsnippet
+
+snippet "tests:not e" "tests:ensure" A
+tests:not tests:ensure $0
+endsnippet
+
+snippet "tests:e" "tests:ensure" A
+tests:ensure $0
+endsnippet
+
+priority 100
+
+snippet t "tests:" bA
+tests:$0
 endsnippet
