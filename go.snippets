@@ -792,7 +792,16 @@ def before_equal_sign(snip):
     return line[snip.column+1] == '='
 
 
+def is_inside_inline_struct_instance(snip):
+    part = snip.buffer[snip.cursor[0]][:snip.cursor[1]]
+
+    return '{' in part
+
+
 def is_inside_struct_instance(snip):
+    if is_inside_inline_struct_instance(snip):
+        return True
+
     return px.whitespaces.match_higher_indent(
         snip.buffer, snip.cursor, '[\w.]+{$|} {$'
     )
@@ -812,6 +821,7 @@ def is_viable_for_equal_statement(snip):
         not is_inside_brackets(snip) and \
         not before_equal_sign(snip) and \
         not is_inside_struct_instance(snip) and \
+        not is_inside_inline_struct_instance(snip) and \
         not is_inside_map(snip) and \
         not is_inside_case_condition(snip)
 endglobal
