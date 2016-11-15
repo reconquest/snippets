@@ -1049,3 +1049,9 @@ priority 10
 pre_expand "generate_implementation(snip)"
 snippet "^[\w.]{3,}" "goimpl" r
 endsnippet
+
+context "snip.buffer[snip.line-1].endswith('[') and snip.buffer[snip.line].strip().startswith(']')"
+snippet "" "[\n]" brA
+    $0
+
+endsnippet
