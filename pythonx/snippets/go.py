@@ -298,7 +298,7 @@ def docopt_format_options(snip, separator='  ', indenting=' '):
 
 
 def docopt_get_longest_option(buffer, usage_begins_at):
-    tab_width = int(vim.eval('&ts')) / 2
+    tab_width = int(int(vim.eval('&ts')) / 2)
 
     usage_ends_at = usage_begins_at
     longest_option = ''
@@ -385,7 +385,7 @@ def split_long_docopt_line(t, snip):
         return snip.c
 
     opt_line = snip.buffer[snip.snippet_start[0]].expandtabs(
-        int(vim.eval('&ts')) / 2
+        int(int(vim.eval('&ts')) / 2)
     )
 
     if len(opt_line) > 79 and ' ' in t[2]:
