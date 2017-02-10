@@ -798,6 +798,11 @@ snippet = "visual equals" "snip.visual_text" iAe
 `!p snip.rv = snip.context + get_padded_equal_sign(snip.context)`
 endsnippet
 
+priority 1
+snippet / "visual != nil" "snip.visual_text" iAe
+`!p snip.rv = snip.context` != nil
+endsnippet
+
 global !p
 def is_inside_brackets(sni):
     line = snip.buffer[snip.line]
