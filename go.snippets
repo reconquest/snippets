@@ -8,39 +8,39 @@ for full_name, name in px.libs().items():
     exec("import " + full_name)
 endglobal
 
-context "extract_comment_subject(snip)"
-snippet "^(\s*)/" "comment subject" rA
-`!p snip.rv=match.group(1)`// `!p snip.rv=snip.context` $1
-endsnippet
+#context "extract_comment_subject(snip)"
+#snippet "^(\s*)/" "comment subject" rA
+#`!p snip.rv=match.group(1)`// `!p snip.rv=snip.context` $1
+#endsnippet
 
-context "extract_comment_subject(snip, ['var', 'const', 'type', 'block'])"
-snippet "^(\s*)// (\w+) r" "comment represents" rA
-`!p snip.rv=match.group(1)`// `!p snip.rv=match.group(2)` represents $1
-endsnippet
+#context "extract_comment_subject(snip, ['var', 'const', 'type', 'block'])"
+#snippet "^(\s*)// (\w+) r" "comment represents" rA
+#`!p snip.rv=match.group(1)`// `!p snip.rv=match.group(2)` represents $1
+#endsnippet
 
-context "extract_comment_subject(snip)"
-snippet "^(\s*)// (\w+) i" "comment is" rA
-`!p snip.rv=match.group(1)`// `!p snip.rv=match.group(2)` is a $1
-endsnippet
+#context "extract_comment_subject(snip)"
+#snippet "^(\s*)// (\w+) i" "comment is" rA
+#`!p snip.rv=match.group(1)`// `!p snip.rv=match.group(2)` is a $1
+#endsnippet
 
-context "extract_comment_subject(snip, 'func')"
-snippet "^(\s*)// (\w+) r" "comment returns" rA
-`!p snip.rv=match.group(1)`// `!p snip.rv=match.group(2)` returns $1
-endsnippet
+#context "extract_comment_subject(snip, 'func')"
+#snippet "^(\s*)// (\w+) r" "comment returns" rA
+#`!p snip.rv=match.group(1)`// `!p snip.rv=match.group(2)` returns $1
+#endsnippet
 
-context "extract_comment_subject(snip, 'func')"
-snippet "^(\s*)// (\w+) s" "comment verb suffix" rA
-`!p snip.rv=match.group(1)`// `!p snip.rv=match.group(2)` `!p
+#context "extract_comment_subject(snip, 'func')"
+#snippet "^(\s*)// (\w+) s" "comment verb suffix" rA
+#`!p snip.rv=match.group(1)`// `!p snip.rv=match.group(2)` `!p
 
-words = re.search(r'^[A-Z][a-z0-9_]+', match.group(2))
+#words = re.search(r'^[A-Z][a-z0-9_]+', match.group(2))
 
-if words:
-    snip.rv = words.group(0).lower()
-else:
-    snip.rv = match.group(2).lower()
+#if words:
+    #snip.rv = words.group(0).lower()
+#else:
+    #snip.rv = match.group(2).lower()
 
-`s $1
-endsnippet
+#`s $1
+#endsnippet
 
 context "is_if_condition(snip)"
 snippet e "" w
@@ -101,13 +101,13 @@ endsnippet
 
 snippet n "func anonymous" w
 func ($1) $2${2/.+/ /}{
-	$3
+    $3
 }
 endsnippet
 
 snippet "^n" "" "not is_string() and not is_comment()" bweAr
 func $1($2) $3${3/.+/ /}{
-	$4
+    $4
 }
 
 endsnippet
@@ -116,7 +116,7 @@ priority 10
 context "not is_string() and not is_comment() and should_expand_case(snip.buffer, snip.line)"
 snippet c "switch case" bweA
 case $1:
-	$2
+    $2
 $3
 endsnippet
 
@@ -174,7 +174,7 @@ snippet m "" eA
 package main
 
 func main() {
-	$0
+    $0
 }
 endsnippet
 
@@ -242,7 +242,7 @@ endsnippet
 priority -1
 snippet ii "if <VISUAL>" bwA
 if ${VISUAL} {
-	$1
+    $1
 }
 endsnippet
 
@@ -274,7 +274,7 @@ endsnippet
 context "px.langs.go.is_if_bracket(snip.buffer, snip.line, snip.column-1)"
 snippet "}([\w])" "else before closing bracket" bwrA
 } else {
-	`!p snip.rv=match.group(1)`$1
+    `!p snip.rv=match.group(1)`$1
 }
 endsnippet
 
@@ -289,15 +289,15 @@ endsnippet
 context "not is_string() and not is_comment() and is_before_first_func(snip)"
 snippet "^c$" "" bwreA
 const (
-	$0
+    $0
 )
 endsnippet
 
 snippet ass "anon struct with fields" w
 struct {
-	$1
+    $1
 }{
-	$2
+    $2
 }
 endsnippet
 
@@ -328,7 +328,7 @@ endsnippet
 snippet s "switch" bw
 switch ${1:name} {
 case ${2:true}:
-	$3
+    $3
 $4
 }
 endsnippet
@@ -336,7 +336,7 @@ endsnippet
 snippet w "switch true" bw
 switch {
 case ${1}:
-	$2
+    $2
 $3
 }
 endsnippet
@@ -344,7 +344,7 @@ endsnippet
 snippet se "select" bw
 select {
 case ${1}:
-	$2
+    $2
 $3
 }
 endsnippet
@@ -384,7 +384,7 @@ endsnippet
 
 snippet main "func main" bw
 func main() {
-	$0
+    $0
 }
 endsnippet
 
@@ -402,10 +402,10 @@ snippet "vr" "var" bwr
 `!p
 vis = ""
 if snip.v.text  != "":
-	vis = snip.v.text.replace(" := ", " = ").replace("var ", "")
+    vis = snip.v.text.replace(" := ", " = ").replace("var ", "")
 `
 var (
-	${1:`!p snip.rv=vis`}
+    ${1:`!p snip.rv=vis`}
 )
 endsnippet
 
@@ -436,7 +436,7 @@ endsnippet
 snippet ts "type switch" bw
 switch ${1:newVar} := ${2:checkVar}.(type) {
 case ${3:Type}:
-	$4
+    $4
 }
 endsnippet
 
@@ -526,13 +526,13 @@ endsnippet
 
 snippet fr "for true forever" bw
 for {
-	$1
+    $1
 }
 endsnippet
 
 snippet qt "t.fatal" bw
 if err != nil {
-	t.Fatal(err)
+    t.Fatal(err)
 }
 endsnippet
 
@@ -542,13 +542,13 @@ endsnippet
 
 snippet qf "log fatal" bw
 if err != nil {
-	log.Fatal(err)
+    log.Fatal(err)
 }
 endsnippet
 
 snippet qff "log fatalf" bw
 if err != nil {
-	log.Fatalf(\`$1: %s\`, $2, err)
+    log.Fatalf(\`$1: %s\`, $2, err)
 }
 endsnippet
 
@@ -576,12 +576,19 @@ try:
     once
 except:
     once = True
-    cursor = px.cursor.get()
+    prev_binding = px.langs.go.extract_prev_method_binding(
+        px.buffer.get(), px.cursor.get()
+    )
 
-(a_left, a_right, r_left, r_right, binding) = action_define_method(cursor, snip.context, t, True)
+    if not prev_binding:
+        binding = ''
+    else:
+        name, binding_type = prev_binding
+        binding = name + ' *' + str(binding_type)
+
 `
-func (`!p snip.rv=binding`) $1`!p snip.rv=a_left`$2`!p snip.rv=a_right``!p snip.rv=r_left`$3`!p snip.rv=r_right`{
-	$4
+func (`!p snip.rv=binding`) $1($2) $3 {
+    $4
 }
 
 endsnippet
@@ -625,18 +632,18 @@ endsnippet
 
 snippet "^e" "func Test" wrA
 func Test$1(t *testing.T) {
-	test := assert.New(t)
+    test := assert.New(t)
 
-	$2
+    $2
 }
 endsnippet
 
 context "not is_string() and not is_comment() and px.langs.go.is_return_argument(snip.buffer, snip.line, snip.column)"
 snippet , "return ... , nil" ie
 , `!p if px.langs.go.is_in_err_condition(px.buffer.get(), px.cursor.get()[0], px.cursor.get()[1]):
-	snip.rv = "err"
+    snip.rv = "err"
 else:
-	snip.rv = "nil"`
+    snip.rv = "nil"`
 endsnippet
 
 snippet ef "fmt.Errorf" w
@@ -650,17 +657,17 @@ line, column = px.cursor.get()
 
 result = 't'
 while True:
-	line = line - 1
-	if line == 0:
-		break
+    line = line - 1
+    if line == 0:
+        break
 
-	line_contents = buffer[line]
-	matches = re.match(r'(?m)^func \(([^)]+)\s+([^)]+)\) ', line_contents)
-	if not matches:
-		continue
+    line_contents = buffer[line]
+    matches = re.match(r'(?m)^func \(([^)]+)\s+([^)]+)\) ', line_contents)
+    if not matches:
+        continue
 
-	result = matches.group(1)
-	break
+    result = matches.group(1)
+    break
 
 
 snip.rv=result`
@@ -700,20 +707,20 @@ snippet "^o$" "new" reA
 `!p
 
 if t[1]:
-	type = t[1]
+    type = t[1]
 else:
-	bindings = px.langs.go.extract_prev_method_binding(
-		px.buffer.get(),
-		px.cursor.get()
-	)
-	if not bindings:
-		type = 'someStruct'
-	else:
-		type = bindings[1]
+    bindings = px.langs.go.extract_prev_method_binding(
+        px.buffer.get(),
+        px.cursor.get()
+    )
+    if not bindings:
+        type = 'someStruct'
+    else:
+        type = bindings[1]
 
 ctype = type[0].upper() + type[1:]
 `func New`!p snip.rv=ctype`($2) (${1:`!p snip.rv=type`}, error) {
-	$3
+    $3
 }
 endsnippet
 
@@ -722,47 +729,47 @@ snippet "^p$" "new" reA
 `!p
 
 if t[1]:
-	type = t[1]
+    type = t[1]
 else:
-	bindings = px.langs.go.extract_prev_method_binding(
-		px.buffer.get(), px.cursor.get()
-	)
-	if not bindings:
-		type = 'someStruct'
-	else:
-		type = bindings[1]
+    bindings = px.langs.go.extract_prev_method_binding(
+        px.buffer.get(), px.cursor.get()
+    )
+    if not bindings:
+        type = 'someStruct'
+    else:
+        type = bindings[1]
 
 ctype = type[0].upper() + type[1:]
 `func New`!p snip.rv=ctype`($2) (*${1:`!p snip.rv=type`}, error) {
-	$3
+    $3
 }
 endsnippet
 
 snippet f "for range" bw
 for ${2}, ${3} := range ${1:`!p snip.rv=get_value_for_for(snip.c)`} {
-	${4:${VISUAL}}
+    ${4:${VISUAL}}
 }
 endsnippet
 
 snippet fo "for without body" bw
 for {
-	${1:${VISUAL}}
+    ${1:${VISUAL}}
 }
 endsnippet
 
 global !p
 def get_padded_equal_sign(selection=None):
-	if not selection:
-		cursor = px.cursor.get()
-		selection = px.buffer.get()[cursor[0]][:cursor[1]]
+    if not selection:
+        cursor = px.cursor.get()
+        selection = px.buffer.get()[cursor[0]][:cursor[1]]
 
-	if not selection:
-		return "="
+    if not selection:
+        return "="
 
-	if re.match(r'\w', selection[-1]):
-		return " = "
-	else:
-		return "= "
+    if re.match(r'\w', selection[-1]):
+        return " = "
+    else:
+        return "= "
 endglobal
 
 priority 10
@@ -901,15 +908,15 @@ endsnippet
 
 global !p
 def get_program_name_from_usage(snip):
-	prev_line = snip.buffer[snip.snippet_start[0] - 1]
-	return prev_line.strip().split(' ', 1)[0]
+    prev_line = snip.buffer[snip.snippet_start[0] - 1]
+    return prev_line.strip().split(' ', 1)[0]
 
 def guess_binary_name_from_path():
-	return os.path.basename(os.path.realpath('.'))
+    return os.path.basename(os.path.realpath('.'))
 
 def add_usage(snip):
-	px.langs.go.goto_const();
-	snip.expand_anon("""var version = "${2:1.0}"
+    px.langs.go.goto_const();
+    snip.expand_anon("""var version = "${2:1.0}"
 
 var usage = \`{PROGRAM} - $1
 
@@ -931,7 +938,7 @@ post_jump "if snip.tabstop == 0: add_usage(snip)"
 snippet do "docopt" b
 args, err := docopt.Parse(usage, nil, true, "${1:`!p snip.rv = guess_binary_name_from_path()`} " + version, false)
 if err != nil {
-	panic(err)
+    panic(err)
 }
 endsnippet
 
@@ -981,73 +988,73 @@ endsnippet
 # Should be expanded on line before actual function call.
 # Function call should be formatted like following pattern:
 #
-#	 foo := bar(
-#		arg1,
-#		arg2,
-#		arg3,
-#	 )
+#     foo := bar(
+#        arg1,
+#        arg2,
+#        arg3,
+#     )
 #
 # or like this pattern:
 #
-#	 bar(
-#		arg1,
-#		arg2,
-#		arg3,
-#	 )
+#     bar(
+#        arg1,
+#        arg2,
+#        arg3,
+#     )
 #
 snippet x "log.Debugf args of function on next line"
 `!p
 def is_next_line_contains_function_call_only(buffer, line):
-	return re.match('.*\($', buffer[line + 1])
+    return re.match('.*\($', buffer[line + 1])
 
 def get_function_name_from_line(buffer, line):
-	matches = re.match('^(\t*|.*=\s)([\w\.]*)\($', buffer[line + 1])
-	if matches:
-		return matches.group(2)
+    matches = re.match('^(\t*|.*=\s)([\w\.]*)\($', buffer[line + 1])
+    if matches:
+        return matches.group(2)
 
 def get_function_args_count(buffer, line, line_first_arg):
-	while line <= len(buffer):
-		line += 1
-		matches = re.match(r'.*\)$', buffer[line])
-		if matches:
-			return line - line_first_arg
+    while line <= len(buffer):
+        line += 1
+        matches = re.match(r'.*\)$', buffer[line])
+        if matches:
+            return line - line_first_arg
 
 def run(buffer, line):
-	if not is_next_line_contains_function_call_only(buffer, line):
-		return
+    if not is_next_line_contains_function_call_only(buffer, line):
+        return
 
-	function_name = get_function_name_from_line(buffer, line)
-	line_current_arg = line + 2
-	args_count = get_function_args_count(buffer, line, line_current_arg)
-	if args_count == 0:
-		return
+    function_name = get_function_name_from_line(buffer, line)
+    line_current_arg = line + 2
+    args_count = get_function_args_count(buffer, line, line_current_arg)
+    if args_count == 0:
+        return
 
-	buffer.append(
-		snip.mkline(
-			formatLogInfoFunction % (
-				os.path.basename(px.buffer.get().name),
-				line_current_arg + args_count + 1,
-				function_name
-			),
-		),
-		line
-	)
+    buffer.append(
+        snip.mkline(
+            formatLogInfoFunction % (
+                os.path.basename(px.buffer.get().name),
+                line_current_arg + args_count + 1,
+                function_name
+            ),
+        ),
+        line
+    )
 
-	line += 1
-	line_current_arg += 1
-	line_last_arg = line_current_arg + args_count
+    line += 1
+    line_current_arg += 1
+    line_last_arg = line_current_arg + args_count
 
-	while line_current_arg < line_last_arg:
-		arg = buffer[line_current_arg].strip()[:-1] # [:-1] to remove ','
+    while line_current_arg < line_last_arg:
+        arg = buffer[line_current_arg].strip()[:-1] # [:-1] to remove ','
 
-		buffer.append(
-			snip.mkline(formatLogInfo % (arg.replace('"', r'\"'), arg)),
-			line
-		)
+        buffer.append(
+            snip.mkline(formatLogInfo % (arg.replace('"', r'\"'), arg)),
+            line
+        )
 
-		line_current_arg += 2
-		line += 1
-		line_last_arg += 1
+        line_current_arg += 2
+        line += 1
+        line_last_arg += 1
 
 buffer = px.buffer.get()
 line, _ = px.cursor.get()
