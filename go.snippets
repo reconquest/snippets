@@ -262,6 +262,10 @@ snippet r "return" bw
 return $1
 endsnippet
 
+snippet "return nil" "return nil, err" bw
+return nil, err
+endsnippet
+
 context "is_if_body(snip)"
 snippet r "" eb
 return ${1:err}
@@ -301,24 +305,28 @@ struct {
 }
 endsnippet
 
-snippet "((\w+)\s*([\w\[\]]+)) to$" "toml annotation" "not px.syntax.is_string(snip.cursor)" bre
-`!p snip.rv=match.group(1)` \`toml:"`!p
-snip.rv=px.util.convert_camelcase_to_snakecase(match.group(2))`"\`
-endsnippet
+snippet "((\w+)\s*([\w\[\].]+)(\s+`[^`]+`)?)\s+(to|js|bs|sc)$" "annotation" "not px.syntax.is_string(snip.cursor)" bre
+`!p
 
-snippet "((\w+)\s*([\w\[\]]+)) js$" "json annotation"  "not px.syntax.is_string(snip.cursor)" bre
-`!p snip.rv=match.group(1)` \`json:"`!p
-snip.rv=px.util.convert_camelcase_to_snakecase(match.group(2))`"\`
-endsnippet
+line = match.group(1)
 
-snippet "((\w+)\s*([\.\w\[\]]+)) bs$" "bson annotation"  "not px.syntax.is_string(snip.cursor)" breA
-`!p snip.rv=match.group(1)` \`bson:"`!p
-snip.rv=px.util.convert_camelcase_to_snakecase(match.group(2))`"\`
-endsnippet
+prefixes = {
+    "to": "toml",
+    "js": "json",
+    "bs": "bson",
+    "sc": "schema"
+}
 
-snippet "((\w+)\s+([\w\[\]]+)) sc$" "schema annotation"  "not px.syntax.is_string(snip.cursor)" bre
-`!p snip.rv=match.group(1)` \`schema:"`!p
-snip.rv=px.util.convert_camelcase_to_snakecase(match.group(2))`"\`
+prefix = prefixes[match.group(5)]
+
+if line.endswith('\`'):
+    quote = ' '
+    line = line[:-1]
+else:
+    quote = ' \`'
+
+snip.rv = line + quote + prefix
+`:"`!p snip.rv=px.util.convert_camelcase_to_snakecase(match.group(2))`"\`
 endsnippet
 
 snippet msi "map[string]interface" w
@@ -366,7 +374,7 @@ right = ')'
 
 if t[1] != '':
     func = 'Printf'
-    left = ' ' + t[1] + ': %q\\n", '
+    left = ' ' + t[1] + ': %#v\\n", '
     right = ')'
 
     if t[1] == 'err':
@@ -402,9 +410,12 @@ snippet "vr" "var" bwr
 `!p
 vis = ""
 if snip.v.text  != "":
-    vis = snip.v.text.replace(" := ", " = ").replace("var ", "")
-`
-var (
+    vis = snip.v.text
+    vis = re.sub(r' := ', ' = ', vis)
+    vis = re.sub(r'var ', '', vis)
+    vis = re.sub(r'^', '\t', vis, flags=re.M)
+    vis = vis.strip()
+`var (
     ${1:`!p snip.rv=vis`}
 )
 endsnippet
@@ -494,6 +505,21 @@ def get_indent_levels(snip, base_line):
 
     return snip.context
 endglobal
+
+context "get_indent_levels(snip, snip.line)"
+post_expand "get_indent_levels(snip, snip.snippet_start[0])"
+snippet "return(.*)f" "return fmt.Errorf" bwr
+return`!p snip.rv = match.group(1)`fmt.Errorf(
+    "$1: %s"`!p
+
+snip.rv = (",\n" + snip.context['inner_indent'] if t[2] else ",")
+
+`$2`!p
+
+snip.rv = ("," if t[2] else "") + " err,\n" + snip.context['upper_indent'] + ")"
+
+`
+endsnippet
 
 context "get_indent_levels(snip, snip.line)"
 post_expand "get_indent_levels(snip, snip.snippet_start[0])"
