@@ -12,7 +12,7 @@ ${1:int} ${2:main}($3) {
 }
 endsnippet
 
-snippet i "if" w
+snippet i "if" b
 if ($1) {
 	$2
 }$0
@@ -35,7 +35,7 @@ except:
     cursor = px.cursor.get()
 
 func = 'fprintf'
-left = '"'
+left = '\\n"'
 right = ')'
 
 if t[1] != '':
@@ -48,7 +48,7 @@ if " " in t[1]:
 
 left = " " + os.path.basename(px.buffer.get().name) + ":" + str(cursor[0]) + left
 
-``!p snip.rv = func`(stderr, "XXXXXX`!p snip.rv=left`$1`!p snip.rv=right`;
+``!p snip.rv = func + "(stderr, \"XXXXXX" + left`$1`!p snip.rv=right`;
 endsnippet
 
 snippet dp "" w
@@ -77,10 +77,35 @@ snippet r "" w
 return $0;
 endsnippet
 
-snippet #i "#include" wA
-#include $0
+snippet # "#include" b
+`!p
+lparen = '<'
+rparen = '>'
+if os.path.exists(t[1]):
+    lparen = '"'
+    rparen = '"'
+`#include `!p snip.rv = lparen`$1`!p snip.rv = rparen`
 endsnippet
 
 snippet #d "#define" wA
-#define $0
+`!p
+parts = t[1].split(' ')
+parts[0] = parts[0].upper()
+t[1] = ' '.join(parts)
+`#define $1
+endsnippet
+
+snippet t "struct" b
+struct $1 {
+    $0
+};
+endsnippet
+
+snippet s "std::" w
+std::$0
+endsnippet
+
+priority 10
+snippet std::s "std::string" w
+std::string $0
 endsnippet
