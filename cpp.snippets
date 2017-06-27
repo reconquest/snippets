@@ -1,4 +1,5 @@
 global !p
+
 from snippets import *
 
 import px
@@ -24,8 +25,11 @@ snippet }e "else" wA
 }
 endsnippet
 
+
 context "px.snippets.make_context(snip)"
-snippet pr "fmt printf xxx debug" bw
+pre_expand "px.common.get_active_completer().reset()"
+
+snippet pr "fmt printf xxx debug" bwe
 `!p
 
 try:
@@ -34,8 +38,8 @@ except:
     once = True
     cursor = px.cursor.get()
 
-func = 'fprintf'
-left = '\\n"'
+func = 'printf'
+left = '"'
 right = ')'
 
 if t[1] != '':
@@ -48,15 +52,16 @@ if " " in t[1]:
 
 left = " " + os.path.basename(px.buffer.get().name) + ":" + str(cursor[0]) + left
 
-``!p snip.rv = func + "(stderr, \"XXXXXX" + left`$1`!p snip.rv=right`;
+``!p snip.rv = func`("XXXXXX`!p snip.rv=left`${1}`!p snip.rv=right`;fflush(NULL);
 endsnippet
 
-snippet dp "" w
+
+snippet df "" w
 debugf("$1: ${3:%s}", $2);
 endsnippet
 
-snippet dp "debugf" w
-debugf("$1: ${3:%s}", $2)
+snippet dd "debugf" w
+debug("$1");
 endsnippet
 
 snippet fi "for" w
@@ -90,7 +95,6 @@ endsnippet
 snippet #d "#define" wA
 `!p
 parts = t[1].split(' ')
-parts[0] = parts[0].upper()
 t[1] = ' '.join(parts)
 `#define $1
 endsnippet
@@ -108,4 +112,73 @@ endsnippet
 priority 10
 snippet std::s "std::string" w
 std::string $0
+endsnippet
+
+snippet t "" w
+try {
+	$1
+} catch ($2) {
+	$3
+}
+endsnippet
+
+snippet tp "" w
+tuple<${1:${VISUAL:std::string}}>$0
+endsnippet
+
+snippet ie "" w
+if (!$1.err.empty()) {
+	$2
+}
+endsnippet
+
+snippet ier "" w
+if (!$1.err.empty()) {
+	result.err = $1.err;
+
+	return result;
+}
+endsnippet
+
+snippet ir "" w
+if (!$1.err.empty()) {
+	return $1.err;
+}
+endsnippet
+
+snippet rr "" w
+return result;
+endsnippet
+
+snippet r: "" w
+ret:
+endsnippet
+
+snippet rv "" w
+result.value = $1;
+endsnippet
+
+snippet tr "" w
+tuple<${1:std::string}> result;
+endsnippet
+
+snippet ss "" w
+std::string $0
+endsnippet
+
+snippet vr "" w
+$1 = $2.value;
+endsnippet
+
+snippet dh "" w
+`!p
+
+file = os.path.basename(px.buffer.get().name).replace('.hpp', '').replace('.h', '').upper()
+
+`#ifndef _${1:`!p snip.rv=file`}_HEADER
+#define _$1_HEADER
+
+${VISUAL}
+
+#endif // _$1_HEADER
 endsnippet
