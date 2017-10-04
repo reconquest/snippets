@@ -78,6 +78,7 @@ def is_string():
 def is_comment():
     return px.syntax.is_comment(px.cursor.get())
 
+
 def guess_package_from_file_name(path):
     return px.langs.go.packages.guess_package_name_from_file_name(path)
 
@@ -354,7 +355,7 @@ def parse_docopt_option(line, tab_width=4):
                             \s*?
                             (-[\w-]* ([ =]( <[\w_-]+>|[A-Z_]+) )? )
                         ) | (
-                            ( <[\w_-]+>|[A-Z_]+ )
+                            ( <[\w_-]+>|([A-Z_]+(?!\s\S|\S)) )
                         )
                     )+
                 )?
