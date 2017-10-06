@@ -178,10 +178,10 @@ func main() {
 }
 endsnippet
 
-context "is_if_body(snip)"
-snippet lf "" bweA
-log.Fatal(err)
-endsnippet
+#context "is_if_body(snip)"
+#snippet lf "" bweA
+#log.Fatal(err)
+#endsnippet
 
 context "is_for_body(snip)""
 snippet c "continue in if" eb
@@ -305,17 +305,17 @@ struct {
 }
 endsnippet
 
-snippet "((\w+)\s*([\w\[\].]+)(\s+`[^`]+`)?)\s+(to|js|bs|sc|ym)$" "annotation" "not px.syntax.is_string(snip.cursor)" bre
+snippet "((\w+)\s*([\w\[\].]+)(\s+`[^`]+`)?)\s+(to|js|bs|sc|ya)$" "annotation" "not px.syntax.is_string(snip.cursor)" bre
 `!p
 
 line = match.group(1)
 
 prefixes = {
-	"ym": "yaml",
-	"to": "toml",
-	"js": "json",
-	"bs": "bson",
-	"sc": "schema"
+    "to": "toml",
+    "js": "json",
+    "bs": "bson",
+    "sc": "schema",
+    "ya": "yaml"
 }
 
 prefix = prefixes[match.group(5)]
@@ -654,14 +654,6 @@ endsnippet
 
 snippet re "return errors.New" bw
 return errors.New($1)
-endsnippet
-
-snippet lf "log.Printf" w
-log.Printf($1)
-endsnippet
-
-snippet ld "log.Printf error" w
-log.Printf("$1: %s", ${2:err})
 endsnippet
 
 snippet td "todo" bw
