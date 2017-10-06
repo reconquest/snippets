@@ -1,0 +1,89 @@
+global !p
+
+from snippets import *
+from snippets.go import *
+
+import px
+
+def is_inside_section(snip, *names):
+	return px.whitespaces.match_higher_indent(
+        snip.buffer, snip.cursor, '|'.join(names)+'\('
+	)
+endglobal
+
+snippet r "declare resource" b
+Resource("$1", func() {
+    $0
+})
+endsnippet
+
+context "is_inside_section(snip, 'API')"
+snippet t "declare trait" b
+Trait("$1", func() {
+    $0
+})
+endsnippet
+
+context "is_inside_section(snip, 'Resource')"
+snippet a "declare action" b
+Action("$1", func() {
+    $0
+})
+endsnippet
+
+context "is_inside_section(snip, 'Action', 'MediaType')"
+snippet d "declare description" b
+Description("$1")
+endsnippet
+
+context "is_inside_section(snip, 'MediaType')"
+snippet a "declare attributes" b
+Attributes(func () {
+    $1
+})
+endsnippet
+
+context "is_inside_section(snip, 'Action')"
+snippet r "declare routing" b
+Routing(${1:GET}("$2"))
+endsnippet
+
+context "is_inside_section(snip, 'Action')"
+snippet p "declare params" b
+Params(func() {
+    $0
+})
+endsnippet
+
+priority 100
+context "is_inside_section(snip, 'Action')"
+snippet e "declare response" b
+Response($1)
+endsnippet
+
+context "is_inside_section(snip, 'Action')"
+snippet eo "declare response ok" b
+Response(OK)
+endsnippet
+
+context "is_inside_section(snip, 'Action')"
+snippet en "declare response notfound" b
+Response(NotFound)
+endsnippet
+
+context "is_inside_section(snip, 'Params')"
+snippet p "declare one param" b
+Param("$1", ${2:Type}, "${3:Description}")
+endsnippet
+
+context "is_inside_section(snip, 'Attributes?', 'Type')"
+snippet a "declare one attribute" b
+Attribute("$1", ${2:Type}, "${3:Description}")
+endsnippet
+
+context "is_inside_section(snip, 'MediaType')"
+snippet v "declare view" b
+View("${1:default}", func() {
+    $0
+})
+endsnippet
