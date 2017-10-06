@@ -193,8 +193,17 @@ context "px.snippets.make_context(snip)"
 pre_expand "px.common.get_active_completer().reset()"
 post_jump "jump_to_if_body_on_err_not_nil(snip)"
 snippet i "if" bw
-if ${1:`!p snip.rv=get_value_for_if(snip.c, snip.context)`} {
-	${2:${VISUAL}}
+if ${1:`!p
+try:
+	once
+except:
+	once = True
+	condition = get_value_for_if(snip.c, snip.context)
+	pass
+
+snip.rv = condition
+`} {
+	$0
 }
 endsnippet
 
