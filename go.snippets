@@ -528,14 +528,18 @@ endsnippet
 
 context "get_indent_levels(snip, snip.line)"
 post_expand "get_indent_levels(snip, snip.snippet_start[0])"
-snippet "return(.*)k" "return karma" bwr
+snippet "return(.*)([kc])" "return karma/context" bwr
 `!p
 quote = '"'
 
 if '"' in t[1]:
     quote = '\`'
 
-`return`!p snip.rv = match.group(1)`karma.Format(
+subject = "karma"
+if match.group(2) == "c":
+	subject = "context"
+
+`return`!p snip.rv = match.group(1)``!p snip.rv=subject`.Format(
 	err,
 	`!p snip.rv = quote`$1`!p snip.rv = quote``!p
 
@@ -547,6 +551,17 @@ snip.rv = ("," if t[2] else "") + "\n" + snip.context['upper_indent'] + ")"
 
 `
 endsnippet
+
+snippet cd "describe context" w
+context := karma.
+	Describe("$1", $2)$0
+endsnippet
+
+snippet "^(\s+)(Describe.*\.)" "more describe context" rA
+`!p snip.rv=match.group(1)``!p snip.rv=match.group(2)`
+`!p snip.rv=match.group(1)`Describe("$1", $2)$0
+endsnippet
+
 
 context "get_indent_levels(snip, snip.line)"
 post_expand "get_indent_levels(snip, snip.snippet_start[0])"
