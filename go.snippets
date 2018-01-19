@@ -8,39 +8,34 @@ for full_name, name in px.libs().items():
     exec("import " + full_name)
 endglobal
 
-#context "extract_comment_subject(snip)"
-#snippet "^(\s*)/" "comment subject" rA
-#`!p snip.rv=match.group(1)`// `!p snip.rv=snip.context` $1
-#endsnippet
+context "extract_comment_subject(snip)"
+snippet "^(\s*)/" "comment subject" rA
+`!p snip.rv=match.group(1)`// `!p snip.rv=snip.context` $1
+endsnippet
 
-#context "extract_comment_subject(snip, ['var', 'const', 'type', 'block'])"
-#snippet "^(\s*)// (\w+) r" "comment represents" rA
-#`!p snip.rv=match.group(1)`// `!p snip.rv=match.group(2)` represents $1
-#endsnippet
+context "extract_comment_subject(snip, ['var', 'const', 'type', 'block'])"
+snippet "^(\s*)// (\w+) r" "comment represents" rA
+`!p snip.rv=match.group(1)`// `!p snip.rv=match.group(2)` represents $1
+endsnippet
 
-#context "extract_comment_subject(snip)"
-#snippet "^(\s*)// (\w+) i" "comment is" rA
-#`!p snip.rv=match.group(1)`// `!p snip.rv=match.group(2)` is a $1
-#endsnippet
+context "extract_comment_subject(snip, 'func')"
+snippet "^(\s*)// (\w+) r" "comment returns" rA
+`!p snip.rv=match.group(1)`// `!p snip.rv=match.group(2)` returns $1
+endsnippet
 
-#context "extract_comment_subject(snip, 'func')"
-#snippet "^(\s*)// (\w+) r" "comment returns" rA
-#`!p snip.rv=match.group(1)`// `!p snip.rv=match.group(2)` returns $1
-#endsnippet
+context "extract_comment_subject(snip, 'func')"
+snippet "^(\s*)// (\w+) s" "comment verb suffix" rA
+`!p snip.rv=match.group(1)`// `!p snip.rv=match.group(2)` `!p
 
-#context "extract_comment_subject(snip, 'func')"
-#snippet "^(\s*)// (\w+) s" "comment verb suffix" rA
-#`!p snip.rv=match.group(1)`// `!p snip.rv=match.group(2)` `!p
+words = re.search(r'^[A-Z][a-z0-9_]+', match.group(2))
 
-#words = re.search(r'^[A-Z][a-z0-9_]+', match.group(2))
+if words:
+   #snip.rv = words.group(0).lower()
+else:
+   #snip.rv = match.group(2).lower()
 
-#if words:
-    #snip.rv = words.group(0).lower()
-#else:
-    #snip.rv = match.group(2).lower()
-
-#`s $1
-#endsnippet
+`s $1
+endsnippet
 
 context "is_if_condition(snip)"
 snippet e "" w
@@ -99,7 +94,7 @@ snippet , "comma auto" eAi
 ,X
 endsnippet
 
-snippet n "func anonymous" w
+snippet an "func anonymous" w
 func ($1) $2${2/.+/ /}{
 	$3
 }
@@ -188,20 +183,17 @@ snippet c "continue in if" eb
 continue
 endsnippet
 
+global !p
+def	pre_expand_():
+	px.common.get_active_completer().reset()
+endglobal
 priority -1
 context "px.snippets.make_context(snip)"
-pre_expand "px.common.get_active_completer().reset()"
+pre_expand "pre_expand_()"
 post_jump "jump_to_if_body_on_err_not_nil(snip)"
 snippet i "if" bw
 if ${1:`!p
-try:
-	once
-except:
-	once = True
-	condition = get_value_for_if(snip.c, snip.context)
-	pass
-
-snip.rv = condition
+snip.rv = get_value_for_if(snip.c, snip.context)
 `} {
 	$0
 }
@@ -268,7 +260,7 @@ fmt.Errorf("$1")
 endsnippet
 
 snippet r "return" bw
-return $1
+return $0
 endsnippet
 
 snippet "return nil" "return nil, err" bw
@@ -293,7 +285,7 @@ endsnippet
 
 context "px.langs.go.is_if_bracket(snip.buffer, snip.line, snip.column-1)"
 priority 2
-snippet "} " "else before closing bracket" bwrA
+snippet "}\s" "else before closing bracket" bwrA
 } else {
 	$1
 }
@@ -314,7 +306,7 @@ struct {
 }
 endsnippet
 
-snippet "((\w+)\s*([\w\[\].]+)(\s+`[^`]+`)?)\s+(to|js|bs|sc|ya)$" "annotation" "not px.syntax.is_string(snip.cursor)" bre
+snippet "((\w+)\s*([\w\[\].\{\}]+)(\s+`[^`]+`)?)\s+(to|js|bs|sc|ya)$" "annotation" "not px.syntax.is_string(snip.cursor)" bre
 `!p
 
 line = match.group(1)
@@ -381,6 +373,7 @@ try:
 except:
 	once = True
 	cursor = px.cursor.get()
+	filename = os.path.basename(px.buffer.get().name)
 
 func = 'Println'
 left = '"'
@@ -399,9 +392,43 @@ if " " in t[1]:
 	left = ' '
 	right = '\\n")'
 
-left = " " + os.path.basename(px.buffer.get().name) + ":" + str(cursor[0]) + left
+left = " " + filename + ":" + str(cursor[0]) + left
 
-`fmt.`!p snip.rv = func`(os.Stderr, "XXXXXX`!p snip.rv=left`${1:`!p snip.rv=get_value_for_if(snip.c, snip.context)`}`!p snip.rv=right`
+`fmt.`!p snip.rv = func`(os.Stderr, "XXXXXX`!p snip.rv=left`${1}`!p snip.rv=right`
+endsnippet
+
+context "px.snippets.make_context(snip)"
+pre_expand "px.common.get_active_completer().reset()"
+snippet lr "fmt printf xxx debug" bwe
+`!p
+
+try:
+	once
+except:
+	once = True
+	cursor = px.cursor.get()
+	filename = os.path.basename(px.buffer.get().name)
+
+func = 'Println'
+left = '"'
+right = ')'
+
+if t[1] != '':
+	func = 'Printf'
+	left = ' ' + t[1] + ': %#v\\n", '
+	right = ')'
+
+	if t[1] == 'err':
+		left = ' ' + t[1] + ': %s\\n", '
+
+if " " in t[1]:
+	func = 'Println'
+	left = ' '
+	right = '\\n")'
+
+left = " " + filename + ":" + str(cursor[0]) + left
+
+`log.`!p snip.rv = func`("XXXXXX`!p snip.rv=left`${1}`!p snip.rv=right`
 endsnippet
 
 snippet main "func main" bw
@@ -473,6 +500,12 @@ endsnippet
 
 priority 5
 context "not is_string() and not is_comment()"
+snippet  ", n" ", nil" ie
+, nil``
+endsnippet
+
+priority 5
+context "not is_string() and not is_comment()"
 snippet  ",  " "err, " ie
 , err``
 endsnippet
@@ -492,7 +525,7 @@ endsnippet
 snippet "return e" "return err" bw
 return err
 endsnippet
-
+#
 global !p
 
 
@@ -537,7 +570,7 @@ endsnippet
 
 context "get_indent_levels(snip, snip.line)"
 post_expand "get_indent_levels(snip, snip.snippet_start[0])"
-snippet "return(.*)([kc])" "return karma/context" bwr
+snippet "(return)?(.*)([kc])" "return karma/context" bwr
 `!p
 quote = '"'
 
@@ -545,16 +578,21 @@ if '"' in t[1]:
     quote = '\`'
 
 subject = "karma"
-if match.group(2) == "c":
+if match.group(3) == "c":
 	subject = "context"
 
-`return`!p snip.rv = match.group(1)``!p snip.rv=subject`.Format(
-	err,
-	`!p snip.rv = quote`$1`!p snip.rv = quote``!p
+prefix=match.group(2)
+if match.group(1):
+	prefix=match.group(1) + prefix
+
+snip.rv=prefix
+``!p snip.rv=subject`.Format(
+`!p snip.rv=snip.context['upper_indent']`	err,
+`!p snip.rv=snip.context['upper_indent']`	`!p snip.rv = quote`$1`!p snip.rv = quote``!p
 
 snip.rv = (",\n" + snip.context['inner_indent'] if t[2] else ",")
 
-`$2`!p
+`$0`!p
 
 snip.rv = ("," if t[2] else "") + "\n" + snip.context['upper_indent'] + ")"
 
@@ -566,9 +604,9 @@ context := karma.
 	Describe("$1", $2)$0
 endsnippet
 
-snippet "^(\s+)(Describe.*\.)" "more describe context" rA
-`!p snip.rv=match.group(1)``!p snip.rv=match.group(2)`
-`!p snip.rv=match.group(1)`Describe("$1", $2)$0
+snippet "(Describe\(.*\)\.)$" "more describe context" r
+`!p snip.rv=match.group(1)`
+	Describe("$1", $2)$0
 endsnippet
 
 
@@ -680,6 +718,10 @@ snippet re "return errors.New" bw
 return errors.New($1)
 endsnippet
 
+snippet en "" w
+errors.New("$0")
+endsnippet
+
 snippet td "todo" bw
 // TODO
 endsnippet
@@ -696,13 +738,11 @@ snippet "^\)\s+?([\w\d_\s\{\}\[\]\*\.]+),\s+?([\w\d_\s\{\}\[\]\*\.]+)" "return m
 ) (`!p snip.rv=match.group(1)`, `!p snip.rv=match.group(2)`$0)
 endsnippet
 
-snippet ej "print json" bw
-`!p
-from random import randint
-
-name = "xxx" + str(randint(10, 9999))
-`ej`!p snip.rv=name`, _ := json.MarshalIndent($1, "", "  ")
-fmt.Printf("`!p snip.rv=t[1]`: %s\n", string(ej`!p snip.rv=name`))
+snippet jpr "print json" bw
+{
+	marshaledXXX, _ := json.MarshalIndent($1, "", "  ")
+	fmt.Printf("`!p snip.rv=t[1]`: %s\n", string(marshaledXXX))
+}
 endsnippet
 
 snippet "^e" "func Test" wrA
@@ -824,7 +864,7 @@ for {
 	${1:${VISUAL}}
 }
 endsnippet
-
+#
 global !p
 def get_padded_equal_sign(selection=None):
 	if not selection:
@@ -846,7 +886,6 @@ snippet = "visual equals" "get_selected_placeholder(snip)" iAe
 endsnippet
 
 priority 10
-post_expand "fix_matchem('(')"
 snippet ( "visual paren" "get_selected_placeholder(snip)" iAe
 $1(`!p snip.rv = snip.context`)
 endsnippet
@@ -979,9 +1018,9 @@ priority 4
 snippet "!= nil[=n]" "" "is_if_condition(snip)" Aier
 == nil$0
 endsnippet
-
-
-########################################################################################
+#
+#
+#########################################################################################
 
 global !p
 def get_program_name_from_usage(snip):
@@ -1141,12 +1180,22 @@ run(buffer, line)
 `
 endsnippet
 
-priority 10
-pre_expand "generate_implementation(snip)"
-snippet "^[\w.]{3,}" "goimpl" r
-endsnippet
+#priority 10
+#pre_expand "generate_implementation(snip)"
+#snippet "^[\w.]{3,}" "goimpl" r
+#endsnippet
 
 context "snip.buffer[snip.line-1].endswith('[') and snip.buffer[snip.line].strip().startswith(']')"
 snippet "" "[\n]" brA
 	$0
+endsnippet
+
+snippet lu "" w
+${1}.Lock()
+defer `!p snip.rv=t[1]`.Unlock()
+endsnippet
+
+snippet ru "" w
+${1}.RLock()
+defer `!p snip.rv=t[1]`.RUnlock()
 endsnippet
