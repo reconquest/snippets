@@ -101,7 +101,7 @@ func ($1) $2${2/.+/ /}{
 endsnippet
 
 snippet "^n" "" "not is_string() and not is_comment()" bweAr
-func $1($2) $3${3/.+/ /}{
+func $1($2) $3`!p snip.rv = (" {" if t[3] != "" else "{") `
 	$4
 }
 
