@@ -8,31 +8,9 @@ for full_name, name in px.libs().items():
     exec("import " + full_name)
 endglobal
 
-context "extract_comment_subject(snip)"
-snippet "^(\s*)/" "comment subject" rA
-`!p snip.rv=match.group(1)`// `!p snip.rv=snip.context` $1
-endsnippet
-
-context "extract_comment_subject(snip, ['var', 'const', 'type', 'block'])"
-snippet "^(\s*)// (\w+) r" "comment represents" rA
-`!p snip.rv=match.group(1)`// `!p snip.rv=match.group(2)` represents $1
-endsnippet
-
-context "extract_comment_subject(snip, 'func')"
-snippet "^(\s*)// (\w+) r" "comment returns" rA
-`!p snip.rv=match.group(1)`// `!p snip.rv=match.group(2)` returns $1
-endsnippet
-
 context "extract_comment_subject(snip, 'func')"
 snippet "^(\s*)// (\w+) s" "comment verb suffix" rA
 `!p snip.rv=match.group(1)`// `!p snip.rv=match.group(2)` `!p
-
-words = re.search(r'^[A-Z][a-z0-9_]+', match.group(2))
-
-if words:
-   #snip.rv = words.group(0).lower()
-else:
-   #snip.rv = match.group(2).lower()
 
 `s $1
 endsnippet
@@ -269,7 +247,7 @@ endsnippet
 
 context "is_if_body(snip)"
 snippet r "" eb
-return ${1:err}
+return ${0:err}
 endsnippet
 
 snippet ,e ", err" iA
@@ -306,7 +284,7 @@ struct {
 }
 endsnippet
 
-snippet "((\w+)\s*([\w\[\].\{\}]+)(\s+`[^`]+`)?)\s+(to|js|bs|sc|ya)$" "annotation" "not px.syntax.is_string(snip.cursor)" bre
+snippet "((\w+)\s*(\*?[\w\[\].\{\}]+)(\s+`[^`]+`)?)\s+(to|js|bs|sc|ya|bi)$" "annotation" "not px.syntax.is_string(snip.cursor)" bre
 `!p
 
 line = match.group(1)
@@ -316,7 +294,8 @@ prefixes = {
     "js": "json",
     "bs": "bson",
     "sc": "schema",
-    "ya": "yaml"
+    "ya": "yaml",
+	"bi": "binding"
 }
 
 prefix = prefixes[match.group(5)]
@@ -588,11 +567,11 @@ if match.group(1):
 snip.rv=prefix
 ``!p snip.rv=subject`.Format(
 `!p snip.rv=snip.context['upper_indent']`	err,
-`!p snip.rv=snip.context['upper_indent']`	`!p snip.rv = quote`$1`!p snip.rv = quote``!p
+`!p snip.rv=snip.context['upper_indent']`	`!p snip.rv = quote`$0`!p snip.rv = quote``!p
 
 snip.rv = (",\n" + snip.context['inner_indent'] if t[2] else ",")
 
-`$0`!p
+``!p
 
 snip.rv = ("," if t[2] else "") + "\n" + snip.context['upper_indent'] + ")"
 
