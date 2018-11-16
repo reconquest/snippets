@@ -8,13 +8,6 @@ for full_name, name in px.libs().items():
     exec("import " + full_name)
 endglobal
 
-context "extract_comment_subject(snip, 'func')"
-snippet "^(\s*)// (\w+) s" "comment verb suffix" rA
-`!p snip.rv=match.group(1)`// `!p snip.rv=match.group(2)` `!p
-
-`s $1
-endsnippet
-
 context "is_if_condition(snip)"
 snippet e "" w
 ${1:${VISUAL}} == "$2"
@@ -95,7 +88,7 @@ endsnippet
 
 priority 10
 context "not is_string() and not is_comment() and should_expand_case(snip.buffer, snip.line)"
-snippet d "switch default" bweA
+snippet d "switch default" bwe
 default:
 	$1
 endsnippet
@@ -131,7 +124,7 @@ endsnippet
 context "is_first_line(snip)"
 priority 1000
 snippet p "" bweA
-package ${1:`!p snip.rv=guess_package_from_file_name(snip.fn)`}
+package ${1:`!p snip.rv=guess_package_from_file_name()`}
 
 $0
 endsnippet
@@ -284,7 +277,7 @@ struct {
 }
 endsnippet
 
-snippet "((\w+)\s*(\*?[\w\[\].\{\}]+)(\s+`[^`]+`)?)\s+(to|js|bs|sc|ya|bi)$" "annotation" "not px.syntax.is_string(snip.cursor)" bre
+snippet "((\w+)\s*(\*?[\w\[\].\{\}]+)(\s+`[^`]+`)?)\s+(to|js|bs|sc|ya|bi|do)$" "annotation" "not px.syntax.is_string(snip.cursor)" bre
 `!p
 
 line = match.group(1)
@@ -295,7 +288,8 @@ prefixes = {
     "bs": "bson",
     "sc": "schema",
     "ya": "yaml",
-	"bi": "binding"
+	"bi": "binding",
+	"do": "docopt"
 }
 
 prefix = prefixes[match.group(5)]
@@ -307,7 +301,11 @@ else:
 	quote = ' \`'
 
 snip.rv = line + quote + prefix
-`:"`!p snip.rv=px.util.convert_camelcase_to_snakecase(match.group(2))`"\`
+`:"${1:`!p snip.rv=px.util.convert_camelcase_to_snakecase(match.group(2))`}"\`
+endsnippet
+
+snippet ,o "" i
+,omitempty
 endsnippet
 
 snippet msi "map[string]interface" w
@@ -367,7 +365,7 @@ if t[1] != '':
 		left = ' ' + t[1] + ': %s\\n", '
 
 if " " in t[1]:
-	func = 'Println'
+	func = 'Fprintf'
 	left = ' '
 	right = '\\n")'
 
@@ -728,6 +726,14 @@ func Test$1(t *testing.T) {
 	test := assert.New(t)
 
 	$2
+}
+endsnippet
+
+snippet "^b" "func Bench" wrA
+func Benchmark$1(b *testing.B) {
+	for i := 0; i < b.N; i++ {
+		$2
+	}
 }
 endsnippet
 
@@ -1176,4 +1182,12 @@ endsnippet
 snippet ru "" w
 ${1}.RLock()
 defer `!p snip.rv=t[1]`.RUnlock()
+endsnippet
+
+snippet ":\s+" "" wr
+$1: $1,
+endsnippet
+
+snippet p "" w
+panic(${1:err})$0
 endsnippet

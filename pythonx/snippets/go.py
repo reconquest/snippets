@@ -79,8 +79,8 @@ def is_comment():
     return px.syntax.is_comment(px.cursor.get())
 
 
-def guess_package_from_file_name(path):
-    return px.langs.go.packages.guess_package_name_from_file_name(path)
+def guess_package_from_file_name():
+    return px.langs.go.packages.guess_package_name_from_file_name()
 
 
 def get_value_for_for(current_value):

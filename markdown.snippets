@@ -3,17 +3,12 @@ snippet (r "github reconquest link" i
 endsnippet
 
 priority -10
-snippet "" "link" "snip.visual_text" ire
-[${1:${VISUAL}}]($2)
-endsnippet
-
-priority -10
 snippet l "link" w
-[${1:https://}]($2)
+[${1:${VISUAL}}](${2:https://})
 endsnippet
 
 priority -10
-snippet i "link" w
+snippet i "image" w
 ![$1](${2:https://})
 endsnippet
 
@@ -26,3 +21,7 @@ snippet "\\?textc(ite)?" "\textcite" r
 \textcite${1:[$2]}{$3}$0
 endsnippet
 
+
+snippet h "" w
+<a href="${1:${VISUAL}}" target="_blank">${1:${VISUAL}}</a>
+endsnippet
