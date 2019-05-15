@@ -144,10 +144,6 @@ func main() {
 }
 endsnippet
 
-#context "is_if_body(snip)"
-#snippet lf "" bweA
-#log.Fatal(err)
-#endsnippet
 
 context "is_for_body(snip)""
 snippet c "continue in if" eb
@@ -160,14 +156,14 @@ def	pre_expand_():
 endglobal
 priority -1
 context "px.snippets.make_context(snip)"
-pre_expand "pre_expand_()"
 post_jump "jump_to_if_body_on_err_not_nil(snip)"
+pre_expand "pre_expand_()"
 snippet i "if" bw
 if ${1:`!p
 snip.rv = get_value_for_if(snip.c, snip.context)
 `} {
-	$0
-}
+	$2
+}$0
 endsnippet
 
 context "not is_string() and not is_comment() and (is_type_decl(snip) or is_func_decl(snip))"
@@ -584,6 +580,12 @@ endsnippet
 snippet "(Describe\(.*\)\.)$" "more describe context" r
 `!p snip.rv=match.group(1)`
 	Describe("$1", $2)$0
+endsnippet
+
+snippet "(karma.)$" "more describe context" r
+`!p snip.rv=match.group(1)`
+	Describe("$1", $2).
+	$0
 endsnippet
 
 
