@@ -1,0 +1,24 @@
+snippet - "->>" b
+$1->>$2: $3
+endsnippet
+
+snippet a "activate" b
+activate $1
+endsnippet
+
+snippet d "activate" b
+deactivate $1
+endsnippet
+
+snippet p "participant" b
+participant $1 as $2
+endsnippet
+
+snippet n "note" b
+Note over $1: $2
+endsnippet
+
+priority -1
+snippet "\w+" "Description" br
+`!p snip.rv = match.group(0)`->>$1: $2
+endsnippet

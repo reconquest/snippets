@@ -5,8 +5,42 @@ from snippets.go import *
 
 import px
 for full_name, name in px.libs().items():
-    exec("import " + full_name)
+	exec("import " + full_name)
 endglobal
+
+context "extract_comment_subject(snip)"
+snippet "^(\s*)/" "comment subject" rA
+`!p snip.rv=match.group(1)`// `!p snip.rv=snip.context` $1
+endsnippet
+
+context "extract_comment_subject(snip, ['var', 'const', 'type', 'block'])"
+snippet "^(\s*)// (\w+) r" "comment represents" rA
+`!p snip.rv=match.group(1)`// `!p snip.rv=match.group(2)` represents $1
+endsnippet
+
+context "extract_comment_subject(snip)"
+snippet "^(\s*)// (\w+) i" "comment is" rA
+`!p snip.rv=match.group(1)`// `!p snip.rv=match.group(2)` is a $1
+endsnippet
+
+context "extract_comment_subject(snip, 'func')"
+snippet "^(\s*)// (\w+) r" "comment returns" rA
+`!p snip.rv=match.group(1)`// `!p snip.rv=match.group(2)` returns $1
+endsnippet
+
+context "extract_comment_subject(snip, 'func')"
+snippet "^(\s*)// (\w+) s" "comment verb suffix" rA
+`!p snip.rv=match.group(1)`// `!p snip.rv=match.group(2)` `!p
+
+words = re.search(r'^[A-Z][a-z0-9_]+', match.group(2))
+
+if words:
+	snip.rv = words.group(0).lower()
+else:
+	snip.rv = match.group(2).lower()
+
+`s $1
+endsnippet
 
 context "is_if_condition(snip)"
 snippet e "" w
@@ -88,19 +122,19 @@ endsnippet
 
 priority 10
 context "not is_string() and not is_comment() and should_expand_case(snip.buffer, snip.line)"
-snippet d "switch default" bwe
+snippet d "switch default" bweA
 default:
 	$1
 endsnippet
 
 priority 10
 context "not is_string() and not is_comment() and should_expand_fallthrough(snip.buffer, snip.line)"
-snippet f "switch fallthrough" bweA
+snippet f "switch fallthrough" bwe
 fallthrough
 endsnippet
 
 
-context "not is_string() and not is_comment() and is_before_first_func(snip)"
+context "not is_string() and not is_comment()"
 priority 10
 snippet "^s$" "type struct auto" bwreA
 `!p
@@ -146,6 +180,7 @@ endsnippet
 
 
 context "is_for_body(snip)""
+priority 1000
 snippet c "continue in if" eb
 continue
 endsnippet
@@ -163,7 +198,7 @@ if ${1:`!p
 snip.rv = get_value_for_if(snip.c, snip.context)
 `} {
 	$2
-}$0
+}
 endsnippet
 
 context "not is_string() and not is_comment() and (is_type_decl(snip) or is_func_decl(snip))"
@@ -186,7 +221,7 @@ typedef = {
 snip.rv = match.group(1) + (match.group(2).strip() + ' ') + typedef`
 endsnippet
 
-context "not is_string() and not is_comment() and is_type_decl(snip)"
+context "not is_string() and not is_comment()"
 snippet "t" "anon struct" wer
 struct {
 	$1
@@ -236,7 +271,7 @@ endsnippet
 
 context "is_if_body(snip)"
 snippet r "" eb
-return ${0:err}
+return ${1:err}
 endsnippet
 
 snippet ,e ", err" iA
@@ -338,7 +373,7 @@ endsnippet
 
 context "px.snippets.make_context(snip)"
 pre_expand "px.common.get_active_completer().reset()"
-snippet pr "fmt printf xxx debug" bwe
+snippet p "fmt printf xxx debug" bwe
 `!p
 
 try:
@@ -348,7 +383,7 @@ except:
 	cursor = px.cursor.get()
 	filename = os.path.basename(px.buffer.get().name)
 
-func = 'Println'
+func = 'Fprintln'
 left = '"'
 right = ')'
 
@@ -363,7 +398,7 @@ if t[1] != '':
 if " " in t[1]:
 	func = 'Fprintf'
 	left = ' '
-	right = '\\n")'
+	right = '")'
 
 left = " " + filename + ":" + str(cursor[0]) + left
 
@@ -415,9 +450,8 @@ snippet "^v" "var" bwrA
 vr$1
 endsnippet
 
-post_jump "px.snippets.expand(snip)"
 snippet "v" "var" bwr
-vr$1
+var $1
 endsnippet
 
 snippet "vr" "var" bwr
@@ -552,11 +586,11 @@ if '"' in t[1]:
 
 subject = "karma"
 if match.group(3) == "c":
-	subject = "context"
+    subject = "context"
 
 prefix=match.group(2)
 if match.group(1):
-	prefix=match.group(1) + prefix
+    prefix=match.group(1) + prefix
 
 snip.rv=prefix
 ``!p snip.rv=subject`.Format(
@@ -572,14 +606,24 @@ snip.rv = ("," if t[2] else "") + "\n" + snip.context['upper_indent'] + ")"
 `
 endsnippet
 
-snippet cd "describe context" w
-context := karma.
-	Describe("$1", $2)$0
+#snippet karma. "karma.Describe" i
+#karma.Describe("$1", $2).
+#endsnippet
+
+#snippet cd "describe context" w
+#context := karma.
+#    Describe("$1", $2)$0
+#endsnippet
+
+snippet "(karma\.)$" "describe context" r
+`!p snip.rv=match.group(1)`
+	Describe("$1", $2).
+    $0
 endsnippet
 
 snippet "(Describe\(.*\)\.)$" "more describe context" r
 `!p snip.rv=match.group(1)`
-	Describe("$1", $2)$0
+Describe("$1", $2).$0
 endsnippet
 
 snippet "(karma.)$" "more describe context" r
@@ -588,28 +632,6 @@ snippet "(karma.)$" "more describe context" r
 	$0
 endsnippet
 
-
-context "get_indent_levels(snip, snip.line)"
-post_expand "get_indent_levels(snip, snip.snippet_start[0])"
-snippet "return(.*)s" "return ser" bwr
-`!p
-quote = '"'
-
-if '"' in t[1]:
-    quote = '\`'
-
-`return`!p snip.rv = match.group(1)`ser.Errorf(
-	err,
-	`!p snip.rv = quote`$1`!p snip.rv = quote``!p
-
-snip.rv = (",\n" + snip.context['inner_indent'] if t[2] else ",")
-
-`$2`!p
-
-snip.rv = ("," if t[2] else "") + "\n" + snip.context['upper_indent'] + ")"
-
-`
-endsnippet
 
 post_jump "px.snippets.expand(snip)"
 snippet rh "" b
@@ -701,11 +723,30 @@ errors.New("$0")
 endsnippet
 
 snippet td "todo" bw
-// TODO
-endsnippet
+`!p
+def split_long_todo_line(t, snip):
+    if snip.c != "":
+        return snip.c
 
-snippet l "last slice usage" iw
-${1:`!p snip.rv=px.langs.go.get_previous_slice_usage()`}[$2]
+    ts = int(vim.eval('&ts'))
+
+    line = snip.buffer[snip.snippet_start[0]]
+
+    if len(line) > 79 and ' ' in t[1]:
+        matches = re.match(r'^(\s*// )', line).groups()
+
+        split_boundary = len(line) - len(t[1])
+        first_line, second_line = t[1].rsplit(' ', 1)
+
+        indentation = matches[0] + ' ' * (
+            split_boundary - len(matches[0].expandtabs(ts)) + 1)
+
+        t[1] = indentation + second_line
+
+        return first_line + "\n"
+    else:
+        return ''
+`// TODO(seletskiy): `!p snip.rv=split_long_todo_line(t, snip)`$1
 endsnippet
 
 snippet "(func\s.*\)\s+)([\w\d_\s\{\}\[\]\*\.]+),\s?([\w\d_\s\{\}\[\]\*\.]+)" "add commas around multple return variables" rA
@@ -716,7 +757,7 @@ snippet "^\)\s+?([\w\d_\s\{\}\[\]\*\.]+),\s+?([\w\d_\s\{\}\[\]\*\.]+)" "return m
 ) (`!p snip.rv=match.group(1)`, `!p snip.rv=match.group(2)`$0)
 endsnippet
 
-snippet jpr "print json" bw
+snippet pj "print json" bw
 {
 	marshaledXXX, _ := json.MarshalIndent($1, "", "  ")
 	fmt.Printf("`!p snip.rv=t[1]`: %s\n", string(marshaledXXX))
@@ -816,7 +857,7 @@ else:
     type = bindings[1]
 
 ctype = type[0].upper() + type[1:]
-`func New`!p snip.rv=ctype`($1) (`!p snip.rv = type`, error) {
+`func New`!p snip.rv=ctype`($1) `!p snip.rv = type` {
 	$2
 }
 endsnippet
@@ -834,7 +875,7 @@ else:
     type = bindings[1]
 
 ctype = type[0].upper() + type[1:]
-`func New`!p snip.rv=ctype`($1) (*`!p snip.rv = type`, error) {
+`func New`!p snip.rv=ctype`($1) *`!p snip.rv = type` {
 	$2
 }
 endsnippet
@@ -845,9 +886,9 @@ for ${2:_}, ${3} := range ${1:`!p snip.rv=get_value_for_for(snip.c)`} {
 }
 endsnippet
 
-snippet fo "for without body" bw
-for {
-	${1:${VISUAL}}
+snippet fi "for i" bw
+for ${1:i} := 0; $1 < $2; $1++ {
+	${0:${VISUAL}}
 }
 endsnippet
 #
@@ -892,10 +933,17 @@ snippet / "visual not nil" "get_selected_placeholder(snip)" iAe
 endsnippet
 
 global !p
-def is_inside_brackets(sni):
+def is_inside_brackets(snip):
 	line = snip.buffer[snip.line]
+	before = line[:snip.column]
 
-	return px.cursor.is_between(line, snip.cursor, '\[', '\]')
+	if px.cursor.is_between(line, snip.cursor, '\[', '\]'):
+		 return True
+
+	if re.match(r'.*\[[^]]*$', before):
+		return True
+
+	return False
 
 
 def before_equal_sign(snip):
@@ -912,6 +960,11 @@ def is_inside_inline_struct_instance(snip):
 	return '{' in part
 
 
+def is_inside_if_err(snip):
+	return px.whitespaces.match_higher_indent(
+		snip.buffer, snip.cursor, 'if err\s+'
+	)
+
 def is_inside_struct_instance(snip):
 	if is_inside_anon_struct(snip):
 		return True
@@ -920,7 +973,7 @@ def is_inside_struct_instance(snip):
 		return True
 
 	return px.whitespaces.match_higher_indent(
-		snip.buffer, snip.cursor, '[\w.]+{$|} {$'
+		snip.buffer, snip.cursor, '[\w.]+{$|[^{]} {$'
 	)
 
 def is_inside_anon_struct(snip):
@@ -947,6 +1000,11 @@ def is_viable_for_equal_statement(snip):
 		not is_inside_map(snip) and \
 		not is_inside_case_condition(snip)
 endglobal
+
+context "is_inside_if_err(snip)"
+snippet p "panic" b
+panic(err)
+endsnippet
 
 context "not is_string() and not is_comment() and is_viable_for_equal_statement(snip)"
 snippet : "colon equals auto" iAe
@@ -1018,7 +1076,7 @@ def guess_binary_name_from_path():
 
 def add_usage(snip):
 	px.langs.go.goto_const();
-	snip.expand_anon("""var version = "${2:1.0}"
+	snip.expand_anon("""var version = "${2:[manual build]}"
 
 var usage = \`{PROGRAM} - $1
 
@@ -1038,7 +1096,7 @@ endglobal
 
 post_jump "if snip.tabstop == 0: add_usage(snip)"
 snippet do "docopt" b
-args, err := docopt.Parse(usage, nil, true, "${1:`!p snip.rv = guess_binary_name_from_path()`} " + version, false)
+args, err := docopt.ParseArgs(usage, nil, "${1:`!p snip.rv = guess_binary_name_from_path()`} " + version)
 if err != nil {
 	panic(err)
 }
@@ -1063,7 +1121,7 @@ def fix_matchem(char):
 endglobal
 
 post_expand "fix_matchem('[')"
-snippet args[ "args[blah]" wA
+snippet args[ "args[blah]" wi
 args[`!p
 
 if t[1].startswith('-'):
@@ -1190,6 +1248,6 @@ snippet ":\s+" "" wr
 $1: $1,
 endsnippet
 
-snippet p "" w
-panic(${1:err})$0
+snippet ctx "ctx context.Context" w
+ctx context.Context
 endsnippet

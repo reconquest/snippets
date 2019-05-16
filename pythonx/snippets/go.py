@@ -15,12 +15,10 @@ def _line(snip, diff=0):
 
 
 def should_expand_fallthrough(buffer, line):
-    if not px.langs.go.is_switch(buffer, line):
-        if not px.langs.go.is_select(buffer, line):
-            return False
+    if not px.langs.go.is_case(buffer, line):
+        return False
 
-    prev_line = px.buffer.get_prev_nonempty_line(buffer, line)
-    return prev_line.strip().startswith('case ')
+    return True
 
 
 def should_expand_case(buffer, line):
@@ -28,13 +26,7 @@ def should_expand_case(buffer, line):
         if not px.langs.go.is_select(buffer, line):
             return False
 
-    switch_line = px.langs.go.get_bracket_line(buffer, line)
-    switch_line_indent = px.whitespaces.get_indentation(buffer[switch_line])
-
-    if switch_line_indent == px.whitespaces.get_indentation(buffer[line]):
-        return True
-
-    return False
+    return True
 
 
 def is_first_line(snip):
@@ -130,7 +122,10 @@ def jump_to_if_body_on_err_not_nil(snip):
                 vim.command('call feedkeys("\<C-J>")')
 
         if snip.tabstop == 2:
-            px.snippets.expect_cursor_jump(px.cursor.get())
+            px.snippets.expect_cursor_jump(
+                px.cursor.get(),
+                px.snippets._highlight_completion
+            )
 
 
 def action_define_method(cursor, context, tabstops, pointer=False):
@@ -246,7 +241,8 @@ def should_expand_amp(snip):
     (higher_line, _) = higher
 
     if prev_line == higher_line and prev_line.strip().startswith('if '):
-        return True
+        if not prev_line.strip().endswith('{'):
+            return True
 
     return False
 
@@ -460,7 +456,7 @@ def generate_implementation(snip):
 
 def extract_comment_subject(
     snip,
-    kind=['type', 'func', 'var', 'const', 'block']
+    kind=['type', 'func', 'var', 'const']
 ):
     if is_string():
         return
@@ -479,10 +475,6 @@ def extract_comment_subject(
     matches = re.match(r'^func ([^\)]+\)\s)?(\w+)', next_line)
     if matches and 'func' in kind:
         return matches.group(2)
-
-    matches = re.match(r'^\s+(\w+).*', next_line)
-    if matches and 'block' in kind:
-        return matches.group(1)
 
     matches = re.match(r'^(var|const) ([\w]+)', next_line)
     if matches and ('const' in kind or 'var' in kind):

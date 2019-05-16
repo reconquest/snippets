@@ -1,0 +1,34 @@
+global !p
+from snippets import *
+from snippets.go import *
+import px
+
+for full_name, name in px.libs().items():
+	exec("import " + full_name)
+endglobal
+global !p
+
+
+def is_inside_message(snip):
+    return px.whitespaces.match_higher_indent(
+        snip.buffer,
+        snip.cursor,
+        'message\s+'
+    )
+endglobal
+
+snippet "^m" "message" bAr
+message $1 {
+    $0
+}
+endsnippet
+
+context "is_inside_message(snip)"
+snippet s "string field message" bA
+string $1;
+endsnippet
+
+context "is_inside_message(snip)"
+snippet vr "required message" w
+[ (validator.field) = {msg_exists : true} ]
+endsnippet
