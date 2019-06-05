@@ -191,13 +191,13 @@ def	pre_expand_():
 endglobal
 priority -1
 context "px.snippets.make_context(snip)"
-post_jump "jump_to_if_body_on_err_not_nil(snip)"
 pre_expand "pre_expand_()"
+post_jump "jump_to_if_body_on_err_not_nil(snip)"
 snippet i "if" bw
 if ${1:`!p
 snip.rv = get_value_for_if(snip.c, snip.context)
 `} {
-	$2
+	$0
 }
 endsnippet
 
