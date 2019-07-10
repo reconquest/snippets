@@ -144,7 +144,7 @@ if t[2] == "" or re.match("^([\w\[\]{}]+)$", t[2]):
 else:
 		type_left = " struct {\n\t"
 		type_right = "\n}\n"
-		if re.match("^\w+\(\)", t[2]):
+		if re.match("^\w+\(", t[2]):
 				type_left = " interface {\n\t"
 `type $1`!p snip.rv=type_left`$2`!p snip.rv=type_right`
 endsnippet
@@ -1102,7 +1102,7 @@ if err != nil {
 }
 endsnippet
 
-snippet - "docopt command declaration" "is_inside_docopt_section(snip, 'usage')" beA
+snippet - "docopt command declaration" "is_inside_docopt_section(snip, 'usage') and not is_inside_docopt_section(snip, 'options')" beA
 `!p snip.rv = get_program_name_from_usage(snip)` -$0
 endsnippet
 
