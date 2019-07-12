@@ -757,7 +757,7 @@ snippet "^\)\s+?([\w\d_\s\{\}\[\]\*\.]+),\s+?([\w\d_\s\{\}\[\]\*\.]+)" "return m
 ) (`!p snip.rv=match.group(1)`, `!p snip.rv=match.group(2)`$0)
 endsnippet
 
-snippet pj "print json" bw
+snippet jp "print json" bw
 {
 	marshaledXXX, _ := json.MarshalIndent($1, "", "  ")
 	fmt.Printf("`!p snip.rv=t[1]`: %s\n", string(marshaledXXX))
