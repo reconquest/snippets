@@ -269,11 +269,6 @@ snippet "return nil" "return nil, err" bw
 return nil, err
 endsnippet
 
-context "is_if_body(snip)"
-snippet r "" eb
-return ${1:err}
-endsnippet
-
 snippet ,e ", err" iA
 , err$0
 endsnippet
@@ -632,11 +627,6 @@ snippet "(karma.)$" "more describe context" r
 	$0
 endsnippet
 
-
-post_jump "px.snippets.expand(snip)"
-snippet rh "" b
-return h$1
-endsnippet
 
 snippet "return n" "return nil" bw
 return nil
