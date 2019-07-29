@@ -472,7 +472,7 @@ def extract_comment_subject(
     if matches and 'type' in kind:
         return matches.group(1)
 
-    matches = re.match(r'^func ([^\)]+\)\s)?(\w+)', next_line)
+    matches = re.match(r'^func (\([^\)]+\)\s)?(\w+)', next_line)
     if matches and 'func' in kind:
         return matches.group(2)
 
