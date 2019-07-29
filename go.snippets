@@ -601,15 +601,6 @@ snip.rv = ("," if t[2] else "") + "\n" + snip.context['upper_indent'] + ")"
 `
 endsnippet
 
-#snippet karma. "karma.Describe" i
-#karma.Describe("$1", $2).
-#endsnippet
-
-#snippet cd "describe context" w
-#context := karma.
-#    Describe("$1", $2)$0
-#endsnippet
-
 snippet "(karma\.)$" "describe context" r
 `!p snip.rv=match.group(1)`
 	Describe("$1", $2).
@@ -620,13 +611,6 @@ snippet "(Describe\(.*\)\.)$" "more describe context" r
 `!p snip.rv=match.group(1)`
 Describe("$1", $2).$0
 endsnippet
-
-snippet "(karma.)$" "more describe context" r
-`!p snip.rv=match.group(1)`
-	Describe("$1", $2).
-	$0
-endsnippet
-
 
 snippet "return n" "return nil" bw
 return nil
