@@ -7,20 +7,75 @@ for full_name, name in px.libs().items():
 	exec("import " + full_name)
 endglobal
 global !p
-
-
 def is_inside_message(snip):
     return px.whitespaces.match_higher_indent(
         snip.buffer,
         snip.cursor,
         'message\s+'
     )
+
+
+def is_inside_service(snip):
+    return px.whitespaces.match_higher_indent(
+        snip.buffer,
+        snip.cursor,
+        'service\s+'
+    )
+
+
+def is_inside_rpc(snip):
+    return px.whitespaces.match_higher_indent(
+        snip.buffer,
+        snip.cursor,
+        'rpc\s+'
+    )
+
+
+def is_inside_rpc_option(snip):
+    return px.whitespaces.match_higher_indent(
+        snip.buffer,
+        snip.cursor,
+        'option\s+'
+    )
+
+
+def is_surrounded_by(snip, before, after):
+    return px.cursor.is_between(
+        snip.buffer[snip.cursor[0]],
+        snip.cursor,
+        before,
+        after
+    )
 endglobal
 
 snippet "^m" "message" bAr
 message $1 {
-    $0
+  $0
 }
+endsnippet
+
+context "is_inside_service(snip)"
+snippet "r" "rpc" bAr
+rpc $1(${2:`!p snip.rv=t[1] + "Request"`}) returns (${3:`!p snip.rv=t[1] + "Response"`}) {
+  $4
+}
+endsnippet
+
+context "is_inside_rpc(snip)"
+snippet "o" "rpc option http annotation" bAr
+option (google.api.http) = {
+  $1
+};
+endsnippet
+
+context "is_inside_rpc_option(snip)"
+snippet "g" "http annotation get" bAr
+get : "/v1/$1"
+endsnippet
+
+context "is_inside_rpc_option(snip)"
+snippet "b" "http annotation body" bAr
+body : "${1:*}"
 endsnippet
 
 context "is_inside_message(snip)"
@@ -29,6 +84,26 @@ string $1;
 endsnippet
 
 context "is_inside_message(snip)"
-snippet vr "required message" w
-[ (validator.field) = {msg_exists : true} ]
+snippet r "repeated field message" bA
+repeated $1
+endsnippet
+
+context "is_inside_message(snip)"
+snippet ts "string field message" bA
+google.protobuf.Timestamp $1;
+endsnippet
+
+context "is_inside_message(snip)"
+snippet [ "field annotation" w
+[ $1 ]
+endsnippet
+
+context "is_surrounded_by(snip, '\[', '\]')"
+snippet e "required message" w
+(validator.field) = {msg_exists : true}
+endsnippet
+
+context "is_surrounded_by(snip, '\[', '\]')"
+snippet n "custom name" w
+(gogoproto.customname) = "$1"
 endsnippet
