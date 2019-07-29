@@ -303,7 +303,7 @@ struct {
 }
 endsnippet
 
-snippet "((\w+)\s*(\*?[\w\[\].\{\}]+)(\s+`[^`]+`)?)\s+(to|js|bs|sc|ya|bi|do)$" "annotation" "not px.syntax.is_string(snip.cursor)" bre
+snippet "((\w+)\s*(\*?[\w\[\].\{\}*]+)(\s+`[^`]+`)?)\s+(to|js|bs|sc|ya|bi|do)$" "annotation" "not px.syntax.is_string(snip.cursor)" bre
 `!p
 
 line = match.group(1)
