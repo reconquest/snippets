@@ -601,6 +601,10 @@ snip.rv = ("," if t[2] else "") + "\n" + snip.context['upper_indent'] + ")"
 `
 endsnippet
 
+snippet kd "" w
+karma.Describe("$1", $2)$0
+endsnippet
+
 snippet "(karma\.)$" "describe context" r
 `!p snip.rv=match.group(1)`
 	Describe("$1", $2).
