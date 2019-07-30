@@ -877,17 +877,17 @@ def get_padded_equal_sign(selection=None):
 		selection = px.buffer.get()[cursor[0]][:cursor[1]]
 
 	if not selection:
-		return "="
+		return "=", ""
 
 	if re.match(r'\w', selection[-1]):
-		return " = "
+		return " = ", selection
 	else:
-		return "= "
+		return "= ", selection
 endglobal
 
 priority 10
 snippet = "visual equals" "get_selected_placeholder(snip)" iAe
-`!p snip.rv = snip.context + get_padded_equal_sign(snip.context)`
+`!p snip.rv = snip.context``!p snip.rv, _ = get_padded_equal_sign(snip.context)`
 endsnippet
 
 priority 10
@@ -994,8 +994,8 @@ snippet : "colon space auto" iAe
 :`!p snip.rv = ' '`
 endsnippet
 
-snippet = "" "not is_string() and not is_comment()" iAe
-`!p snip.rv = get_padded_equal_sign()`
+snippet = "" "not is_string() and not is_comment() and {'selection': None}" iAe
+`!p snip.rv, snip.context['selection'] = get_padded_equal_sign(snip.context['selection'])`
 endsnippet
 
 priority 2
