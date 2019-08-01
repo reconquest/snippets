@@ -572,7 +572,7 @@ endsnippet
 
 context "get_indent_levels(snip, snip.line)"
 post_expand "get_indent_levels(snip, snip.snippet_start[0])"
-snippet "(return)?(.*)([kc])" "return karma/context" bwr
+snippet "(return)?(.*\W)([kc])" "return karma/context" bwr
 `!p
 quote = '"'
 
@@ -793,14 +793,13 @@ while True:
 snip.rv=result`
 endsnippet
 
+priority 10
 context "not is_string() and not is_comment() and px.langs.go.gocode_can_complete()"
 pre_expand "gocode_complete_function(snip)"
 snippet "(\w+\.\w+)" "" re
 endsnippet
 
-global !p
-endglobal
-
+priority 5
 context "should_expand_amp(snip)"
 snippet & "expand amp" Awe
 && $0

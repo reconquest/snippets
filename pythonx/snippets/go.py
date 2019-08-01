@@ -301,7 +301,6 @@ def docopt_get_longest_option(buffer, usage_begins_at):
     longest_option = ''
     for line in buffer[usage_begins_at:]:
         if line.strip() == '`' or line.strip() == '`)':
-            print(line)
             break
 
         option = parse_docopt_option(line, tab_width)
