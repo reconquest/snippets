@@ -80,7 +80,7 @@ endsnippet
 
 context "is_inside_message(snip)"
 snippet s "string field message" bA
-string $1;
+string $1 ${2:`!p snip.rv = "[ (gogoproto.customname) = \"ID\" ]" if re.match(r'^id\W', t[1]) else ""`};
 endsnippet
 
 context "is_inside_message(snip)"
@@ -90,7 +90,7 @@ endsnippet
 
 context "is_inside_message(snip)"
 snippet ts "string field message" bA
-google.protobuf.Timestamp $1;
+google.protobuf.Timestamp $1 [ (gogoproto.stdtime) = true ];
 endsnippet
 
 context "is_inside_message(snip)"
@@ -106,4 +106,15 @@ endsnippet
 context "is_surrounded_by(snip, '\[', '\]')"
 snippet n "custom name" w
 (gogoproto.customname) = "$1"
+endsnippet
+
+context "is_surrounded_by(snip, '\[', '\]')"
+snippet t "gogoproto stdtime" w
+(gogoproto.stdtime) = true
+endsnippet
+
+snippet "^s" "service" br
+service $1 {
+    $0
+}
 endsnippet
