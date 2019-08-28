@@ -1,13 +1,3 @@
-global !p
-
-from snippets import *
-from snippets.go import *
-
-import px
-for full_name, name in px.libs().items():
-	exec("import " + full_name)
-endglobal
-
 context "extract_comment_subject(snip)"
 snippet "^(\s*)/" "comment subject" rA
 `!p snip.rv=match.group(1)`// `!p snip.rv=snip.context` $1
