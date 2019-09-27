@@ -1,3 +1,10 @@
+global !p
+
+from snippets import *
+from snippets.go import *
+
+endglobal
+
 context "extract_comment_subject(snip)"
 snippet "^(\s*)/" "comment subject" rA
 `!p snip.rv=match.group(1)`// `!p snip.rv=snip.context` $1
@@ -293,7 +300,7 @@ struct {
 }
 endsnippet
 
-snippet "((\w+)\s*(\*?[\w\[\].\{\}*]+)(\s+`[^`]+`)?)\s+(to|js|bs|sc|ya|bi|do)$" "annotation" "not px.syntax.is_string(snip.cursor)" bre
+snippet "((\w+)\s*(\*?[\w\[\].\{\}*]+)(\s+`[^`]+`)?)\s+(to|js|bs|sc|ya|bi|do|xo)$" "annotation" "not px.syntax.is_string(snip.cursor)" bre
 `!p
 
 line = match.group(1)
@@ -305,7 +312,8 @@ prefixes = {
     "sc": "schema",
     "ya": "yaml",
 	"bi": "binding",
-	"do": "docopt"
+	"do": "docopt",
+	"xo": "xorm",
 }
 
 prefix = prefixes[match.group(5)]
@@ -317,7 +325,11 @@ else:
 	quote = ' \`'
 
 snip.rv = line + quote + prefix
-`:"${1:`!p snip.rv=px.util.convert_camelcase_to_snakecase(match.group(2))`}"\`
+
+surround = ""
+if prefix == "xorm":
+	surround = "'"
+`:"`!p snip.rv=surround`${1:`!p snip.rv=px.util.convert_camelcase_to_snakecase(match.group(2))`}`!p snip.rv=surround`"\`
 endsnippet
 
 snippet ,o "" i
