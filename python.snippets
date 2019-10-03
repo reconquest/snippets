@@ -84,6 +84,10 @@ snippet p "print" b
 print(${1:${VISUAL}})
 endsnippet
 
+snippet pf "print to file" b
+with open('/tmp/log','ab') as f: f.writelines([repr($1), "\n"])
+endsnippet
+
 snippet "(\s+)if n" "if not" br
 `!p snip.rv = match.group(1)`if not
 endsnippet

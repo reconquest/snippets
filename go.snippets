@@ -1,8 +1,6 @@
 global !p
-
 from snippets import *
 from snippets.go import *
-
 endglobal
 
 context "extract_comment_subject(snip)"
@@ -87,10 +85,13 @@ def insert_space(snip, space=" "):
 	)
 endglobal
 
+global !p
+def is_manually_triggered():
+    return vim.eval('get(g:, "_expand_snippet", "0")') == '1'
+endglobal
+
 priority 3
-# preserving original line 'and snip.buffer[snip.line]' to prevent
-# ) deletion by matchem
-context "not is_string() and snip.buffer[snip.line]"
+context "not is_string() and not is_manually_triggered() and snip.buffer[snip.line]"
 post_jump "insert_space(snip)"
 snippet , "comma auto" eAi
 ,X
@@ -219,7 +220,7 @@ snip.rv = match.group(1) + (match.group(2).strip() + ' ') + typedef`
 endsnippet
 
 context "not is_string() and not is_comment()"
-snippet "t" "anon struct" wer
+snippet "t" "anon struct" ew
 struct {
 	$1
 }
@@ -442,6 +443,7 @@ func main() {
 }
 endsnippet
 
+context "snip.buffer[snip.cursor[0]] == 'v'"
 post_jump "px.snippets.expand(snip)"
 snippet "^v" "var" bwrA
 vr$1
@@ -574,7 +576,7 @@ endsnippet
 
 context "get_indent_levels(snip, snip.line)"
 post_expand "get_indent_levels(snip, snip.snippet_start[0])"
-snippet "(return)?(.*\W)([kc])" "return karma/context" bwr
+snippet "(return)?(.*\W)([k])" "return karma/context" bwr
 `!p
 quote = '"'
 
@@ -582,8 +584,6 @@ if '"' in t[1]:
     quote = '\`'
 
 subject = "karma"
-if match.group(3) == "c":
-    subject = "context"
 
 prefix=match.group(2)
 if match.group(1):
@@ -812,6 +812,7 @@ snippet ", ," "underscore auto" iAr
 , _
 endsnippet
 
+context "snip.buffer[snip.cursor[0]] == 't'"
 snippet "^t" "not is_string() and not is_comment()" wAre
 type (
     ${1:`!p snip.rv=snip.v.text.replace("type ", "\t")`}
@@ -1231,7 +1232,7 @@ snippet ctx "ctx context.Context" w
 ctx context.Context
 endsnippet
 
-priority 99999
-snippet f "run karma.Format on that var" w
-Format(${1:err}, "$0")
-endsnippet
+#priority 99999
+#snippet f "run karma.Format on that var" w
+#Format(${1:err}, "$0")
+#endsnippet
