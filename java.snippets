@@ -3,9 +3,8 @@ import re
 import os.path
 import vim
 
-import px
-for full_name, name in px.libs().items():
-    exec("import " + full_name)
+from snippets import *
+from snippets.java import *
 endglobal
 
 snippet i "if"
@@ -32,6 +31,14 @@ endsnippet
 
 snippet @o "Description" w
 @Override
+endsnippet
+
+context "is_first_line(snip)"
+priority 1000
+snippet p "" bweA
+package `!p snip.rv=guess_package_from_file_name()`;
+
+$0
 endsnippet
 
 snippet p "" w
@@ -112,12 +119,6 @@ snippet v "" w
 $1 ${2:`!p snip.rv=px.langs.java.get_var_name_by_class_name(t[1])`}$0
 endsnippet
 
-
-snippet b "" w
-@BindView(${1:${VISUAL}})
-$0;
-endsnippet
-
 snippet ms "" w
 `!p
 import random
@@ -125,11 +126,8 @@ try:
 	_id
 except:
 	_id = str(random.randint(1, 10000)) + "XXXXXX"
-`
-Instant startedAt`!p snip.rv=_id` = Instant.now();
-
+`Instant startedAt`!p snip.rv=_id` = Instant.now();
 ${VISUAL}
-
 Instant finishedAt`!p snip.rv=_id` = Instant.now();
 long timeElapsed`!p snip.rv=_id` = Duration.between(startedAt`!p snip.rv=_id`, finishedAt`!p snip.rv=_id`).toMillis(); // in millis
 
@@ -142,4 +140,8 @@ except:
 	filename = os.path.basename(px.buffer.get().name)
 
 	snip.rv = filename + ":" + str(cursor[0]) + " " +t[1]`: %s\n", timeElapsed`!p snip.rv=_id`);
+endsnippet
+
+snippet n "" w
+`!p snip.rv=t[2]` ${1} = new ${2}($0);
 endsnippet

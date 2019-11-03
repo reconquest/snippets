@@ -29,9 +29,6 @@ def should_expand_case(buffer, line):
     return True
 
 
-def is_first_line(snip):
-    return snip.line == 0
-
 
 def is_if_condition(snip):
     current_line = _line(snip)
