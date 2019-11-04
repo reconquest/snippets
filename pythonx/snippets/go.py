@@ -1,15 +1,6 @@
 import re
 import vim
 
-import px.util
-import px.whitespaces
-import px.buffer
-import px.snippets
-import px.cursor
-
-import px.langs.go
-
-
 def _line(snip, diff=0):
     return snip.buffer[snip.line + diff]
 
