@@ -70,7 +70,7 @@ snip.rv = filename + ":" + str(cursor[0]) + " " +t[1]
 ` %s \n", ${1});
 endsnippet
 
-snippet pc "" w
+snippet uc "" w
 public class ${1:`!p snip.rv=os.path.basename(px.buffer.get().name).replace('.java', '')`} {
 	$0
 }
