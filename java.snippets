@@ -148,3 +148,23 @@ endsnippet
 snippet n "" w
 `!p snip.rv=t[2]` ${1} = new ${2}($0);
 endsnippet
+
+snippet ur "" w
+@$2
+@Path("/{param}")
+@Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
+public Response $1() {
+	$0
+}
+endsnippet
+
+snippet "(\s+)([^ ]+)\s+([^;]+);\s*xml" "" wr
+`!p snip.rv=match.group(1)`@XmlElement(name = "${1:`!p snip.rv=match.group(3)`}")
+`!p snip.rv=match.group(1)``!p snip.rv=match.group(2)` `!p snip.rv=match.group(3)`;
+endsnippet
+
+snippet uu "" w
+public `!p snip.rv=os.path.basename(px.buffer.get().name).replace('.java', '')`($1) {
+	//$0
+}
+endsnippet

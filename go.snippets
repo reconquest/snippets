@@ -576,7 +576,7 @@ endsnippet
 
 context "get_indent_levels(snip, snip.line)"
 post_expand "get_indent_levels(snip, snip.snippet_start[0])"
-snippet "(return)?(.*\W)([k])" "return karma/context" bwr
+snippet "(return)?(.*\W)([kc])" "return karma/context" bwr
 `!p
 quote = '"'
 
@@ -584,6 +584,8 @@ if '"' in t[1]:
     quote = '\`'
 
 subject = "karma"
+if match.group(3) == "c":
+	subject = "context"
 
 prefix=match.group(2)
 if match.group(1):
