@@ -118,6 +118,18 @@ snippet vv "" w
 private $1 ${2:`!p snip.rv=px.langs.java.get_var_name_by_class_name(t[1])`};
 endsnippet
 
+snippet vf "" w
+private $0;
+endsnippet
+
+snippet uf "" w
+public $0;
+endsnippet
+
+snippet tf "" w
+protected $0;
+endsnippet
+
 snippet v "" w
 $1 ${2:`!p snip.rv=px.langs.java.get_var_name_by_class_name(t[1])`}$0
 endsnippet
@@ -167,4 +179,12 @@ snippet uu "" w
 public `!p snip.rv=os.path.basename(px.buffer.get().name).replace('.java', '')`($1) {
 	//$0
 }
+endsnippet
+
+snippet s "" w
+String $0;
+endsnippet
+
+snippet b "" w
+boolean $0;
 endsnippet
