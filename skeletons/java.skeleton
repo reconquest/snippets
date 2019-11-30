@@ -1,0 +1,10 @@
+`!p
+import px
+import px.langs.java
+from snippets import *
+from snippets.java import *
+`package `!p snip.rv=guess_package_name_from_file_name()`;
+`!p snip.rv=guess_imports_from_file_name()`
+public class `!p snip.rv=guess_class_name_from_file_name()` {
+	$0
+}
