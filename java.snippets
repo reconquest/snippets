@@ -39,7 +39,7 @@ endsnippet
 context "is_first_line(snip)"
 priority 1000
 snippet p "" bweA
-package `!p snip.rv=guess_package_from_file_name()`;
+package `!p snip.rv=guess_package_name_from_file_name()`;
 
 $0
 endsnippet
@@ -71,7 +71,7 @@ snip.rv = filename + ":" + str(cursor[0]) + " " +t[1]
 endsnippet
 
 snippet uc "" w
-public class ${1:`!p snip.rv=os.path.basename(px.buffer.get().name).replace('.java', '')`} {
+public class ${1:`!p snip.rv=guess_class_name_from_file_name()`} {
 	$0
 }
 endsnippet
@@ -171,7 +171,7 @@ public Response $1() {
 endsnippet
 
 snippet "(\s+)([^ ]+)\s+([^;]+);\s*xml" "" wr
-`!p snip.rv=match.group(1)`@XmlElement(name = "${1:`!p snip.rv=match.group(3)`}")
+`!p snip.rv=match.group(1)`@XmlElement(name = "`!p snip.rv=match.group(3)`")
 `!p snip.rv=match.group(1)``!p snip.rv=match.group(2)` `!p snip.rv=match.group(3)`;
 endsnippet
 
