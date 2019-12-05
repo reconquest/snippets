@@ -6,8 +6,13 @@ import px.buffer
 
 def guess_package_name_from_file_name():
     path = os.path.dirname(px.buffer.get().name)
-    src = path.find('/src/')
-    if src != -1:
+
+    found = True
+    src = path.find('src/')
+    if src == -1 and not path.startswith('src/'):
+        found = False
+
+    if found:
         path = path[src+len('/src/'):]
         java = path.find('/java/')
         if java != -1:

@@ -192,3 +192,19 @@ endsnippet
 snippet o "" w
 ${1} `!p snip.rv=px.langs.java.get_var_name_by_class_name(t[1])` = $0;
 endsnippet
+
+snippet pp "" w
+System.err.printf(
+	"XXXXXXX `!p
+try:
+	once
+except:
+	once = True
+	cursor = px.cursor.get()
+	filename = os.path.basename(px.buffer.get().name)
+
+snip.rv = filename + ":" + str(cursor[0]) + " " +t[1]
+` %s \n",
+		org.apache.commons.lang.builder.ReflectionToStringBuilder.toString(
+			${1}, org.apache.commons.lang.builder.ToStringStyle.SHORT_PREFIX_STYLE));
+endsnippet
