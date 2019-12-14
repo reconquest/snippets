@@ -237,14 +237,18 @@ snippet no "" w
 new Object[]{${VISUAL}}
 endsnippet
 
-snippet tt "" w
+snippet tr "" w
 $0transaction(() -> {
 	${1:${VISUAL}}
 });
 endsnippet
 
-snippet tr "" w
+snippet rtr "" w
 return transaction(() -> {
 	${1:${VISUAL}}
 });$0
+endsnippet
+
+snippet e "" w
+extends $0
 endsnippet

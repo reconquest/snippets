@@ -1234,7 +1234,16 @@ snippet ctx "ctx context.Context" w
 ctx context.Context
 endsnippet
 
-#priority 99999
-#snippet f "run karma.Format on that var" w
-#Format(${1:err}, "$0")
-#endsnippet
+priority 10
+snippet f "false" w
+false
+endsnippet
+
+snippet t "true" bw
+true
+endsnippet
+
+priority 99999
+snippet "\.f" "run karma.Format on that var" rw
+.Format(${1:err}, "$0")
+endsnippet
