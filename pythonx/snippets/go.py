@@ -481,6 +481,9 @@ def extract_comment_subject(
         if prev_line.strip().startswith('//'):
             return
 
+    if len(snip.buffer) >= snip.line + 1:
+        return
+
     next_line = snip.buffer[snip.line + 1]
 
     matches = re.match(r'^type (\w+)', next_line)
