@@ -14,7 +14,7 @@ for (int ${1:i} = 0; ${1:i} < $2; ${1:i}++) {
 endsnippet
 snippet i "if"
 if ($1) {
-$0
+	$0
 }
 endsnippet
 
@@ -160,7 +160,11 @@ except:
 endsnippet
 
 snippet n "" w
-`!p snip.rv=t[2]` ${1} = new ${2}($0);
+`!p snip.rv=t[1]` ${2:`!p snip.rv=px.langs.java.get_var_name_by_class_name(t[1])`} = new ${1}($0);
+endsnippet
+
+snippet k "" w
+`!p snip.rv=t[1]` ${2:`!p snip.rv=px.langs.java.get_var_name_by_class_name(t[1])`}$0
 endsnippet
 
 snippet ur "" w
@@ -251,4 +255,9 @@ endsnippet
 
 snippet e "" w
 extends $0
+endsnippet
+
+snippet , "" i
+,
+$0
 endsnippet
