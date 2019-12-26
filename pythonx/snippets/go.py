@@ -51,7 +51,7 @@ def should_expand_case(buffer, line):
 
 def is_if_condition(snip):
     current_line = _line(snip)
-    if re.search("^\s+if ", current_line):
+    if re.search("^\s+(if|case) ", current_line):
         return True
     prev_line = _line(snip, -1)
     if re.search("&&\s+$", prev_line) or re.search("\|\|\s+$", prev_line):
