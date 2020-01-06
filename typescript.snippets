@@ -1,0 +1,62 @@
+global !p
+import px
+import px.whitespaces
+
+def is_typescript():
+	synstack = vim.eval("synstack(line('.'), col('.'))")
+	if len(synstack) == 0:
+		return false
+
+	name = vim.eval("synIDattr(" + synstack[-1] + ", 'name')")
+	return name.startswith('typescript')
+
+def is_switch_body(snip):
+    return px.whitespaces.match_higher_indent(snip.buffer, snip.cursor, 'switch ')
+endglobal
+
+context "is_typescript()"
+snippet i "if" b
+if ($1) {
+	$2
+}
+endsnippet
+
+context "is_typescript()"
+snippet w "switch" b
+switch ($1) {
+	$2
+}
+endsnippet
+
+context "is_typescript() and is_switch_body(snip)"
+snippet c "case" b
+case $1:
+	$2
+	break
+endsnippet
+
+context "is_typescript()"
+snippet p "console.log" b
+console.log($1)
+endsnippet
+
+snippet fo "for of" b
+for (let $1 of $2) {
+	$3
+}
+endsnippet
+
+context "is_typescript()"
+snippet r "return" b
+return $0
+endsnippet
+
+context "is_typescript()"
+snippet rt "return true" b
+return true
+endsnippet
+
+context "is_typescript()"
+snippet rt "return false" b
+return false
+endsnippet

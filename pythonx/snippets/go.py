@@ -135,7 +135,7 @@ def jump_to_if_body_on_err_not_nil(snip):
     if snip.tabstops[1].current_text == "err != nil":
         if snip.tabstop == 1:
             if snip.jump_direction == 1:
-                vim.command('call feedkeys("\<C-J>")')
+                vim.command('call feedkeys(eval(\'"\\\' . g:UltiSnipsJumpForwardTrigger . \'"\'))')
 
         if snip.tabstop == 2:
             px.snippets.expect_cursor_jump(
