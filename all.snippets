@@ -16,3 +16,33 @@ snippet "{$" "{ curly brace pair" r
 	$0
 }
 endsnippet
+
+snippet /t "todo" bw
+`!p
+def split_long_todo_line(t, snip):
+    if snip.c != "":
+        return snip.c
+
+    ts = int(vim.eval('&ts'))
+
+	# TODO(seletskiy): split not only first line
+	# TODO(seletskiy): detect comment prefix by filetype
+
+    line = snip.buffer[snip.snippet_start[0]]
+
+    if len(line) > 79 and ' ' in t[1]:
+        matches = re.match(r'^(\s*// )', line).groups()
+
+        split_boundary = len(line) - len(t[1])
+        first_line, second_line = t[1].rsplit(' ', 1)
+
+        indentation = matches[0] + ' ' * (
+            split_boundary - len(matches[0].expandtabs(ts)))
+
+        t[1] = indentation + second_line
+
+        return first_line + "\n"
+    else:
+        return ''
+`// TODO: `!p snip.rv=split_long_todo_line(t, snip)`$1
+endsnippet

@@ -5,7 +5,7 @@ import px.whitespaces
 def is_typescript():
 	synstack = vim.eval("synstack(line('.'), col('.'))")
 	if len(synstack) == 0:
-		return false
+		return True
 
 	name = vim.eval("synIDattr(" + synstack[-1] + ", 'name')")
 	return name.startswith('typescript')
@@ -59,4 +59,22 @@ endsnippet
 context "is_typescript()"
 snippet rt "return false" b
 return false
+endsnippet
+
+context "is_typescript()"
+snippet .filter "array filter" i
+.filter(
+	($1) => {
+		$2
+	}
+)
+endsnippet
+
+snippet vue "vue component" b
+import Vue from 'vue';
+
+// tslint:disable-next-line: no-default-export
+export default Vue.extend({
+	$1
+})
 endsnippet
