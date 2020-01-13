@@ -242,14 +242,14 @@ new Object[]{${VISUAL}}
 endsnippet
 
 snippet tr "" w
-$0transaction(() -> {
-	${1:${VISUAL}}
+$1transaction(() -> {
+	${2:${VISUAL}}
 });
 endsnippet
 
 snippet rtr "" w
-return transaction(() -> {
-	${1:${VISUAL}}
+return $1transaction(() -> {
+	${2:${VISUAL}}
 });$0
 endsnippet
 
@@ -265,4 +265,28 @@ endsnippet
 snippet gs "" w
 $2 get$1();
 void set$1($2 value);
+endsnippet
+
+snippet l "" w
+($1) -> {
+	$0
+}
+endsnippet
+
+snippet m "" w
+Map<${1:String, String}> $0
+endsnippet
+
+snippet gw "" w
+`!p
+_var_name = px.langs.java.get_var_name_by_class_name(t[1])
+`
+public `!p snip.rv=t[2]` get`!p snip.rv=t[1]`() {
+		return `!p snip.rv=_var_name`;
+}
+
+public `!p snip.rv=guess_class_name_from_file_name()` where$1($2 `!p snip.rv=_var_name`) {
+		this.`!p snip.rv=_var_name` = `!p snip.rv=_var_name`;
+		return this;
+}
 endsnippet
