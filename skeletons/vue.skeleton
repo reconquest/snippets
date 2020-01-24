@@ -1,0 +1,4 @@
+`!p import os.path
+`<template lang="pug" src="./`!p snip.rv = os.path.splitext(fn)[0]`.pug" />
+<script lang="ts" src="./`!p snip.rv = os.path.splitext(fn)[0]`.ts" />
+<style lang="scss" src="./`!p snip.rv = os.path.splitext(fn)[0]`.scss" />
