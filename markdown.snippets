@@ -84,3 +84,13 @@ endglobal
 pre_expand "create_table(snip)"
 snippet "tb(\d+x\d+)" "Customizable table" br
 endsnippet
+
+snippet hh "" w
+---
+title:     "$1"
+linkTitle: "${2:$1}"
+weight:    $3
+---
+
+$0
+endsnippet

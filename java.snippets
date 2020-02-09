@@ -1,6 +1,7 @@
 global !p
 import px
 import px.util
+import px.langs.java
 import os.path
 
 from snippets import *
@@ -104,6 +105,30 @@ snippet tt "" w
 this.`!p snip.rv=t[1]` = ${1};
 endsnippet
 
+
+global !p
+def add_private_decl(snip):
+	(x, y) = (snip.cursor[0], snip.cursor[1])
+	px.langs.java.goto_constructor_setters();
+
+	snip.expand_anon(
+		"    this.{var} = {var};\n"
+		.replace('{var}', px.langs.java.get_var_name_by_class_name(snip.tabstops[1].current_text)
+	), options='m')
+
+	px.langs.java.goto_private_decls();
+
+	snip.expand_anon(
+		"  private {type} {var};\n"
+		.replace('{type}', snip.tabstops[1].current_text)
+		.replace('{var}', px.langs.java.get_var_name_by_class_name(snip.tabstops[1].current_text)
+	), options='m', actions={
+		'post_jump': "snip.cursor.set("+str(x+1)+", "+str(y)+")"
+	})
+
+endglobal
+
+post_jump "if snip.tabstop == 0: add_private_decl(snip)"
 snippet ci "" w
 @ComponentImport $1 `!p snip.rv=px.langs.java.get_var_name_by_class_name(t[1])`,
 endsnippet
@@ -267,14 +292,26 @@ snippet e "" w
 extends $0
 endsnippet
 
-snippet , "" i
-,
-$0
-endsnippet
+global !p
+def add_accessor(snip):
+	px.langs.java.goto_const();
+	snip.expand_anon("""  String {KEY} = "{KEY}";
+""".replace('{KEY}', px.util.convert_camelcase_to_snakecase(snip.tabstops[1].current_text).upper()), options='m', actions={
+	'post_jump': "snip.cursor.set("+str(snip.cursor[0]+1)+", "+str(snip.cursor[1])+")"
+})
 
+endglobal
+
+post_jump "if snip.tabstop == 0: add_accessor(snip)"
 snippet gs "" w
+@Accessor(`!p snip.rv=px.util.convert_camelcase_to_snakecase(t[1]).upper()`)
 $2 get$1();
-void set$1($2 value);
+
+@Mutator(`!p snip.rv=px.util.convert_camelcase_to_snakecase(t[1]).upper()`)
+`!p
+if t[2] == "String":
+	snip.rv = "@StringLength(StringLength.UNLIMITED)\n  "
+`void set$1($2 value);
 endsnippet
 
 snippet l "" w
@@ -303,4 +340,8 @@ endsnippet
 
 snippet pa "" w
 @PathParam("`!p snip.rv=px.util.convert_camelcase_to_snakecase(t[1])`") ${2:String} $1$0
+endsnippet
+
+snippet rt "" w
+return this;
 endsnippet

@@ -160,7 +160,11 @@ pre_expand "pre_expand_()"
 post_jump "jump_to_if_body_on_err_not_nil(snip)"
 snippet i "if" bw
 if ${1:`!p
-snip.rv = get_value_for_if(snip.c, snip.context)
+try:
+	once
+except:
+	once = True
+	snip.rv = get_value_for_if(snip.c, snip.context)
 `} {
 	$0
 }
@@ -441,7 +445,7 @@ if t[1] != '':
 if " " in t[1]:
 	func = 'Fprintf'
 	left = ' '
-	right = '")'
+	right = '\\n")'
 
 left = " " + filename + ":" + str(cursor[0]) + left
 
@@ -1017,9 +1021,7 @@ endsnippet
 
 context "snip.buffer[snip.cursor[0]] == 't'"
 snippet "^t" "not is_string() and not is_comment()" wAre
-type (
-    ${1:`!p snip.rv=snip.v.text.replace("type ", "\t")`}
-)
+type ${1:`!p snip.rv=snip.v.text.replace("type ", "\t")`} ${2:string}
 endsnippet
 
 snippet err.E "err.Error()" wA
@@ -1098,17 +1100,14 @@ fallthrough
 endsnippet
 
 context "not is_string() and not is_comment()"
-snippet "^s$" "type struct auto" bwreA
+snippet "^s$" "type struct or interface | use t for types" bwreA
 `!p
-if t[2] == "" or re.match("^([\w\[\]{}]+)$", t[2]):
-		type_left = " "
-		type_right = "\n"
-else:
-		type_left = " struct {\n\t"
-		type_right = "\n}\n"
-		if re.match("^\w+\(", t[2]):
-				type_left = " interface {\n\t"
-`type $1`!p snip.rv=type_left`$2`!p snip.rv=type_right`
+type_left = "struct"
+if re.match("^\w+\(", t[2]):
+	type_left = "interface"
+`type $1 `!p snip.rv=type_left` {
+	$2
+}
 endsnippet
 
 snippet "^\s*type\s+(\w+)\s+([\w.]+)" "type struct embed" br

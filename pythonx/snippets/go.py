@@ -115,6 +115,8 @@ def get_value_for_if(current_value, context, value_tabstop=1):
     if 'tabstop' in context and context['tabstop'] != value_tabstop:
         return current_value
 
+    # import cProfile; pr = cProfile.Profile(); pr.enable()
+
     value = px.snippets.complete_identifier_for_placeholder(
         px.cursor.get(),
         current_value,
@@ -123,6 +125,9 @@ def get_value_for_if(current_value, context, value_tabstop=1):
 
     if value == 'err':
         value = 'err != nil'
+
+    # import time
+    # pr.dump_stats("/tmp/z_%.20f" % time.time())
 
     return value
 
