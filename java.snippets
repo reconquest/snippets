@@ -168,11 +168,21 @@ snippet k "" w
 endsnippet
 
 snippet ur "" w
-@$2
+@`!p
+method = "GET"
+fn = t[1].lower()
+if 'update' in fn or 'edit' in fn:
+	method = "UPDATE"
+elif 'delete' in fn or 'remove' in fn:
+	method = "DELETE"
+elif 'new' in fn or 'create' in fn or 'add' in fn:
+	method = "POST"
+
+snip.rv = method`
 @Path("/{param}")
-@Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
-public Response $1() {
-	$0
+@Produces({MediaType.APPLICATION_JSON})
+@Consumes({MediaType.APPLICATION_JSON})
+public Response $1($0) {
 }
 endsnippet
 
@@ -289,4 +299,8 @@ public `!p snip.rv=guess_class_name_from_file_name()` where$1($2 `!p snip.rv=_va
 		this.`!p snip.rv=_var_name` = `!p snip.rv=_var_name`;
 		return this;
 }
+endsnippet
+
+snippet pa "" w
+@PathParam("`!p snip.rv=px.util.convert_camelcase_to_snakecase(t[1])`") ${2:String} $1$0
 endsnippet
