@@ -2,6 +2,8 @@ global !p
 import px
 import px.util
 import px.langs.java
+import px.buffer
+import px.cursor
 import os.path
 
 from snippets import *
@@ -126,11 +128,37 @@ def add_private_decl(snip):
 		'post_jump': "snip.cursor.set("+str(x+1)+", "+str(y)+")"
 	})
 
+
+def get_next_letter(snip):
+	cursor = px.cursor.get()
+	line_nr = cursor[0]
+	column_nr = cursor[1]
+
+	buffer = px.buffer.get()
+	line = buffer[line_nr]
+
+	if len(line) > column_nr:
+		return line[column_nr]
+	else:
+		while True:
+			line_nr += 1
+			if line_nr >= len(buffer):
+				return ""
+			line = buffer[line_nr].strip()
+			if line == "":
+				continue
+			return line[0]
 endglobal
 
 post_jump "if snip.tabstop == 0: add_private_decl(snip)"
+context "get_next_letter(snip)"
 snippet ci "" w
-@ComponentImport $1 `!p snip.rv=px.langs.java.get_var_name_by_class_name(t[1])`,
+@ComponentImport $1 `!p snip.rv=px.langs.java.get_var_name_by_class_name(t[1])``!p
+if snip.context == ")":
+	snip.rv=""
+else:
+	snip.rv=","
+`
 endsnippet
 
 snippet uv "" w
