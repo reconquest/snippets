@@ -5,6 +5,9 @@ global !p
 from snippets import *
 from snippets.go import *
 
+def pum_visible():
+	return vim.eval('pumvisible()') == '1'
+
 def	pre_expand_():
 	px.common.get_active_completer().reset()
 
@@ -286,12 +289,12 @@ snippet pa "panic" b
 panic(err)
 endsnippet
 
-context "not is_string() and not is_comment() and is_viable_for_equal_statement(snip)"
+context "not pum_visible() and not is_string() and not is_comment() and is_viable_for_equal_statement(snip)"
 snippet : "colon equals auto" iAe
  :=`!p snip.rv = ' '`
 endsnippet
 
-context "not is_string() and not is_comment() and is_inside_struct_instance(snip)"
+context "not pum_visible() and not is_string() and not is_comment() and is_inside_struct_instance(snip)"
 snippet : "colon space auto" iAe
 :`!p snip.rv = ' '`
 endsnippet
@@ -567,7 +570,7 @@ endsnippet
 priority 3
 ###############################################################################
 
-context "not is_string() and not is_manually_triggered() and snip.buffer[snip.line]"
+context "not pum_visible() and not is_string() and not is_manually_triggered() and snip.buffer[snip.line]"
 post_jump "insert_space(snip)"
 snippet , "comma auto" eAi
 ,X
