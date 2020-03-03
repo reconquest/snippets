@@ -22,7 +22,7 @@ if ($1) {
 endsnippet
 
 context "is_typescript()"
-snippet w "switch" b
+snippet s "switch" b
 switch ($1) {
 	$2
 }
@@ -70,6 +70,15 @@ snippet .filter "array filter" i
 )
 endsnippet
 
+context "is_typescript()"
+snippet .forEach "array forEach" i
+.forEach(
+	($1) => {
+		$2
+	}
+)
+endsnippet
+
 snippet vue "vue component" b
 import Vue from 'vue';
 
@@ -77,4 +86,26 @@ import Vue from 'vue';
 export default Vue.extend({
 	$1
 })
+endsnippet
+
+context "is_typescript()"
+snippet "^e" "array filter" rA
+export $0
+endsnippet
+
+context "is_typescript()"
+snippet "^(\w+ )?in" "array filter" rA
+`!p snip.rv = match.group(1) if match.group(1) else ''`interface $1 {
+	$2
+}
+endsnippet
+
+context "is_typescript()"
+snippet "^i" "array filter" rA
+import $1 from '@/$2';
+endsnippet
+
+context "is_typescript()"
+snippet "import {" "array filter" Ab
+import { $1 }
 endsnippet
