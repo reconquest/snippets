@@ -1164,44 +1164,23 @@ snippet "\.f" "run karma.Format on that var" rw
 .Format(${1:err}, "$0")
 endsnippet
 
-###############################################################################
-# QUESTIONABLE
-###############################################################################
 
-#context "extract_comment_subject(snip)"
-#snippet "^(\s*)/" "comment subject" rA
-#`!p snip.rv=match.group(1)`// `!p snip.rv=snip.context` $1
-#endsnippet
+snippet ge "" w
+`!p
 
-#context "extract_comment_subject(snip, ['var', 'const', 'type', 'block'])"
-#snippet "^(\s*)// (\w+) r" "comment represents" rA
-#`!p snip.rv=match.group(1)`// `!p snip.rv=match.group(2)` represents $1
-#endsnippet
+try:
+	once
+except:
+	once = True
+	prev_binding = px.langs.go.extract_prev_method_binding(
+		px.buffer.get(), px.cursor.get()
+	)
 
-#context "extract_comment_subject(snip)"
-#snippet "^(\s*)// (\w+) i" "comment is" rA
-#`!p snip.rv=match.group(1)`// `!p snip.rv=match.group(2)` is a $1
-#endsnippet
+	if not prev_binding:
+		binding = ''
+	else:
+		name, binding_type = prev_binding
+		binding = str(binding_type)
 
-#context "extract_comment_subject(snip, 'func')"
-#snippet "^(\s*)// (\w+) r" "comment returns" rA
-#`!p snip.rv=match.group(1)`// `!p snip.rv=match.group(2)` returns $1
-#endsnippet
-
-#context "extract_comment_subject(snip, 'func')"
-#snippet "^(\s*)// (\w+) s" "comment verb suffix" rA
-#`!p snip.rv=match.group(1)`// `!p snip.rv=match.group(2)` `!p
-
-#words = re.search(r'^[A-Z][a-z0-9_]+', match.group(2))
-
-#if words:
-#    snip.rv = words.group(0).lower()
-#else:
-#    snip.rv = match.group(2).lower()
-
-#`s $1
-#endsnippet
-
-#pre_expand "generate_implementation(snip)"
-#snippet "^[\w.]{3,}" "goimpl" r
-#endsnippet
+`//go:generate gonstructor --type=`!p snip.rv=binding` $0
+endsnippet

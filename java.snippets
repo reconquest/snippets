@@ -377,3 +377,27 @@ endsnippet
 snippet a "" w
 assertEquals($1, $2);
 endsnippet
+
+global !p
+def expand_optional(snip):
+	visual = snip.context
+	if visual == "null":
+		snip.expand_anon("Optional.empty()", options='m')
+	else:
+		left = "Optional<"
+		right = ">"
+
+		if re.search(r'^\s+(return)\s+', px.buffer.get_current_line()):
+			left = "Optional.of("
+			right = ")"
+		content = left+visual+right
+		snip.expand_anon(content, options='m')
+
+	px.langs.java.ensure_import(snip.buffer, 'java.util.Optional')
+endglobal
+
+context "snip.visual_text"
+post_jump "expand_optional(snip)"
+snippet oo "" w
+$0
+endsnippet
