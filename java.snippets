@@ -17,7 +17,7 @@ for (int ${1:i} = 0; ${1:i} < $2; ${1:i}++) {
 endsnippet
 snippet i "if"
 if ($1) {
-	$0
+	${0:${VISUAL}}
 }
 endsnippet
 
@@ -304,6 +304,10 @@ snippet no "" w
 new Object[]{${VISUAL}}
 endsnippet
 
+snippet ns "" w
+new String[]{${1:${VISUAL}}}
+endsnippet
+
 snippet tr "" w
 $1transaction(() -> {
 	${2:${VISUAL}}
@@ -316,7 +320,7 @@ return $1transaction(() -> {
 });$0
 endsnippet
 
-snippet e "" w
+snippet ex "" w
 extends $0
 endsnippet
 
@@ -346,6 +350,10 @@ snippet l "" w
 ($1) -> {
 	$0
 }
+endsnippet
+
+snippet ll "" w
+($1) -> $0
 endsnippet
 
 snippet m "" w
@@ -383,11 +391,21 @@ def expand_optional(snip):
 	visual = snip.context
 	if visual == "null":
 		snip.expand_anon("Optional.empty()", options='m')
+	elif visual.endswith(" == null"):
+		snip.expand_anon("!"+visual[:-8]+".isPresent()")
+	elif visual.endswith(" != null"):
+		snip.expand_anon(""+visual[:-8]+".isPresent()")
 	else:
 		left = "Optional<"
 		right = ">"
 
+		of = False
 		if re.search(r'^\s+(return)\s+', px.buffer.get_current_line()):
+			of = True
+		elif re.search(r'=', px.buffer.get_current_line_before_cursor()):
+			of = True
+
+		if of:
 			left = "Optional.of("
 			right = ")"
 		content = left+visual+right
@@ -400,4 +418,10 @@ context "snip.visual_text"
 post_jump "expand_optional(snip)"
 snippet oo "" w
 $0
+endsnippet
+
+snippet e "" w
+else {
+	$0
+}
 endsnippet
