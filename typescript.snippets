@@ -1,6 +1,7 @@
 global !p
 import px
 import px.whitespaces
+import px.cursor
 
 def is_typescript():
 	synstack = vim.eval("synstack(line('.'), col('.'))")
@@ -37,7 +38,30 @@ endsnippet
 
 context "is_typescript()"
 snippet p "console.log" b
-console.log($1)
+console.log("`!p
+try:
+	once
+except:
+	once = True
+	cursor = px.cursor.get()
+	filename = os.path.basename(px.buffer.get().name)
+
+snip.rv = filename + ":" + str(cursor[0])
+` $0")
+endsnippet
+
+context "is_typescript()"
+snippet pp "console.log" b
+console.log("`!p
+try:
+	once
+except:
+	once = True
+	cursor = px.cursor.get()
+	filename = os.path.basename(px.buffer.get().name)
+
+snip.rv = filename + ":" + str(cursor[0])
+` `!p snip.rv=t[1]`", $1)
 endsnippet
 
 snippet fo "for of" b
@@ -65,16 +89,23 @@ context "is_typescript()"
 snippet .filter "array filter" i
 .filter(
 	($1) => {
-		$2
+		$0
 	}
 )
+endsnippet
+
+context "is_typescript()"
+snippet a "anonymous function" i
+($1) => {
+	$0
+}
 endsnippet
 
 context "is_typescript()"
 snippet .forEach "array forEach" i
 .forEach(
 	($1) => {
-		$2
+		$0
 	}
 )
 endsnippet
@@ -84,7 +115,7 @@ import Vue from 'vue';
 
 // tslint:disable-next-line: no-default-export
 export default Vue.extend({
-	$1
+	$0
 })
 endsnippet
 
@@ -94,18 +125,32 @@ export $0
 endsnippet
 
 context "is_typescript()"
-snippet "^(\w+ )?in" "array filter" rA
+snippet "^(\w+ )?in" "" rA
 `!p snip.rv = match.group(1) if match.group(1) else ''`interface $1 {
-	$2
+	$0
 }
 endsnippet
 
 context "is_typescript()"
-snippet "^i" "array filter" rA
-import $1 from '@/$2';
+snippet "^(\w+ )?f" "" rA
+`!p snip.rv = match.group(1) if match.group(1) else ''`function $1($2): $3 {
+	$0
+}
 endsnippet
 
 context "is_typescript()"
-snippet "import {" "array filter" Ab
-import { $1 }
+snippet "^i" "" rA
+import $1 from '@/$0';
+endsnippet
+
+context "is_typescript()"
+snippet "import {" "" Ab
+import { $0 }
+endsnippet
+
+context "is_typescript()"
+snippet m "" w
+$1($2) $3 {
+	$0
+},
 endsnippet

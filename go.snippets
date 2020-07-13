@@ -988,25 +988,26 @@ endsnippet
 
 snippet tx "this instance" w
 `!p
-buffer = px.buffer.get()
-line, column = px.cursor.get()
+try:
+	once
+except:
+	buffer = px.buffer.get()
+	line, column = px.cursor.get()
+	result = 't'
+	while True:
+		line = line - 1
+		if line == 0:
+			break
 
-result = 't'
-while True:
-	line = line - 1
-	if line == 0:
+		line_contents = buffer[line]
+		matches = re.match(r'(?m)^func \(([^)]+)\s+([^)]+)\) ', line_contents)
+		if not matches:
+			continue
+
+		result = matches.group(1)
 		break
-
-	line_contents = buffer[line]
-	matches = re.match(r'(?m)^func \(([^)]+)\s+([^)]+)\) ', line_contents)
-	if not matches:
-		continue
-
-	result = matches.group(1)
-	break
-
-
-snip.rv=result`
+	snip.rv=result
+`
 endsnippet
 
 context "should_expand_amp(snip)"
@@ -1180,4 +1181,8 @@ except:
 		binding = str(binding_type)
 
 `//go:generate gonstructor --type=`!p snip.rv=binding` $0
+endsnippet
+
+snippet gn "" w
+`!p snip.rv="\`"`gonstructor:"-"`!p snip.rv="\`"`
 endsnippet

@@ -37,10 +37,14 @@ snippet pd "Description" b
 pr$1 >>${2:/tmp/debug}
 endsnippet
 
-snippet in "if string empty" b
+snippet ix "if string empty" b
 if [ -n "$$1" ]; then
 	${2:${VISUAL}}
 fi
+endsnippet
+
+snippet w "" w
+${1}x
 endsnippet
 
 snippet a "alias" b
@@ -68,7 +72,7 @@ snip.rv=" " + "["*brackets + " " if brackets > 0 else " "
 snip.rv=" " + "]"*brackets       if brackets > 0 else ""
 `; then
 	${2:${VISUAL}}
-fi
+fi$0
 endsnippet
 
 snippet o "if [" b
