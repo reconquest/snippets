@@ -4,6 +4,9 @@ import px.whitespaces
 import px.cursor
 
 def is_typescript():
+	if vim.eval('&ft') == 'typescript':
+	    return True;
+
 	synstack = vim.eval("synstack(line('.'), col('.'))")
 	if len(synstack) == 0:
 		return True
@@ -110,6 +113,15 @@ snippet .forEach "array forEach" i
 )
 endsnippet
 
+context "is_typescript()"
+snippet .then "promise then" i
+.then(
+	($1) => {
+		$2
+	}
+)
+endsnippet
+
 snippet vue "vue component" b
 import Vue from 'vue';
 
@@ -120,31 +132,38 @@ export default Vue.extend({
 endsnippet
 
 context "is_typescript()"
-snippet "^e" "array filter" rA
+snippet "^e" "export" rA
 export $0
 endsnippet
 
 context "is_typescript()"
-snippet "^(\w+ )?in" "" rA
+snippet "^(\w+ )?in" "export interface" rA
 `!p snip.rv = match.group(1) if match.group(1) else ''`interface $1 {
 	$0
 }
 endsnippet
 
 context "is_typescript()"
-snippet "^(\w+ )?f" "" rA
+snippet "^(\w+ )?f" "export function" rA
 `!p snip.rv = match.group(1) if match.group(1) else ''`function $1($2): $3 {
 	$0
 }
 endsnippet
 
 context "is_typescript()"
-snippet "^i" "" rA
+snippet "^(\w+ )?cl" "export class" rA
+`!p snip.rv = match.group(1) if match.group(1) else ''`class $1 {
+	$2
+}
+endsnippet
+
+context "is_typescript()"
+snippet "^i" "import from" rA
 import $1 from '@/$0';
 endsnippet
 
 context "is_typescript()"
-snippet "import {" "" Ab
+snippet "import {" "import" Ab
 import { $0 }
 endsnippet
 
