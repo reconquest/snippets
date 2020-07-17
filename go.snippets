@@ -379,10 +379,32 @@ else:
 
 snip.rv = line + quote + prefix
 
+def get_placeholder(prefix, name):
+	if prefix == "docopt":
+	    return get_docopt_placeholder(name)
+	else:
+		return px.util.convert_camelcase_to_snakecase(name)
+
+def get_docopt_placeholder(name):
+	matches = re.match(r'(Mode|Arg|Value|Flag)(.*)', name)
+	if matches is None:
+		return "???"
+	else:
+		identifier = px.util.convert_camelcase_to_kebabcase(matches.group(2))
+
+		if matches.group(1) == "Mode":
+			return identifier
+		if matches.group(1) == "Arg":
+			return "<" + identifier + ">"
+		if matches.group(1) == "Value" or matches.group(1) == "Flag":
+			return ("-" if len(identifier) == 1 else "--") + identifier
+
+		return identifier
+
 surround = ""
 if prefix == "xorm":
 	surround = "'"
-`:"`!p snip.rv=surround`${1:`!p snip.rv=px.util.convert_camelcase_to_snakecase(match.group(2))`}`!p snip.rv=surround`"\`
+`:"`!p snip.rv=surround`${1:`!p snip.rv=get_placeholder(prefix, match.group(2))`}`!p snip.rv=surround`"\`
 endsnippet
 
 snippet ,o "" i
