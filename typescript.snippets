@@ -1,5 +1,6 @@
 global !p
 import px
+import re
 import px.whitespaces
 import px.cursor
 
@@ -172,4 +173,17 @@ snippet m "" w
 $1($2) $3 {
 	$0
 },
+endsnippet
+
+context "snip.visual_text"
+snippet c "" w
+constructor(${1:`!p
+params = snip.context
+params = params.strip()
+params = params.replace(';', '')
+params = ', '.join(
+	map(lambda x: 'public ' + x.strip(), params.split('\n'))
+)
+snip.rv = params
+`}) {}
 endsnippet
