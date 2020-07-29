@@ -214,7 +214,7 @@ snippet m "" we
 $1 map[${2:string}]${3:interface{}}${4/.+/(?0:, )/}$4
 endsnippet
 
-snippet ii "if <VISUAL>" bwA
+snippet ii "if <VISUAL>" bw
 if ${VISUAL} {
 	$1
 }
@@ -245,7 +245,7 @@ snippet ,e ", err" iA
 endsnippet
 
 context "px.langs.go.is_if_bracket(snip.buffer, snip.line, snip.column-1)"
-snippet "}([\w])" "else before closing bracket" bwrA
+snippet "}([\w])" "else before closing bracket" bwr
 } else {
 	`!p snip.rv=match.group(1)`$1
 }
@@ -279,7 +279,7 @@ endsnippet
 priority 1
 ###############################################################################
 
-snippet / "visual not nil" "get_selected_placeholder(snip)" iAe
+snippet / "visual not nil" "get_selected_placeholder(snip)" ie
 `!p snip.rv = snip.context` != nil
 endsnippet
 
@@ -311,19 +311,19 @@ snippet e "" wb
 err := ``
 endsnippet
 
-context "not is_string() and not is_comment()""
-snippet = "" wbA
-${1:err} := ``
-endsnippet
+#context "not is_string() and not is_comment()""
+#snippet = "" wbA
+#${1:err} := ``
+#endsnippet
 
 
 context "is_first_line(snip)"
-snippet "package m" "" bwrAe
+snippet "package m" "" bwre
 package main
 endsnippet
 
 context "snip.line == 0 and snip.column == 0"
-snippet m "" eA
+snippet m "" e
 package main
 
 func main() {
@@ -332,14 +332,14 @@ func main() {
 endsnippet
 
 context "px.langs.go.is_if_bracket(snip.buffer, snip.line, snip.column-1)"
-snippet "}\s" "else before closing bracket" bwrA
+snippet "}\s" "else before closing bracket" bwr
 } else {
 	$1
 }
 endsnippet
 
 context "not is_string() and not is_comment() and is_before_first_func(snip)"
-snippet "^c$" "" bwreA
+snippet "^c$" "" bwre
 const (
 	$0
 )
@@ -497,7 +497,7 @@ endsnippet
 
 context "snip.buffer[snip.cursor[0]] == 'v'"
 post_jump "px.snippets.expand(snip)"
-snippet "^v" "var" bwrA
+snippet "^v" "var" bwr
 vr$1
 endsnippet
 
@@ -582,7 +582,7 @@ func ($1) $2${2/.+/ /}{
 }
 endsnippet
 
-snippet "^n" "" "not is_string() and not is_comment()" bweAr
+snippet "^n" "" "not is_string() and not is_comment()" bwer
 func $1($2) $3`!p snip.rv = (" {" if t[3] != "" else "{") `
 	$4
 }
@@ -610,13 +610,7 @@ endsnippet
 priority 4
 ###############################################################################
 
-snippet "== nil[=n]" "" "is_if_condition(snip)" Aier
-!= nil$0
-endsnippet
 
-snippet "!= nil[=n]" "" "is_if_condition(snip)" Aier
-== nil$0
-endsnippet
 
 
 post_jump "if snip.tabstop == 0: add_usage(snip)"
@@ -627,16 +621,16 @@ if err != nil {
 }
 endsnippet
 
-snippet - "docopt command declaration" "is_inside_docopt_section(snip, 'usage') and not is_inside_docopt_section(snip, 'options')" beA
+snippet - "docopt command declaration" "is_inside_docopt_section(snip, 'usage') and not is_inside_docopt_section(snip, 'options')" be
 `!p snip.rv = get_program_name_from_usage(snip)` -$0
 endsnippet
 
 post_jump "if snip.tabstop == 2: docopt_format_options(snip)"
-snippet "\s*-" "docopt option declaration" "is_inside_docopt_section(snip, 'options')" beAr
+snippet "\s*-" "docopt option declaration" "is_inside_docopt_section(snip, 'options')" ber
   -$1`!p snip.rv=get_options_indentation(snip)``!p snip.rv=split_long_docopt_line(t, snip)`$2
 endsnippet
 
-snippet [ "docopt option default with matchem" "is_inside_docopt_section(snip, 'options')" eA
+snippet [ "docopt option default with matchem" "is_inside_docopt_section(snip, 'options')" e
 `!p snip.rv="["`default: $1]
 endsnippet
 
@@ -745,7 +739,7 @@ run(buffer, line)
 endsnippet
 
 context "snip.buffer[snip.line-1].endswith('[') and snip.buffer[snip.line].strip().startswith(']')"
-snippet "" "[\n]" brA
+snippet "" "[\n]" br
 	$0
 endsnippet
 
@@ -871,7 +865,7 @@ snippet "return n" "return nil" bw
 return nil
 endsnippet
 
-snippet "r (.)" "return auto" bwrA
+snippet "r (.)" "return auto" bwr
 return `!p snip.rv=match.group(1)`
 endsnippet
 
@@ -912,7 +906,7 @@ return false
 endsnippet
 
 context "not is_string() and not is_comment() and px.langs.go.extract_prev_method_binding(snip.buffer, snip.cursor) and {'line': snip.line}"
-snippet "^d$" "" bweAr
+snippet "^d$" "" bwer
 `!p
 
 try:
@@ -958,7 +952,7 @@ snippet jp "print json" bw
 }
 endsnippet
 
-snippet "^e" "func Test" wrA
+snippet "^e" "func Test" wr
 func Test$1(t *testing.T) {
 	test := assert.New(t)
 
@@ -966,7 +960,7 @@ func Test$1(t *testing.T) {
 }
 endsnippet
 
-snippet "^b" "func Bench" wrA
+snippet "^b" "func Bench" wr
 func Benchmark$1(b *testing.B) {
 	for i := 0; i < b.N; i++ {
 		$2
@@ -1016,21 +1010,17 @@ snippet & "expand amp" Awe
 endsnippet
 
 
-snippet ", ," "underscore auto" iAr
-, _
-endsnippet
-
 context "snip.buffer[snip.cursor[0]] == 't'"
-snippet "^t" "not is_string() and not is_comment()" wAre
+snippet "^t" "not is_string() and not is_comment()" wre
 type ${1:`!p snip.rv=snip.v.text.replace("type ", "\t")`} ${2:string}
 endsnippet
 
-snippet err.E "err.Error()" wA
+snippet err.E "err.Error()" w
 err.Error()
 endsnippet
 
 context "not is_string() and not is_comment()"
-snippet "^o$" "new" reA
+snippet "^o$" "new" re
 `!p
 
 bindings = px.langs.go.extract_prev_method_binding(
@@ -1049,7 +1039,7 @@ ctype = type[0].upper() + type[1:]
 endsnippet
 
 context "not is_string() and not is_comment()"
-snippet "^p$" "new" reA
+snippet "^p$" "new" re
 `!p
 
 bindings = px.langs.go.extract_prev_method_binding(
@@ -1083,14 +1073,14 @@ priority 10
 ###############################################################################
 
 context "not is_string() and not is_comment() and should_expand_case(snip.buffer, snip.line)"
-snippet c "switch case" bweA
+snippet c "switch case" bwe
 case $1:
 	$2
 $3
 endsnippet
 
 context "not is_string() and not is_comment() and should_expand_case(snip.buffer, snip.line)"
-snippet d "switch default" bweA
+snippet d "switch default" bwe
 default:
 	$1
 endsnippet
@@ -1101,7 +1091,7 @@ fallthrough
 endsnippet
 
 context "not is_string() and not is_comment()"
-snippet "^s$" "type struct or interface | use t for types" bwreA
+snippet "^s$" "type struct or interface | use t for types" bwre
 `!p
 type_left = "struct"
 if re.match("^\w+\(", t[2]):
@@ -1122,19 +1112,19 @@ pre_expand "gocode_complete_function(snip)"
 snippet "(\w+\.\w+)" "" re
 endsnippet
 
-snippet = "visual equals" "get_selected_placeholder(snip)" iAe
+snippet = "visual equals" "get_selected_placeholder(snip)" ie
 `!p snip.rv = snip.context``!p snip.rv, _ = get_padded_equal_sign(snip.context)`
 endsnippet
 
-snippet ( "visual paren" "get_selected_placeholder(snip)" iAe
+snippet ( "visual paren" "get_selected_placeholder(snip)" ie
 $1(`!p snip.rv = snip.context`)
 endsnippet
 
-snippet ! "visual exclam" "get_selected_placeholder(snip)" iAe
+snippet ! "visual exclam" "get_selected_placeholder(snip)" ie
 !`!p snip.rv = snip.context`
 endsnippet
 
-snippet . "visual period dot" "get_selected_placeholder(snip)" iAe
+snippet . "visual period dot" "get_selected_placeholder(snip)" ie
 `!p snip.rv = snip.context`.
 endsnippet
 
@@ -1143,7 +1133,7 @@ priority 1000
 ###############################################################################
 
 context "is_first_line(snip)"
-snippet p "" bweA
+snippet p "" bwe
 package ${1:`!p snip.rv=guess_package_from_file_name()`}
 
 $0
