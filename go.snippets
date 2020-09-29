@@ -388,7 +388,7 @@ def get_placeholder(prefix, name):
 def get_docopt_placeholder(name):
 	matches = re.match(r'(Mode|Arg|Value|Flag)(.*)', name)
 	if matches is None:
-		return "???"
+		return "--" + px.util.convert_camelcase_to_kebabcase(name)
 	else:
 		identifier = px.util.convert_camelcase_to_kebabcase(matches.group(2))
 
