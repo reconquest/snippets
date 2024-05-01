@@ -101,7 +101,7 @@ def is_in_function(snip):
     return px.whitespaces.match_higher_indent(
         snip.buffer,
         snip.cursor,
-        '^([\w:_-])+\(\)\s*\{'
+        r'^([\w:_-])+\(\)\s*\{'
     )
 
 

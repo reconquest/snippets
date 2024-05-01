@@ -15,7 +15,7 @@ def is_inside_brackets(snip):
 	line = snip.buffer[snip.line]
 	before = line[:snip.column]
 
-	if px.cursor.is_between(line, snip.cursor, '\[', '\]'):
+	if px.cursor.is_between(line, snip.cursor, r'\[', r'\]'):
 		 return True
 
 	if re.match(r'.*\[[^]]*$', before):
@@ -37,7 +37,7 @@ def is_inside_inline_struct_instance(snip):
 
 def is_inside_if_err(snip):
 	return px.whitespaces.match_higher_indent(
-		snip.buffer, snip.cursor, 'if err\s+'
+		snip.buffer, snip.cursor, r'if err\s+'
 	)
 
 def is_inside_struct_instance(snip):
@@ -48,22 +48,22 @@ def is_inside_struct_instance(snip):
 		return True
 
 	return px.whitespaces.match_higher_indent(
-		snip.buffer, snip.cursor, '[\w.]+{$|[^{]} {$'
+		snip.buffer, snip.cursor, r'[\w.]+{$|[^{]} {$'
 	)
 
 def is_inside_anon_struct(snip):
 	return px.whitespaces.match_higher_indent(
-		snip.buffer, snip.cursor, '}\s*{'
+		snip.buffer, snip.cursor, r'}\s*{'
 	)
 
 def is_inside_map(snip):
 	return px.whitespaces.match_higher_indent(
-		snip.buffer, snip.cursor, 'map\S+{$'
+		snip.buffer, snip.cursor, r'map\S+{$'
 	)
 
 def is_inside_case_condition(snip):
 	line = snip.buffer[snip.line]
-	return re.match('^\s+case ', line)
+	return re.match(r'^\s+case ', line)
 
 def is_viable_for_equal_statement(snip):
 	return not is_string() and not is_comment() and \
@@ -102,7 +102,7 @@ def guess_binary_name_from_path():
 
 def add_usage(snip):
 	px.langs.go.goto_const();
-	snip.expand_anon("""var version = "${2:[manual build]}"
+	snip.expand_anon(r"""var version = "${2:[manual build]}"
 
 var usage = \`{PROGRAM} - $1
 
@@ -353,7 +353,7 @@ struct {
 }
 endsnippet
 
-snippet "((\w+)\s*(\*?[\w\[\].\{\}*]+)(\s+`[^`]+`)?)\s+(to|js|bs|sc|ya|bi|do|xo)$" "annotation" "not px.syntax.is_string(snip.cursor)" bre
+snippet "((\w+)\s*(\*?[\w\[\].\{\}*]+)(\s+`[^`]+`)?)\s+(to|js|bs|sc|ya|bi|do|xo|db)$" "annotation" "not px.syntax.is_string(snip.cursor)" bre
 `!p
 
 line = match.group(1)
@@ -367,6 +367,7 @@ prefixes = {
 	"bi": "binding",
 	"do": "docopt",
 	"xo": "xorm",
+	"db": "db",
 }
 
 prefix = prefixes[match.group(5)]
@@ -705,10 +706,11 @@ endsnippet
 snippet x "log.Debugf args of function on next line"
 `!p
 def is_next_line_contains_function_call_only(buffer, line):
-	return re.match('.*\($', buffer[line + 1])
+
+	return re.match(r'.*\($', buffer[line + 1])
 
 def get_function_name_from_line(buffer, line):
-	matches = re.match('^(\t*|.*=\s)([\w\.]*)\($', buffer[line + 1])
+	matches = re.match(r'^(\t*|.*=\s)([\w\.]*)\($', buffer[line + 1])
 	if matches:
 		return matches.group(2)
 
@@ -793,9 +795,14 @@ endsnippet
 priority 5
 ###############################################################################
 
-context "not is_string() and not is_comment()"
+context "not is_string() and not is_comment() and not is_func_decl(snip)"
 snippet  ", e" "err, " ie
 , err``
+endsnippet
+
+context "is_func_decl(snip)"
+snippet  ", e" "err, " ie
+, error``
 endsnippet
 
 context "not is_string() and not is_comment()"
@@ -1126,7 +1133,7 @@ context "not is_string() and not is_comment()"
 snippet "^s$" "type struct or interface | use t for types" bwreA
 `!p
 type_left = "struct"
-if re.match("^\w+\(", t[2]):
+if re.match(r"^\w+\(", t[2]):
 	type_left = "interface"
 `type $1 `!p snip.rv=type_left` {
 	$2
@@ -1182,29 +1189,4 @@ priority 99999
 
 snippet "\.f" "run karma.Format on that var" rw
 .Format(${1:err}, "$0")
-endsnippet
-
-
-snippet ge "" w
-`!p
-
-try:
-	once
-except:
-	once = True
-	prev_binding = px.langs.go.extract_prev_method_binding(
-		px.buffer.get(), px.cursor.get()
-	)
-
-	if not prev_binding:
-		binding = ''
-	else:
-		name, binding_type = prev_binding
-		binding = str(binding_type)
-
-`//go:generate gonstructor --type=`!p snip.rv=binding` $0
-endsnippet
-
-snippet gn "" w
-`!p snip.rv="\`"`gonstructor:"-"`!p snip.rv="\`"`
 endsnippet

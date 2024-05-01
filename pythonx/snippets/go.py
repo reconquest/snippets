@@ -51,10 +51,10 @@ def should_expand_case(buffer, line):
 
 def is_if_condition(snip):
     current_line = _line(snip)
-    if re.search("^\s+(if|case) ", current_line):
+    if re.search(r"^\s+(if|case) ", current_line):
         return True
     prev_line = _line(snip, -1)
-    if re.search("&&\s+$", prev_line) or re.search("\|\|\s+$", prev_line):
+    if re.search(r"&&\s+$", prev_line) or re.search(r"\|\|\s+$", prev_line):
         return True
     return False
 
@@ -207,7 +207,7 @@ def gocode_complete_function(snip):
     (snip_ret, snip_func) = px.langs.go.get_gocode_complete(False)
     snip_full = px.langs.go.get_gocode_complete(True)
 
-    curr_line = re.sub('\w+\.\w+$', '', snip.buffer[snip.line][:snip.column])
+    curr_line = re.sub(r'\w+\.\w+$', '', snip.buffer[snip.line][:snip.column])
     column_before_expand = len(curr_line)
     curr_line = curr_line + "" + snip.buffer[snip.line][snip.column+1:]
 
@@ -221,7 +221,7 @@ def gocode_complete_function(snip):
         snip.expand_anon(snip_func)
         return
 
-    matches = re.search('\${(\d+):error}', snip_ret)
+    matches = re.search(r'\${(\d+):error}', snip_ret)
     if not matches:
         snip.expand_anon(snip_full)
         return
@@ -362,7 +362,7 @@ def docopt_align_options(
 
 def parse_docopt_option(line, tab_width=4):
     match = re.match(
-        """(?x)
+        r"""(?x)
             ^(?P<indent>(?P<first>
                 (\s+)
                 (
@@ -465,7 +465,7 @@ def generate_implementation(snip):
 
     del snip.buffer[snip.cursor[0]]
 
-    vim.command('call feedkeys("\<ESC>:GoImpl {} {} {}\<CR>")'.format(
+    vim.command(r'call feedkeys("\<ESC>:GoImpl {} {} {}\<CR>")'.format(
         name,
         "*"+type,
         interface,

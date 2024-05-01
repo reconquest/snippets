@@ -246,9 +246,9 @@ public Response $1($0) {
 }
 endsnippet
 
-snippet "(\s+)([^ ]*\s*[^ ]+)\s+([^;]+);\s*xml" "" wr
-`!p snip.rv=match.group(1)`@XmlElement(name = "`!p snip.rv=px.util.convert_camelcase_to_snakecase(match.group(3))`")
-`!p snip.rv=match.group(1)``!p snip.rv=match.group(2)` `!p snip.rv=match.group(3)`;
+snippet "(\s+)(\w+)\s+(.*)\s+(.*[^=;])([=].*)?;xml" "" wr
+`!p snip.rv=match.group(1)`@XmlElement(name = "`!p snip.rv=px.util.convert_camelcase_to_snakecase(match.group(4))`")
+`!p snip.rv=match.group(1)``!p snip.rv=match.group(2)` `!p snip.rv=match.group(3)` `!p snip.rv=match.group(4)`;
 endsnippet
 
 snippet uu "" w

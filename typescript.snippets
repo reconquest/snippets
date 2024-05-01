@@ -145,7 +145,7 @@ snippet "^(\w+ )?in" "export interface" rA
 endsnippet
 
 context "is_typescript()"
-snippet "^(\w+ )?f" "export function" rA
+snippet "^(\w+ )?f" "export function" r
 `!p snip.rv = match.group(1) if match.group(1) else ''`function $1($2): $3 {
 	$0
 }
